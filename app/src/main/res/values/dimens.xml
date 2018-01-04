@@ -1,0 +1,16 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="margin_top_1">5dp</dimen>
+    <dimen name="ttht_elevation_row_smallest">3dp</dimen>
+
+    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
+         https://developer.android.com/design/patterns/navigation-drawer.html -->
+    <dimen name="navigation_drawer_width">240dp</dimen>
+
+
+    <!-- Overriding sizes of the FAB -->
+    <dimen name="design_fab_size_normal">90dp</dimen>
+    <dimen name="design_fab_size_mini">30dp</dimen>
+</resources>
