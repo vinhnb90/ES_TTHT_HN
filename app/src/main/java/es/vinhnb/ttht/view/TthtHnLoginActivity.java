@@ -4,6 +4,7 @@ package es.vinhnb.ttht.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -49,11 +50,11 @@ import es.vinhnb.ttht.entity.sharedpref.MenuTopSearchSharePref;
 import es.vinhnb.ttht.server.TthtHnApi;
 import es.vinhnb.ttht.server.TthtHnApiInterface;
 import esolutions.com.esdatabaselib.baseSharedPref.SharePrefManager;
+import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlDAO;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import retrofit2.Call;
 import retrofit2.Response;
-
 
 
 public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInteface<TABLE_DVIQLY> {
@@ -147,6 +148,25 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
         } catch (Exception e) {
             e.printStackTrace();
             super.showSnackBar(Common.MESSAGE.ex04.getContent(), e.getMessage(), null);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        cleanUpDatabase();
+        super.onDestroy();
+    }
+
+    private void cleanUpDatabase() {
+        if (listDepart.size() != 0) {
+            ((LazyList<TABLE_DVIQLY>) listDepart).closeCursor();
+        }
+
+        try {
+            SqlHelper.getIntance().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            super.showSnackBar(Common.MESSAGE.ex07.getContent(), e.getMessage(), null);
         }
     }
 

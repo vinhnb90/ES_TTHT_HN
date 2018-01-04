@@ -200,11 +200,19 @@ public class SqlDAO {
         };
 
         LazyList<T> result = new LazyList<T>(cursor, item);
+
+//        if (result.isEmpty())
+//            closeCursor(cursor);
+
         return result;
     }
 
     public <T> LazyList<T> selectCustomLazy(Cursor cursor, ItemFactory<T> itemFactory) {
-        return new LazyList<>(cursor, itemFactory);
+        LazyList<T> lazyList = new LazyList<>(cursor, itemFactory);
+//        if(lazyList.isEmpty())
+//            closeCursor(cursor);
+
+        return lazyList;
     }
     //endregion
 
@@ -383,7 +391,7 @@ public class SqlDAO {
         //get Cursor and close db
         Cursor cur = mDatabase.select(param);
         boolean exist = (cur.getCount() > 0);
-        cur.close();
+        closeCursor(cur);
 
 
         return exist;
@@ -476,7 +484,6 @@ public class SqlDAO {
         paramUpdate.whereArgs = valuesCheck.toArray(new String[valuesCheck.size()]);
 
 
-        //get Cursor and close db
         rowAffect = mDatabase.update(mDatabase.mDatabase, paramUpdate);
         return rowAffect;
     }
@@ -553,10 +560,9 @@ public class SqlDAO {
         for (Field field : fieldSet) {
             Collumn collumn = listCollumnPrimaryKey.get(field);
             field.setAccessible(true);
-            if(dataOld != null){
+            if (dataOld != null) {
                 valuesCheck.add((field.get(dataOld) == null) ? "" : field.get(dataOld).toString());
-            }
-            else {
+            } else {
                 valuesCheck.add("");
             }
             nameCollumnCheck.add(collumn.name());

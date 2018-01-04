@@ -45,6 +45,7 @@ import es.vinhnb.ttht.database.table.TABLE_BBAN_CTO;
 import es.vinhnb.ttht.database.table.TABLE_BBAN_TUTI;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_CTO;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_TUTI;
+import es.vinhnb.ttht.database.table.TABLE_DVIQLY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY_UPLOAD;
 import es.vinhnb.ttht.database.table.TABLE_LOAI_CONG_TO;
@@ -56,6 +57,7 @@ import es.vinhnb.ttht.view.TthtHnMainFragment.IOnTthtHnMainFragment;
 import es.vinhnb.ttht.view.TthtHnTopUploadFragment.IOnTthtHnTopUploadFragment;
 import es.vinhnb.ttht.view.TthtHnUploadFragment.IOnTthtHnUploadFragment;
 import esolutions.com.esdatabaselib.baseSharedPref.SharePrefManager;
+import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 
 import static com.es.tungnv.views.R.layout.activity_ttht_hn_main;
@@ -244,15 +246,24 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //clear
         try {
             MainSharePref mainSharePref = (MainSharePref) sharePrefManager.getSharePrefObject(MainSharePref.class);
             mainSharePref.tagMenuNaviLeft = "";
             sharePrefManager.writeDataSharePref(MainSharePref.class, mainSharePref);
+
+
+            try {
+                SqlHelper.getIntance().close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                super.showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        super.onDestroy();
     }
 
     @Override
@@ -400,6 +411,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
     public void initNavigationDrawer() {

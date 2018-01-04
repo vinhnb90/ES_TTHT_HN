@@ -1,13 +1,11 @@
 package es.vinhnb.ttht.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +46,11 @@ import es.vinhnb.ttht.entity.api.TRAMVIEW;
 import es.vinhnb.ttht.entity.api.UpdateStatus;
 import es.vinhnb.ttht.server.TthtHnApi;
 import es.vinhnb.ttht.server.TthtHnApiInterface;
+import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static android.content.ContentValues.TAG;
 import static es.vinhnb.ttht.common.Common.DELAY;
 import static es.vinhnb.ttht.common.Common.DELAY_PROGESS_PBAR;
 import static es.vinhnb.ttht.server.TthtHnApiInterface.IAsync.BUNDLE_DATA;
@@ -138,8 +136,15 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         mListener = null;
+
+        try {
+            SqlHelper.getIntance().closeDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+        }
+        super.onDetach();
     }
 
     //region TthtHnBaseFragment
@@ -285,6 +290,11 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
                                 String[] args = new String[]{onIDataCommon.getMaNVien()};
                                 List<TABLE_BBAN_CTO> tableBbanCtoHetHieuLucList = mSqlDAO.getBBanHetHieuLuc(args);
+
+                                //close cursor
+                                if (tableBbanCtoHetHieuLucList.size()!=0)
+                                    ((LazyList<TABLE_BBAN_CTO>) tableBbanCtoHetHieuLucList).closeCursor();
+
                                 final int sizetableBbanCtoHetHieuLucList = tableBbanCtoHetHieuLucList.size();
                                 for (int i = 0; i < tableBbanCtoHetHieuLucList.size(); i++) {
                                     final int finalIi = i;
@@ -352,7 +362,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                     if (resultGet_ctoResponse instanceof List<?>) {
                                         if (((List) resultGet_ctoResponse).size() == 0) {
                                             error = "\nKhông có dữ liệu công tơ trả về.! Liên hệ hỗ trợ kiểm tra dữ liệu các công tơ, tại biên bản " + bbanModel.ID_BBAN_TRTH;
-                                            messageServer.append(error);
+                                            messageServer.append("\n" + error);
                                         } else {
                                             try {
                                                 Gson gson = new Gson();
@@ -362,12 +372,12 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                                 resultGet_cto = gson.fromJson(json, fooType);
                                                 if (resultGet_cto.size() == 0) {
                                                     error = "Định dạng dữ liệu trả về từ máy chủ không đúng yêu cầu! Liên hệ nhân viên lập trình, tại biên bản " + bbanModel.ID_BBAN_TRTH;
-                                                    messageServer.append(error);
+                                                    messageServer.append("\n" + error);
                                                 }
 //                                                resultGet_cto = (List<MtbCtoModel>) resultGet_ctoResponse;
                                             } catch (Exception e) {
                                                 error = "Định dạng dữ liệu trả về từ máy chủ không đúng yêu cầu! Liên hệ nhân viên lập trình, tại biên bản " + bbanModel.ID_BBAN_TRTH;
-                                                messageServer.append(error);
+                                                messageServer.append("\n"  + error);
                                             }
 //                                            Object o = ((List) resultGet_ctoResponse).get(0);
 //                                            if (o instanceof MtbCtoModel) {
@@ -376,10 +386,10 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                         }
                                     } else if (resultGet_ctoResponse instanceof String) {
                                         error = "\nMÁY CHỦ THÔNG BÁO: tại biên bản " + bbanModel.ID_BBAN_TRTH + " " + (String) resultGet_ctoResponse;
-                                        messageServer.append(error);
+                                        messageServer.append("\n"  + error);
                                     } else {
                                         error = "\nMất kết nối khi đang lấy dữ liệu công tơ!. Vui lòng kiểm tra mạng và thử đồng bộ lại, Nếu vẫn xảy ra liên hệ nhân viên lập trình";
-                                        messageServer.append(error);
+                                        messageServer.append("\n"  + error);
                                     }
 
                                     //nếu có lỗi server trả về
@@ -389,7 +399,14 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                         infoSessionDownload.setTYPE_RESULT(Common.TYPE_RESULT.ERROR.content);
 
                                         args = new String[]{String.valueOf(bbanModel.ID_BBAN_TRTH), onIDataCommon.getMaNVien()};
-                                        TABLE_BBAN_CTO tableBbanCto = mSqlDAO.getBBan(args).get(0);
+                                        List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(args);
+                                        //close cursor
+                                        TABLE_BBAN_CTO tableBbanCto = new TABLE_BBAN_CTO();
+                                        if (tableBbanCtos.size()!=0) {
+                                            tableBbanCto = tableBbanCtos.get(0);
+                                            ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
+                                        }
+
                                         TABLE_BBAN_CTO tableBbanCtoNew = (TABLE_BBAN_CTO) tableBbanCto.clone();
                                         tableBbanCtoNew.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.LOI_BAT_NGO.content);
                                         tableBbanCtoNew.setNOI_DUNG_LOI_DONG_BO(error);
@@ -420,7 +437,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                             saveDataCto(mtbCtoModel);
                                         } catch (Exception e) {
                                             isSaveOk = false;
-                                            messageServer.append("Tại biên bản ID_BBAN_TRTH " + mtbCtoModel.ID_BBAN_TRTH + " gặp vấn đề khi lưu dữ liệu công tơ ID_CHITIET_CTO " + mtbCtoModel.ID_CHITIET_CTO + ". Nội dung lỗi: " + e.getMessage());
+                                            messageServer.append("\nTại biên bản ID_BBAN_TRTH " + mtbCtoModel.ID_BBAN_TRTH + " gặp vấn đề khi lưu dữ liệu công tơ ID_CHITIET_CTO " + mtbCtoModel.ID_CHITIET_CTO + ". Nội dung lỗi: " + e.getMessage());
                                         }
                                     }
 
@@ -633,6 +650,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                 TABLE_TRAM tableTramNew = null;
                                 if (tableTrams.size() != 0) {
                                     tableTram = tableTrams.get(0);
+                                    ((LazyList<TABLE_TRAM>)tableTrams).closeCursor();
                                 }
 
                                 if (tableTram != null) {
@@ -743,7 +761,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
 
                             messageServer.append("\nKết thúc đồng bộ dữ liệu chủng loại công tơ");
-                            messageServer.append("\nDữ liệu chủng loại công tơ: "+ resultLayDuLieuLoaiCongTosize);
+                            messageServer.append("\nDữ liệu chủng loại công tơ: " + resultLayDuLieuLoaiCongTosize);
 
                             //Kết thúc đồng bộ chủng loại
                             Thread.sleep(DELAY);
@@ -808,7 +826,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
                             //Kết thúc đồng bộ lý do.
                             messageServer.append("\nKết thúc đồng bộ dữ liệu lý do treo tháo");
-                            messageServer.append("\nDữ liệu lý do treo tháo: "+ resultLayDuLieuLyDoTreothaosize);
+                            messageServer.append("\nDữ liệu lý do treo tháo: " + resultLayDuLieuLyDoTreothaosize);
 
                             Thread.sleep(DELAY);
                             infoSessionDownload.setSO_LYDO_TREOTHAO(resultLayDuLieuLyDoTreothaosize);
@@ -1085,7 +1103,14 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
         //check trạng thái biên bản và trạng thái dữ liệu biên bản
         String[] args = new String[]{String.valueOf(mtbCtoModel.ID_BBAN_TRTH), onIDataCommon.getMaNVien()};
-        TABLE_BBAN_CTO tableBbanCto = mSqlDAO.getBBan(args).get(0);
+
+        List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(args);
+        TABLE_BBAN_CTO tableBbanCto = new TABLE_BBAN_CTO();
+        //close cursor
+        if (tableBbanCtos.size()!=0) {
+            tableBbanCto = tableBbanCtos.get(0);
+            ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
+        }
 
         Common.TRANG_THAI_DU_LIEU trangThaiWebNew = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(tableBbanCto.getTRANG_THAI_DU_LIEU());
         tableChitietCtoNew.setTRANG_THAI_DU_LIEU(trangThaiWebNew.content);
@@ -1096,7 +1121,15 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             availableCanUpdateInfoCto = true;
         } else {
             args = new String[]{String.valueOf(mtbCtoModel.ID_BBAN_TRTH), mtbCtoModel.MA_BDONG, onIDataCommon.getMaNVien()};
-            TABLE_CHITIET_CTO tableChitietCtoHienTai = mSqlDAO.getChiTietCongto(args).get(0);
+
+            List<TABLE_CHITIET_CTO> tableChitietCtoHienTais = mSqlDAO.getChiTietCongto(args);
+            TABLE_CHITIET_CTO tableChitietCtoHienTai = new TABLE_CHITIET_CTO();
+            //close cursor
+            if (tableChitietCtoHienTais.size()!=0) {
+                tableChitietCtoHienTai = tableChitietCtoHienTais.get(0);
+                ((LazyList<TABLE_CHITIET_CTO>) tableChitietCtoHienTais).closeCursor();
+            }
+
 
 
             //không quan tâm tới trạng thái của công tơ trên server, chỉ quan tâm trạng thái của biên bản trên server, đã đc cập nhật mới
@@ -1249,7 +1282,14 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             //insert
             mSqlDAO.insert(TABLE_BBAN_CTO.class, tableBbanCtoNewData);
         } else {
-            trangThaiDuLieuMTBNew = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(TRANG_THAI_DU_LIEUList.get(0));
+
+            //close cursor
+            if (TRANG_THAI_DU_LIEUList.size() != 0) {
+                trangThaiDuLieuMTBNew = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(TRANG_THAI_DU_LIEUList.get(0));
+                ((LazyList<String>) TRANG_THAI_DU_LIEUList).closeCursor();
+            }
+
+//            trangThaiDuLieuMTBNew = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(TRANG_THAI_DU_LIEUList.get(0));
 
             boolean isMustUpdate = false;
 
@@ -1290,7 +1330,19 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
             //update tất cả các trường
             String[] args = new String[]{String.valueOf(bbanModel.ID_BBAN_TRTH), onIDataCommon.getMaNVien()};
-            TABLE_BBAN_CTO tableBbanCtoHienTai = mSqlDAO.getBBan(args).get(0);
+
+            List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(args);
+            TABLE_BBAN_CTO tableBbanCtoHienTai = new TABLE_BBAN_CTO();
+            //close cursor
+            if (tableBbanCtos.size()!=0) {
+                tableBbanCtoHienTai = tableBbanCtos.get(0);
+                ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
+            }
+
+
+
+
+
             if (isMustUpdate) {
                 tableBbanCtoNewData.setMA_LDO(tableBbanCtoHienTai.getMA_LDO());
                 tableBbanCtoNewData.setGHI_CHU(tableBbanCtoHienTai.getGHI_CHU());
@@ -1361,7 +1413,16 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             //insert
             mSqlDAO.insert(TABLE_BBAN_TUTI.class, tableBbanTutiNew);
         } else {
-            TABLE_BBAN_TUTI tableBbanTutiHienTai = mSqlDAO.getBBanTuti(tableBbanTutiNew.getID_BBAN_TUTI(), onIDataCommon.getMaNVien()).get(0);
+//            TABLE_BBAN_TUTI tableBbanTutiHienTai = mSqlDAO.getBBanTuti(tableBbanTutiNew.getID_BBAN_TUTI(), onIDataCommon.getMaNVien()).get(0);
+
+
+            List<TABLE_BBAN_TUTI> tableBbanTutiHienTais = mSqlDAO.getBBanTuti(tableBbanTutiNew.getID_BBAN_TUTI(), onIDataCommon.getMaNVien());
+            TABLE_BBAN_TUTI tableBbanTutiHienTai = new TABLE_BBAN_TUTI();
+            //close cursor
+            if (tableBbanTutiHienTais.size()!=0) {
+                tableBbanTutiHienTai = tableBbanTutiHienTais.get(0);
+                ((LazyList<TABLE_BBAN_TUTI>) tableBbanTutiHienTais).closeCursor();
+            }
 
 
             boolean isMustUpdateData = false;
@@ -1452,7 +1513,18 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             mSqlDAO.insert(TABLE_CHITIET_TUTI.class, tableChitietTutiNew);
         } else {
             //update toan bo
-            TABLE_CHITIET_TUTI tableChitietTutiHienTai = mSqlDAO.getChitietTuTi(tuTiModel.ID_BBAN_TUTI, onIDataCommon.getMaNVien()).get(0);
+
+
+//            TABLE_CHITIET_TUTI tableChitietTutiHienTai = mSqlDAO.getChitietTuTi(tuTiModel.ID_BBAN_TUTI, onIDataCommon.getMaNVien()).get(0);
+
+            List<TABLE_CHITIET_TUTI> tableChitietTutiHienTais = mSqlDAO.getChitietTuTi(tuTiModel.ID_BBAN_TUTI, onIDataCommon.getMaNVien());
+            TABLE_CHITIET_TUTI tableChitietTutiHienTai = new TABLE_CHITIET_TUTI();
+            //close cursor
+            if (tableChitietTutiHienTais.size()!=0) {
+                tableChitietTutiHienTai = tableChitietTutiHienTais.get(0);
+                ((LazyList<TABLE_CHITIET_TUTI>) tableChitietTutiHienTais).closeCursor();
+            }
+
 
             mSqlDAO.updateRows(TABLE_CHITIET_TUTI.class, tableChitietTutiHienTai, tableChitietTutiNew);
 
@@ -1780,7 +1852,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                             ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex05.getContent(), e.getMessage(), null);
                         }
                     });
-
+//
 
                     e.printStackTrace();
                     throw e;

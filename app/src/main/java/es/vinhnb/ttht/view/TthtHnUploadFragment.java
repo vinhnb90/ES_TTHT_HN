@@ -45,6 +45,7 @@ import es.vinhnb.ttht.entity.api.MTBModelNew;
 import es.vinhnb.ttht.entity.api.MTB_ResultModel_NEW;
 import es.vinhnb.ttht.server.TthtHnApi;
 import es.vinhnb.ttht.server.TthtHnApiInterface;
+import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -192,8 +193,15 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         mListener = null;
+
+        try {
+            SqlHelper.getIntance().closeDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+        }
+        super.onDetach();
     }
 
     @Override
@@ -1304,7 +1312,15 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                     continue;
                 }
 
-                TABLE_BBAN_CTO tableBbanCto = mSqlDAO.getBBan(new String[]{String.valueOf(element.ID_BBAN_TRTH), onIDataCommon.getMaNVien()}).get(0);
+                List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(new String[]{String.valueOf(element.ID_BBAN_TRTH), onIDataCommon.getMaNVien()});
+                //close cursor
+                TABLE_BBAN_CTO tableBbanCto = new TABLE_BBAN_CTO();
+                if (tableBbanCtos.size()!=0) {
+                    tableBbanCto = tableBbanCtos.get(0);
+                    ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
+                }
+
+//                TABLE_BBAN_CTO tableBbanCto = mSqlDAO.getBBan(new String[]{String.valueOf(element.ID_BBAN_TRTH), onIDataCommon.getMaNVien()}).get(0);
                 TABLE_BBAN_CTO tableBbanCtoOld = (TABLE_BBAN_CTO) tableBbanCto.clone();
                 tableBbanCto.setTRANG_THAI_DOI_SOAT(Common.TRANG_THAI_DOI_SOAT.KHONG_THE_DOI_SOAT.content);
                 tableBbanCto.setID_TABLE_BBAN_CTO((int) mSqlDAO.updateRows(TABLE_BBAN_CTO.class, tableBbanCtoOld, tableBbanCto));

@@ -174,6 +174,7 @@ public class Common {
         ex05("Gặp vấn đề đồng bộ!"),
         ex06("Gặp vấn đề kết nối, vui lòng thử lại!"),
         ex07("Gặp vấn đề khi ghi dữ liệu!"),
+        ex071("Gặp vấn đề khi truy cập dữ liệu!"),
         ex08("Gặp vấn đề khi chụp ảnh!"),
         ex081("Gặp vấn đề khi phóng to ảnh!"),
         ex09("Gặp vấn đề khi xử lý dữ liệu để gửi!"),
