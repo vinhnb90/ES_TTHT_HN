@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -355,6 +356,10 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                     //call Get_cto
                                     resultGet_ctoResponse = callGet_cto(bbanModel.ID_BBAN_TRTH);
 
+                                    if(bbanModel.ID_BBAN_TRTH == 2732700)
+                                    {
+                                        Log.e("TAG", "run: " );
+                                    }
 
                                     //nếu null = có lỗi khi đồng bộ các công tơ của biên bản
                                     //vẫn cho tiếp tục với các biên bản khác

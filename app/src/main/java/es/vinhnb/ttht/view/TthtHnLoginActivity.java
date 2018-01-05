@@ -30,6 +30,7 @@ import java.util.List;
 
 import es.vinhnb.ttht.common.Common;
 import es.vinhnb.ttht.database.config.TTHT_HN_DB_CONFIG;
+import es.vinhnb.ttht.database.dao.TthtHnSQLDAO;
 import es.vinhnb.ttht.database.table.TABLE_ANH_HIENTRUONG;
 import es.vinhnb.ttht.database.table.TABLE_BBAN_CTO;
 import es.vinhnb.ttht.database.table.TABLE_BBAN_TUTI;
@@ -131,6 +132,11 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
     protected void onResume() {
         super.onResume();
         try {
+            if(!mSqlDAO.isOpen())
+            {
+                mSqlDAO = new SqlDAO(SqlHelper.getIntance().openDB(), this);
+            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED

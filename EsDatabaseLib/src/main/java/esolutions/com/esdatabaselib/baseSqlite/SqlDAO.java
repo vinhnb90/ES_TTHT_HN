@@ -37,6 +37,7 @@ public class SqlDAO {
         mContext = context;
     }
 
+
     //region select
 
     /**
@@ -705,6 +706,10 @@ public class SqlDAO {
         }
     }
 
+    public boolean isOpen() {
+        return mDatabase.isOpenDB();
+    }
+
     public class Database {
 
         private SQLiteDatabase mDatabase;
@@ -752,6 +757,12 @@ public class SqlDAO {
 
         public void execSQL(String sql) throws SQLException {
             mDatabase.execSQL(sql);
+        }
+
+        public boolean isOpenDB() {
+            if (mDatabase.isOpen())
+                return true;
+            else return false;
         }
     }
 }
