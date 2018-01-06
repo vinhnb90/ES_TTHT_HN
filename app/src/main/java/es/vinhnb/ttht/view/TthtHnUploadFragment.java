@@ -50,6 +50,9 @@ import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.sqlite1;
+import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.type12;
+import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.type9;
 import static es.vinhnb.ttht.common.Common.DELAY;
 import static es.vinhnb.ttht.common.Common.DELAY_PROGESS_PBAR;
 import static es.vinhnb.ttht.common.Common.TRANG_THAI_CHON_GUI.DA_CHON_GUI;
@@ -1297,8 +1300,55 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                     }
 
                     @Override
-                    public void doClickEditTreo(int pos, DoiSoatAdapter.DataDoiSoatAdapter dataDoiSoatAdapter) {
+                    public Bitmap doClickEditCHI_SOCto(int pos, DoiSoatAdapter.DataDoiSoatAdapter dataDoiSoatAdapter, String CHI_SO, Common.MA_BDONG MA_BDONG) {
+                        try {
+                            String[] agrs = new String[]{String.valueOf(dataDoiSoatAdapter.ID_BBAN_TRTH), MA_BDONG.code, onIDataCommon.getMaNVien()};
+                            List<TABLE_CHITIET_CTO> tableChitietCtoList = mSqlDAO.getChiTietCongto(agrs);
+                            TABLE_CHITIET_CTO tableChitietCto = null;
+                            if (tableChitietCtoList.size() == 0)
+                                throw new Exception("Xảy ra lỗi khi tìm kiếm chi tiết công tơ treo của biên bản : " + dataDoiSoatAdapter.ID_BBAN_TRTH);
 
+                            tableChitietCto = tableChitietCtoList.get(0);
+
+                            TABLE_CHITIET_CTO tableChitietCtoOld = (TABLE_CHITIET_CTO) tableChitietCto.clone();
+
+                            tableChitietCto.setCHI_SO(CHI_SO);
+
+
+                            String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
+                            String SO_CTO = tableChitietCto.getSO_CTO();
+                            String TEN_KHANG = tableBbanCto.getTEN_KHANG();
+                            String MA_DDO = tableBbanCto.getMA_DDO();
+                            String MA_TRAM = tableBbanCto.getMA_TRAM();
+                            Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(tableChitietCto.getLOAI_CTO());
+
+                            String CHI_SO_DRAW = (MA_BDONG == Common.MA_BDONG.B) ? "CS TREO: " + tableChitietCto.getCHI_SO() : "CS THÁO: " + tableChitietCto.getCHI_SO();
+                            String MA_DDO_DRAW = "MÃ Đ.ĐO:" + MA_DDO;
+                            String SO_CTO_DRAW = "SỐ C.TƠ:" + SO_CTO;
+
+                            String[] argsAnh = new String[]{onIDataCommon.getMaNVien(), String.valueOf(tableChitietCto.getID_CHITIET_CTO())};
+                            List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_CONG_TO);
+                            TABLE_ANH_HIENTRUONG tableAnhChiso = null;
+                            if (tableAnhHientruongList.size() != 0)
+                                tableAnhChiso = tableAnhHientruongList.get(0);
+
+                            String timeDrawCapturedAnhChiSo = Common.convertDateToDate(tableAnhChiso.getCREATE_DAY(), sqlite1, type9);
+                            String timeFileCaptureAnhChiSo = Common.convertDateToDate(tableAnhChiso.getCREATE_DAY(), sqlite1, type12);
+
+                            String TEN_ANH_CONG_TO = tableAnhChiso.getTEN_ANH();
+                            String pathNewAnhChiSo = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_CONG_TO.name()) + "/" + TEN_ANH_CONG_TO;
+
+                            String TYPE_IMAGE_DRAW_chiso = (MA_BDONG == Common.MA_BDONG.B) ? "ẢNH CÔNG TƠ TREO" : "ẢNH CÔNG TƠ THÁO";
+
+                            Bitmap bitmapChiso = Common.drawTextOnBitmapCongTo(getActivity(), pathNewAnhChiSo, TEN_KHANG, TYPE_IMAGE_DRAW_chiso, timeDrawCapturedAnhChiSo, CHI_SO_DRAW, SO_CTO_DRAW, MA_DDO_DRAW);
+
+                            tableChitietCto.setID_TABLE_CHITIET_CTO((int) mSqlDAO.updateRows(TABLE_CHITIET_CTO.class, tableChitietCtoOld, tableChitietCto));
+                            return bitmapChiso;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex04.getContent(), e.getMessage(), null);
+                            return null;
+                        }
                     }
                 };
 

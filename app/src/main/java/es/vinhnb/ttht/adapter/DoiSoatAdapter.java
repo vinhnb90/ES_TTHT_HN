@@ -4,8 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +84,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
         return viewHolder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
@@ -195,28 +199,14 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
         public ImageView ivDoiSoatTreo;
         TthtHnChiTietCtoFragment.ViewBO_CHISO viewBOChisoTreo;
 
-        public TextView tvCS1;
-        public TextView tvCS2;
-        public TextView tvCS3;
-        public TextView tvCS4;
-        public TextView tvCS5;
         public Button editTreo;
         public Button editThao;
-
-
-
-
-        public EditText etCS1;
-        public EditText etCS2;
-        public EditText etCS3;
-        public EditText etCS4;
-        public EditText etCS5;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             rlRow = (RelativeLayout) itemView.findViewById(R.id.rl_left);
-            tvSoBBan= (TextView) itemView.findViewById(R.id.tv_so_bban_doisoat);
+            tvSoBBan = (TextView) itemView.findViewById(R.id.tv_so_bban_doisoat);
 
 
             tvStt = (TextView) itemView.findViewById(R.id.tv_stt_upload);
@@ -226,36 +216,27 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
 
             ivDoiSoatThao = (ImageView) itemView.findViewById(R.id.iv_doisoat_cto_thao);
 
-            tvCS1 = (TextView) itemView.findViewById(R.id.tv_41a_doisoat_CS1_thao);
-            tvCS2 = (TextView) itemView.findViewById(R.id.tv_42a_doisoat_CS2_thao);
-            tvCS3 = (TextView) itemView.findViewById(R.id.tv_43a_doisoat_CS3_thao);
-            tvCS4 = (TextView) itemView.findViewById(R.id.tv_44a_doisoat_CS4_thao);
-            tvCS5 = (TextView) itemView.findViewById(R.id.tv_45a_doisoat_CS5_thao);
-
-
-            etCS1 = (EditText) itemView.findViewById(R.id.et_41b_doisoat_CS1_thao);
-            etCS2 = (EditText) itemView.findViewById(R.id.et_42b_doisoat_CS2_thao);
-            etCS3 = (EditText) itemView.findViewById(R.id.et_43b_doisoat_CS3_thao);
-            etCS4 = (EditText) itemView.findViewById(R.id.et_44b_doisoat_CS4_thao);
-            etCS5 = (EditText) itemView.findViewById(R.id.et_45b_doisoat_CS5_thao);
-
             editTreo = (Button) itemView.findViewById(R.id.btn_edit_doisoat_treo);
+            editThao = (Button) itemView.findViewById(R.id.btn_edit_doisoat_thao);
+
+
             viewBOChisoThao = new TthtHnChiTietCtoFragment.ViewBO_CHISO();
-            viewBOChisoThao.tvCS1 = tvCS1;
-            viewBOChisoThao.tvCS2 = tvCS2;
-            viewBOChisoThao.tvCS3 = tvCS3;
-            viewBOChisoThao.tvCS4 = tvCS4;
-            viewBOChisoThao.tvCS5 = tvCS5;
+            viewBOChisoThao.tvCS1 = (TextView) itemView.findViewById(R.id.tv_41a_doisoat_CS1_thao);
+            viewBOChisoThao.tvCS2 = (TextView) itemView.findViewById(R.id.tv_42a_doisoat_CS2_thao);
+            viewBOChisoThao.tvCS3 = (TextView) itemView.findViewById(R.id.tv_43a_doisoat_CS3_thao);
+            viewBOChisoThao.tvCS4 = (TextView) itemView.findViewById(R.id.tv_44a_doisoat_CS4_thao);
+            viewBOChisoThao.tvCS5 = (TextView) itemView.findViewById(R.id.tv_45a_doisoat_CS5_thao);
 
 
-            viewBOChisoThao.etCS1 = etCS1;
-            viewBOChisoThao.etCS2 = etCS2;
-            viewBOChisoThao.etCS3 = etCS3;
-            viewBOChisoThao.etCS4 = etCS4;
-            viewBOChisoThao.etCS5 = etCS5;
+            viewBOChisoThao.etCS1 = (EditText) itemView.findViewById(R.id.et_41b_doisoat_CS1_thao);
+            viewBOChisoThao.etCS2 = (EditText) itemView.findViewById(R.id.et_42b_doisoat_CS2_thao);
+            viewBOChisoThao.etCS3 = (EditText) itemView.findViewById(R.id.et_43b_doisoat_CS3_thao);
+            viewBOChisoThao.etCS4 = (EditText) itemView.findViewById(R.id.et_44b_doisoat_CS4_thao);
+            viewBOChisoThao.etCS5 = (EditText) itemView.findViewById(R.id.et_45b_doisoat_CS5_thao);
 
 
             ivDoiSoatTreo = (ImageView) itemView.findViewById(R.id.iv_doisoat_cto_treo);
+
 
             viewBOChisoTreo = new TthtHnChiTietCtoFragment.ViewBO_CHISO();
             viewBOChisoTreo.tvCS1 = (TextView) itemView.findViewById(R.id.tv_41a_doisoat_CS1_treo);
@@ -278,7 +259,33 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
-                    iIteractor.doClickEditTreo(pos, listData.get(pos));
+
+                    //data CHI_SO
+                    String etCS1Text = TextUtils.isEmpty(viewBOChisoTreo.etCS1.getText().toString()) ? "0" : viewBOChisoTreo.etCS1.getText().toString();
+                    String etCS2Text = TextUtils.isEmpty(viewBOChisoTreo.etCS2.getText().toString()) ? "0" : viewBOChisoTreo.etCS2.getText().toString();
+                    String etCS3Text = TextUtils.isEmpty(viewBOChisoTreo.etCS3.getText().toString()) ? "0" : viewBOChisoTreo.etCS3.getText().toString();
+                    String etCS4Text = TextUtils.isEmpty(viewBOChisoTreo.etCS4.getText().toString()) ? "0" : viewBOChisoTreo.etCS4.getText().toString();
+                    String etCS5Text = TextUtils.isEmpty(viewBOChisoTreo.etCS5.getText().toString()) ? "0" : viewBOChisoTreo.etCS5.getText().toString();
+                    String CHI_SO = Common.getStringChiSo(etCS1Text, etCS2Text, etCS3Text, etCS4Text, etCS5Text, listData.get(pos).LOAI_CTO_TREO);
+                    Bitmap bitmap = iIteractor.doClickEditCHI_SOCto(pos, listData.get(pos), CHI_SO, Common.MA_BDONG.B);
+                    ivDoiSoatTreo.setImageBitmap(bitmap);
+                }
+            });
+
+            editThao.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+
+                    //data CHI_SO
+                    String etCS1Text = TextUtils.isEmpty(viewBOChisoThao.etCS1.getText().toString()) ? "0" : viewBOChisoThao.etCS1.getText().toString();
+                    String etCS2Text = TextUtils.isEmpty(viewBOChisoThao.etCS2.getText().toString()) ? "0" : viewBOChisoThao.etCS2.getText().toString();
+                    String etCS3Text = TextUtils.isEmpty(viewBOChisoThao.etCS3.getText().toString()) ? "0" : viewBOChisoThao.etCS3.getText().toString();
+                    String etCS4Text = TextUtils.isEmpty(viewBOChisoThao.etCS4.getText().toString()) ? "0" : viewBOChisoThao.etCS4.getText().toString();
+                    String etCS5Text = TextUtils.isEmpty(viewBOChisoThao.etCS5.getText().toString()) ? "0" : viewBOChisoThao.etCS5.getText().toString();
+                    String CHI_SO = Common.getStringChiSo(etCS1Text, etCS2Text, etCS3Text, etCS4Text, etCS5Text, listData.get(pos).LOAI_CTO_THAO);
+                    Bitmap bitmap = iIteractor.doClickEditCHI_SOCto(pos, listData.get(pos), CHI_SO, Common.MA_BDONG.E);
+                    ivDoiSoatTreo.setImageBitmap(bitmap);
                 }
             });
 
@@ -340,7 +347,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
         void doClickChonGui(int pos, DataDoiSoatAdapter dataDoiSoatAdapter);
 
 
-        void doClickEditTreo(int pos, DataDoiSoatAdapter dataDoiSoatAdapter);
+        Bitmap doClickEditCHI_SOCto(int pos, DataDoiSoatAdapter dataDoiSoatAdapter, String CHI_SO, Common.MA_BDONG MA_BDONG);
     }
 
     public static class DataDoiSoatAdapter implements Cloneable {
