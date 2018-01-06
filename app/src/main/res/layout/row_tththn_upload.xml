@@ -23,7 +23,7 @@
                 android:id="@+id/rl_left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 tools:background="@color/tththn_button">
 
@@ -162,6 +162,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_41b_doisoat_CS1_thao"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -187,6 +188,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_42b_doisoat_CS2_thao"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -212,6 +214,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_43b_doisoat_CS3_thao"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -237,6 +240,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_44b_doisoat_CS4_thao"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -262,6 +266,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_45b_doisoat_CS5_thao"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -311,7 +316,18 @@
                             android:orientation="vertical"
                             tools:visibility="visible">
 
+
+                            <Button
+                                android:visibility="gone"
+                                android:id="@+id/btn_edit_doisoat_treo"
+                                style="@style/buttonStyle4"
+                                android:text="CHỈNH SỬA"
+                                android:layout_marginBottom="@dimen/_2sdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_24sdp" />
+
                             <RelativeLayout
+
                                 android:id="@+id/rl_41a"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -326,6 +342,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_41b_doisoat_CS1_treo"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -352,6 +369,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_42b_doisoat_CS2_treo"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -377,6 +395,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_43b_doisoat_CS3_treo"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -402,6 +421,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_44b_doisoat_CS4_treo"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -427,6 +447,7 @@
                                     android:text="KT" />
 
                                 <EditText
+                                    android:inputType="number"
                                     android:id="@+id/et_45b_doisoat_CS5_treo"
                                     style="@style/edittextStyle3"
                                     android:layout_width="match_parent"
@@ -460,9 +481,10 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:background="@color/tththn_trangthai_dulieu_chuaghi"
                             android:gravity="center_vertical"
-                            android:text="CHƯA ĐỐI SOÁT"
+                            tools:text="CHƯA ĐỐI SOÁT"
                             android:textAllCaps="true"
                             android:textColor="@color/text_white"
+                            tools:textColor="@color/button_dark"
                             android:visibility="visible" />
 
                         <Button
@@ -471,7 +493,7 @@
                             style="@style/buttonStyle_menu_bottom"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/_24sdp"
-                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:background="@drawable/xml_tththn_rectangle11"

@@ -142,12 +142,12 @@ public class TthtHnTopUploadFragment extends TthtHnBaseFragment {
     public void onDetach() {
         mListener = null;
 
-        try {
-            SqlHelper.getIntance().closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
-        }
+//        try {
+//            SqlHelper.getIntance().closeDB();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+//        }
         super.onDetach();
     }
 

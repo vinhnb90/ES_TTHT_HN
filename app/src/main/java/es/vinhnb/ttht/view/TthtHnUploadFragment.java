@@ -195,12 +195,12 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
     public void onDetach() {
         mListener = null;
 
-        try {
-            SqlHelper.getIntance().closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
-        }
+//        try {
+//            SqlHelper.getIntance().closeDB();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+//        }
         super.onDetach();
     }
 
@@ -1002,37 +1002,55 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
         Common.TYPE_RESPONSE_UPLOAD typeResponseUpload = Common.TYPE_RESPONSE_UPLOAD.findByCode(mtbResultModelNew.TRANG_THAI);
 
         TABLE_BBAN_CTO tableBbanCtoOld = (TABLE_BBAN_CTO) tableBbanCto.clone();
+
+        TABLE_CHITIET_CTO tableChitietCtoTreoOld = (TABLE_CHITIET_CTO) tableChitietCtoTreo.clone();
+        TABLE_CHITIET_CTO tableChitietCtoThaoOld = (TABLE_CHITIET_CTO) tableChitietCtoThao.clone();
+
         switch (typeResponseUpload) {
             case GUI_CMIS_THATBAI:
                 tableBbanCto.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI.content);
+                tableChitietCtoTreo.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI.content);
+                tableChitietCtoThao.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI.content);
                 sobbUploadError++;
                 break;
             case DANG_CHO_CMIS_XACNHAN:
                 tableBbanCto.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS.content);
+                tableChitietCtoTreo.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS.content);
+                tableChitietCtoThao.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS.content);
                 sobbUploadOK++;
                 break;
             case DA_TON_TAI_GUI_TRUOC_DO:
                 tableBbanCto.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_TON_TAI_GUI_TRUOC_DO.content);
+                tableChitietCtoTreo.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_TON_TAI_GUI_TRUOC_DO.content);
+                tableChitietCtoThao.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_TON_TAI_GUI_TRUOC_DO.content);
                 sobbUploadError++;
                 break;
             case CMIS_XACNHAN_OK:
                 sobbUploadError++;
                 tableBbanCto.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_XAC_NHAN_TREN_CMIS.content);
+                tableChitietCtoTreo.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_XAC_NHAN_TREN_CMIS.content);
+                tableChitietCtoThao.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_XAC_NHAN_TREN_CMIS.content);
                 break;
             case HET_HIEU_LUC:
                 sobbUploadError++;
                 tableBbanCto.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.HET_HIEU_LUC.content);
+                tableChitietCtoTreo.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.HET_HIEU_LUC.content);
+                tableChitietCtoThao.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.HET_HIEU_LUC.content);
                 break;
             case LOI_BAT_NGO:
                 sobbUploadError++;
                 tableBbanCto.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI.content);
                 infoSessionUpload.setTYPE_RESULT(Common.TYPE_RESULT.ERROR.content);
                 infoSessionUpload.setMESSAGE_RESULT(mtbResultModelNew.ERROR);
+                tableChitietCtoTreo.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI.content);
+                tableChitietCtoThao.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI.content);
                 break;
         }
 
         //update table BBAN
         tableBbanCto.setID_TABLE_BBAN_CTO((int) mSqlDAO.updateRows(TABLE_BBAN_CTO.class, tableBbanCtoOld, tableBbanCto));
+        tableChitietCtoTreo.setID_TABLE_CHITIET_CTO((int) mSqlDAO.updateRows(TABLE_CHITIET_CTO.class, tableChitietCtoTreoOld, tableChitietCtoTreo));
+        tableChitietCtoThao.setID_TABLE_CHITIET_CTO((int) mSqlDAO.updateRows(TABLE_CHITIET_CTO.class, tableChitietCtoThaoOld, tableChitietCtoThao));
 
         hashMapData.get(tableBbanCto.getID_BBAN_TRTH()).TRANG_THAI_DU_LIEU = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(tableBbanCto.getTRANG_THAI_DU_LIEU());
 
@@ -1277,6 +1295,11 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                         }
 
                     }
+
+                    @Override
+                    public void doClickEditTreo(int pos, DoiSoatAdapter.DataDoiSoatAdapter dataDoiSoatAdapter) {
+
+                    }
                 };
 
             doiSoatAdapters = new DoiSoatAdapter(getContext(), listDataDoiSoatAdapter, iIteractor);
@@ -1315,7 +1338,7 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                 List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(new String[]{String.valueOf(element.ID_BBAN_TRTH), onIDataCommon.getMaNVien()});
                 //close cursor
                 TABLE_BBAN_CTO tableBbanCto = new TABLE_BBAN_CTO();
-                if (tableBbanCtos.size()!=0) {
+                if (tableBbanCtos.size() != 0) {
                     tableBbanCto = tableBbanCtos.get(0);
                     ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
                 }

@@ -30,6 +30,7 @@ import es.vinhnb.ttht.entity.sharedpref.MainSharePref;
 import es.vinhnb.ttht.entity.sharedpref.MenuTopSearchSharePref;
 import es.vinhnb.ttht.view.TthtHnMainActivity.TagMenuNaviLeft;
 import esolutions.com.esdatabaselib.baseSharedPref.SharePrefManager;
+import esolutions.com.esdatabaselib.baseSqlite.SqlDAO;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 
 import static es.vinhnb.ttht.adapter.ChiTietCtoAdapter.*;
@@ -117,8 +118,12 @@ public class TthtHnMainFragment extends TthtHnBaseFragment {
         }
 
 
+
+
         //call Database access objectS
         try {
+//            if (!SqlHelper.getIntance().isOpenDB())
+//                mSqlDAO = new SqlDAO(SqlHelper.getIntance().openDB(), context);
             mSqlDAO = new TthtHnSQLDAO(SqlHelper.getIntance().openDB(), context);
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,12 +153,12 @@ public class TthtHnMainFragment extends TthtHnBaseFragment {
     public void onDetach() {
         mListener = null;
 
-        try {
-            SqlHelper.getIntance().closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
-        }
+//        try {
+//            SqlHelper.getIntance().closeDB();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+//        }
         super.onDetach();
     }
 

@@ -39,7 +39,7 @@
 
                     <TextView
                         android:id="@+id/tv_1"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="THÔNG TIN KHÁCH HÀNG" />
@@ -82,7 +82,6 @@
                     android:id="@+id/rv_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="@dimen/_5sdp"
                     tools:visibility="visible">
@@ -205,7 +204,7 @@
 
                     <TextView
                         android:id="@+id/tv_7"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thông tin TU Tháo" />
@@ -524,7 +523,7 @@
 
                     <TextView
                         android:id="@+id/tv_7_tutreo"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thông tin TU Treo" />
@@ -844,10 +843,10 @@
 
                     <TextView
                         android:id="@+id/tv_7_tithao"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Thông tin TU Treo" />
+                        android:text="Thông tin TI Tháo" />
 
                     <View
                         android:id="@+id/v_1a_tithao"
@@ -1164,10 +1163,10 @@
 
                     <TextView
                         android:id="@+id/tv_7_titreo"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Thông tin TU Treo" />
+                        android:text="Thông tin TI Treo" />
 
                     <View
                         android:id="@+id/v_1a_titreo"
@@ -1795,7 +1794,7 @@
 
                     <TextView
                         android:id="@+id/tv_t_4a_saulap"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NHẬP THÔNG TIN SAU LẮP TU TI" />
@@ -1834,6 +1833,7 @@
                             android:text="Dòng điện (A)" />
 
                         <EditText
+                            android:inputType="numberDecimal"
                             android:id="@+id/et_9b_dongdien_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -1861,6 +1861,7 @@
 
 
                         <EditText
+                            android:inputType="numberDecimal"
                             android:id="@+id/et_9b_dienap_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -1889,6 +1890,7 @@
 
 
                         <EditText
+                            android:inputType="numberDecimal"
                             android:id="@+id/et_9b_hesok_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -1955,6 +1957,7 @@
 
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/et_9b_chisotongP_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -1983,6 +1986,7 @@
 
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/et_9b_chisotongQ_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -2019,6 +2023,7 @@
                             android:text="BT" />
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/et_9b_bt_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -2046,6 +2051,7 @@
 
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/et_9b_cd_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"
@@ -2079,8 +2085,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
-                            android:layout_below="@+id/tv_10a_td_saulap"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="15dp"
+                            android:layout_marginEnd="17dp"
+                            android:layout_marginRight="17dp"
                             android:gravity="bottom"
+                            android:inputType="number"
                             tools:text="s" />
 
                     </RelativeLayout>
@@ -2165,6 +2176,7 @@
 
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/et_9b_hesonhan_saulap"
                             style="@style/edittextStyle2"
                             android:layout_width="match_parent"

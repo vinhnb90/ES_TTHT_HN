@@ -200,6 +200,11 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
         public TextView tvCS3;
         public TextView tvCS4;
         public TextView tvCS5;
+        public Button editTreo;
+        public Button editThao;
+
+
+
 
         public EditText etCS1;
         public EditText etCS2;
@@ -234,6 +239,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
             etCS4 = (EditText) itemView.findViewById(R.id.et_44b_doisoat_CS4_thao);
             etCS5 = (EditText) itemView.findViewById(R.id.et_45b_doisoat_CS5_thao);
 
+            editTreo = (Button) itemView.findViewById(R.id.btn_edit_doisoat_treo);
             viewBOChisoThao = new TthtHnChiTietCtoFragment.ViewBO_CHISO();
             viewBOChisoThao.tvCS1 = tvCS1;
             viewBOChisoThao.tvCS2 = tvCS2;
@@ -267,6 +273,14 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
 
             tvDoiSoatTrangThai = (TextView) itemView.findViewById(R.id.tv_doisoat_trangthai);
             btnSelectUpload = (Button) itemView.findViewById(R.id.btn_doisoat_chon);
+
+            editTreo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    iIteractor.doClickEditTreo(pos, listData.get(pos));
+                }
+            });
 
 
             ivDoiSoatTreo.setOnClickListener(new View.OnClickListener() {
@@ -326,6 +340,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
         void doClickChonGui(int pos, DataDoiSoatAdapter dataDoiSoatAdapter);
 
 
+        void doClickEditTreo(int pos, DataDoiSoatAdapter dataDoiSoatAdapter);
     }
 
     public static class DataDoiSoatAdapter implements Cloneable {

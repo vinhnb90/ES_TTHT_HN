@@ -1,22 +1,18 @@
 package esolutions.com.esdatabaselib.baseSqlite;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,9 +25,7 @@ import esolutions.com.esdatabaselib.baseSqlite.anonation.EnumNameCollumn;
 import esolutions.com.esdatabaselib.baseSqlite.anonation.PrimaryKey;
 import esolutions.com.esdatabaselib.baseSqlite.anonation.TYPE;
 import esolutions.com.esdatabaselib.baseSqlite.anonation.Table;
-import esolutions.com.esdatabaselib.example.activity.DatabaseActivity;
 
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 import static android.util.Log.d;
 import static android.util.Log.e;
 import static android.util.Log.i;
@@ -55,13 +49,15 @@ public class SqlHelper extends SQLiteOpenHelper {
     private static final int REQUEST_CODE_PERMISSION = 5555;
     private static SqlHelper sIntance;
     private static ObjectDbConfig sConfigData;
-    private static int mOpenCounter;
+    private static boolean isOpenDB;
     private static SQLiteDatabase mSqLiteDatabase;
     private static Class<?> sClassDBConfig;
     private static Class<?>[] sClassDBTable;
     private int oldVer;
     private int newVer;
     private String message;
+
+//    private AtomicInteger isOpenDB = new AtomicInteger();
 
     private SqlHelper() throws Exception {
         super(sConfigData.getContext(), sConfigData.getNameDB() + ".s3db", null, sConfigData.getVersion());
@@ -88,10 +84,9 @@ public class SqlHelper extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //overrider onDowgrare and throw message
-        try{
+        try {
             super.onDowngrade(db, oldVersion, newVersion);
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(message);
         }
     }
@@ -194,20 +189,27 @@ public class SqlHelper extends SQLiteOpenHelper {
 
     public synchronized SQLiteDatabase openDB() {
         Log.i(TAG, "openDB: ");
-        if (mOpenCounter == 0) {
+        if (!isOpenDB) {
+            isOpenDB = true;
             mSqLiteDatabase = sIntance.getWritableDatabase();
         }
-        mOpenCounter++;
         return mSqLiteDatabase;
+    }
+
+    public boolean isOpenDB() {
+//        return mSqLiteDatabase.isOpen();
+        return isOpenDB;
     }
 
     public synchronized SQLiteDatabase closeDB() {
         Log.i(TAG, "closeDB: ");
-        if (mOpenCounter <= 0)
+
+        if (!isOpenDB)
             return mSqLiteDatabase;
-        if (mOpenCounter == 0)
+        else {
+            isOpenDB = false;
             mSqLiteDatabase.close();
-        mOpenCounter--;
+        }
         return mSqLiteDatabase;
     }
 
@@ -432,6 +434,14 @@ public class SqlHelper extends SQLiteOpenHelper {
                     .parse("file://" + folderParent.getPath())));
         }
     }
+
+//    public synchronized SQLiteDatabase openDatabase() {
+//        if(isOpenDB.incrementAndGet() == 1) {
+//            // Opening new database
+//            mSqLiteDatabase = sIntance.getWritableDatabase();
+//        }
+//        return mDatabase;
+//    }
 
     public static String getDatabasePath() throws Exception {
         if (sConfigData == null)

@@ -39,7 +39,7 @@
 
                     <TextView
                         android:id="@+id/tv_1"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="THÔNG TIN KHÁCH HÀNG" />
@@ -82,7 +82,6 @@
                     android:id="@+id/rv_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="@dimen/_5sdp"
                     tools:visibility="gone">
@@ -183,7 +182,7 @@
 
                     <TextView
                         android:id="@+id/tv_7"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="THÔNG TIN CÔNG TƠ" />
@@ -654,7 +653,7 @@
 
                     <TextView
                         android:id="@+id/tv_2"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="THÔNG TIN CẦN NHẬP" />
@@ -1340,7 +1339,7 @@
 
                     <TextView
                         android:id="@+id/tv_t_4a"
-                        style="@style/textStyle1"
+                        style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CHỤP ẢNH" />
@@ -1521,6 +1520,7 @@
                             <EditText
                                 android:id="@+id/et_41b_CS1"
                                 style="@style/edittextStyle3"
+                                android:inputType="number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/_5sdp"
@@ -1542,6 +1542,7 @@
                                 android:text="KT" />
 
                             <EditText
+                                android:inputType="number"
                                 android:id="@+id/et_42b_CS2"
                                 style="@style/edittextStyle3"
                                 android:layout_width="match_parent"
@@ -1565,6 +1566,7 @@
                                 android:text="KT" />
 
                             <EditText
+                                android:inputType="number"
                                 android:id="@+id/et_43b_CS3"
                                 style="@style/edittextStyle3"
                                 android:layout_width="match_parent"
@@ -1588,6 +1590,7 @@
                                 android:text="KT" />
 
                             <EditText
+                                android:inputType="number"
                                 android:id="@+id/et_44b_CS4"
                                 style="@style/edittextStyle3"
                                 android:layout_width="match_parent"
@@ -1611,6 +1614,7 @@
                                 android:text="KT" />
 
                             <EditText
+                                android:inputType="number"
                                 android:id="@+id/et_45b_CS5"
                                 style="@style/edittextStyle3"
                                 android:layout_width="match_parent"

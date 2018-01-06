@@ -139,12 +139,12 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
     public void onDetach() {
         mListener = null;
 
-        try {
-            SqlHelper.getIntance().closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
-        }
+//        try {
+//            SqlHelper.getIntance().closeDB();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ((TthtHnBaseActivity) getContext()).showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
+//        }
         super.onDetach();
     }
 
@@ -353,13 +353,15 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                         continue;
                                     }
 
-                                    //call Get_cto
-                                    resultGet_ctoResponse = callGet_cto(bbanModel.ID_BBAN_TRTH);
 
-                                    if(bbanModel.ID_BBAN_TRTH == 2732700)
+                                    if(bbanModel.ID_BBAN_TRTH == 2732707)
                                     {
                                         Log.e("TAG", "run: " );
                                     }
+
+                                    //call Get_cto
+                                    resultGet_ctoResponse = callGet_cto(bbanModel.ID_BBAN_TRTH);
+
 
                                     //nếu null = có lỗi khi đồng bộ các công tơ của biên bản
                                     //vẫn cho tiếp tục với các biên bản khác

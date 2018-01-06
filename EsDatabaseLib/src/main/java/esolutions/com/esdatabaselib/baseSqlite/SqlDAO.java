@@ -706,9 +706,9 @@ public class SqlDAO {
         }
     }
 
-    public boolean isOpen() {
-        return mDatabase.isOpenDB();
-    }
+//    public boolean isOpen() {
+//        return mDatabase.isOpenDB();
+//    }
 
     public class Database {
 
@@ -759,10 +759,10 @@ public class SqlDAO {
             mDatabase.execSQL(sql);
         }
 
-        public boolean isOpenDB() {
-            if (mDatabase.isOpen())
-                return true;
-            else return false;
-        }
+//        public boolean isOpenDB() {
+//            if (mDatabase.isOpen())
+//                return true;
+//            else return false;
+//        }
     }
 }

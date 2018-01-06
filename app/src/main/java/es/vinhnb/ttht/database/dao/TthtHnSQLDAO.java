@@ -25,6 +25,7 @@ import es.vinhnb.ttht.database.table.TABLE_HISTORY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY_UPLOAD;
 import es.vinhnb.ttht.database.table.TABLE_LOAI_CONG_TO;
 import es.vinhnb.ttht.database.table.TABLE_LYDO_TREOTHAO;
+import es.vinhnb.ttht.database.table.TABLE_SESSION;
 import es.vinhnb.ttht.database.table.TABLE_TRAM;
 import esolutions.com.esdatabaselib.baseSqlite.ItemFactory;
 import esolutions.com.esdatabaselib.baseSqlite.SqlDAO;
@@ -477,6 +478,27 @@ public class TthtHnSQLDAO extends SqlDAO {
                 return cursor.getString(cursor.getColumnIndex(TABLE_CHITIET_CTO.table.MA_CTO.name()));
             }
         });
+    }
+
+    public List<TABLE_SESSION> getSessionLogin(String[] valueCheck) {
+        String query = "SELECT *" +
+                " FROM " +
+                TABLE_SESSION.table.getName() +
+                " WHERE " +
+                TABLE_SESSION.table.MA_DVIQLY.name() +
+                " = ? " +
+                " AND " +
+                TABLE_SESSION.table.USERNAME.name() +
+                " = ? " +
+                " AND " +
+                TABLE_SESSION.table.PASSWORD.name() +
+                " = ? " +
+                "  ORDER BY " +
+                TABLE_SESSION.table.DATE_LOGIN.name() +
+                " DESC";
+
+        Cursor c = super.mDatabase.rawQuery(query, valueCheck);
+        return selectAllLazy(TABLE_SESSION.class, c);
     }
 
     public List<String> getTRANG_THAI_DU_LIEUofTABLE_BBAN_TUTI(String[] valueCheck) {

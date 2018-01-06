@@ -16,12 +16,13 @@ import esolutions.com.esdatabaselib.baseSqlite.anonation.Table;
 @Table(name = "TABLE_SESSION")
 public class TABLE_SESSION {
     @EnumNameCollumn()
-    public enum declared {
+    public enum table {
         ID_TABLE_SESSION,
         MA_DVIQLY,
         USERNAME,
         PASSWORD,
-        DATE_LOGIN;
+        DATE_LOGIN,
+        MA_NVIEN;
 
         public static String getName(){
             return "TABLE_SESSION";
@@ -46,6 +47,10 @@ public class TABLE_SESSION {
     @Collumn(name = "DATE_LOGIN", type = TYPE.TEXT, other = "NOT NULL")
     public String DATE_LOGIN;
 
+    @Collumn(name = "MA_NVIEN", type = TYPE.TEXT, other = "NOT NULL")
+    public String MA_NVIEN;
+
+
     public TABLE_SESSION() {
     }
 
@@ -53,12 +58,15 @@ public class TABLE_SESSION {
                          @Params(name = "MA_DVIQLY") String MA_DVIQLY,
                          @Params(name = "USERNAME") String USERNAME,
                          @Params(name = "PASSWORD") String PASSWORD,
-                         @Params(name = "DATE_LOGIN") String DATE_LOGIN) {
+                         @Params(name = "DATE_LOGIN") String DATE_LOGIN,
+                         @Params(name = "MA_NVIEN") String MA_NVIEN
+                         ) {
         this.ID_TABLE_SESSION = ID_TABLE_SESSION;
         this.MA_DVIQLY = MA_DVIQLY;
         this.USERNAME = USERNAME;
         this.PASSWORD = PASSWORD;
         this.DATE_LOGIN = DATE_LOGIN;
+        this.MA_NVIEN = MA_NVIEN;
     }
 
     public int getID_TABLE_SESSION() {
@@ -99,5 +107,14 @@ public class TABLE_SESSION {
 
     public void setDATE_LOGIN(String DATE_LOGIN) {
         this.DATE_LOGIN = DATE_LOGIN;
+    }
+
+
+    public String getMA_NVIEN() {
+        return MA_NVIEN;
+    }
+
+    public void setMA_NVIEN(String MA_NVIEN) {
+        this.MA_NVIEN = MA_NVIEN;
     }
 }

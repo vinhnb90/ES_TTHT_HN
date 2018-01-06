@@ -4,7 +4,6 @@ package es.vinhnb.ttht.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -52,7 +51,6 @@ import es.vinhnb.ttht.server.TthtHnApi;
 import es.vinhnb.ttht.server.TthtHnApiInterface;
 import esolutions.com.esdatabaselib.baseSharedPref.SharePrefManager;
 import esolutions.com.esdatabaselib.baseSqlite.LazyList;
-import esolutions.com.esdatabaselib.baseSqlite.SqlDAO;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -66,7 +64,7 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
     private LoginFragment loginFragment;
     private LoginSharePref dataLoginSharePref;
     private String mMaNVien;
-    private SqlDAO mSqlDAO;
+    private TthtHnSQLDAO mSqlDAO;
     private TthtHnApiInterface apiInterface;
 
     @Override
@@ -111,7 +109,7 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
 
 
             //call Database access object
-            mSqlDAO = new SqlDAO(SqlHelper.getIntance().openDB(), this);
+            mSqlDAO = new TthtHnSQLDAO(SqlHelper.getIntance().openDB(), this);
 
 
             //create shared pref
@@ -132,10 +130,6 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
     protected void onResume() {
         super.onResume();
         try {
-            if(!mSqlDAO.isOpen())
-            {
-                mSqlDAO = new SqlDAO(SqlHelper.getIntance().openDB(), this);
-            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&
@@ -169,7 +163,7 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
         }
 
         try {
-            SqlHelper.getIntance().close();
+            SqlHelper.getIntance().closeDB();
         } catch (Exception e) {
             e.printStackTrace();
             super.showSnackBar(Common.MESSAGE.ex07.getContent(), e.getMessage(), null);
@@ -212,7 +206,7 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
 
 
                         //call Database access object
-                        mSqlDAO = new SqlDAO(SqlHelper.getIntance().openDB(), this);
+                        mSqlDAO = new TthtHnSQLDAO(SqlHelper.getIntance().openDB(), this);
 
 
                         //create shared pref
@@ -448,9 +442,9 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
 
                 //check row in TABLE_SESSION
                 String[] collumnCheck = new String[]{
-                        TABLE_SESSION.declared.MA_DVIQLY.name(),
-                        TABLE_SESSION.declared.USERNAME.name(),
-                        TABLE_SESSION.declared.PASSWORD.name()};
+                        TABLE_SESSION.table.MA_DVIQLY.name(),
+                        TABLE_SESSION.table.USERNAME.name(),
+                        TABLE_SESSION.table.PASSWORD.name()};
 
                 String[] valuesCheck = new String[]{
                         dataCheck.getMA_DVIQLY(),
@@ -458,8 +452,22 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
                         dataCheck.getPASSWORD()
                 };
 
+                if (!SqlHelper.getIntance().isOpenDB())
+                    mSqlDAO = new TthtHnSQLDAO(SqlHelper.getIntance().openDB(), TthtHnLoginActivity.this);
 
-                return mSqlDAO.isExistRows(TABLE_SESSION.class, collumnCheck, valuesCheck);
+                boolean isExitsLogin = mSqlDAO.isExistRows(TABLE_SESSION.class, collumnCheck, valuesCheck);
+                if(isExitsLogin)
+                {
+                    List<TABLE_SESSION> tableSessions = mSqlDAO.getSessionLogin(valuesCheck);
+                    if(tableSessions.size()>0)
+                    {
+                        TABLE_SESSION tableSession = tableSessions.get(0);
+                        mMaNVien = tableSession.getMA_NVIEN();
+                        ((LazyList<TABLE_SESSION>) tableSessions).closeCursor();
+                    }
+                }
+                return isExitsLogin;
+
             }
 
             @Override
@@ -470,6 +478,7 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
                 dataCheck.setUSERNAME(dataLoginSession.getmUser());
                 dataCheck.setPASSWORD(dataLoginSession.getmPass());
                 dataCheck.setDATE_LOGIN(Common.getDateTimeNow(Common.DATE_TIME_TYPE.sqlite2));
+                dataCheck.setMA_NVIEN(mMaNVien);
 
 
                 //save data
@@ -486,9 +495,9 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
 
                 //check row in TABLE_SESSION
                 String[] collumnCheck = new String[]{
-                        TABLE_SESSION.declared.MA_DVIQLY.name(),
-                        TABLE_SESSION.declared.USERNAME.name(),
-                        TABLE_SESSION.declared.PASSWORD.name()};
+                        TABLE_SESSION.table.MA_DVIQLY.name(),
+                        TABLE_SESSION.table.USERNAME.name(),
+                        TABLE_SESSION.table.PASSWORD.name()};
 
                 String[] valuesCheck = new String[]{
                         dataCheck.getMA_DVIQLY(),

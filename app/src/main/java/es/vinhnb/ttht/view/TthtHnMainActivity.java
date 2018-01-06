@@ -254,7 +254,8 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
 
             try {
-                SqlHelper.getIntance().close();
+                if (SqlHelper.getIntance().isOpenDB())
+                    SqlHelper.getIntance().closeDB();
             } catch (Exception e) {
                 e.printStackTrace();
                 super.showSnackBar(Common.MESSAGE.ex071.getContent(), e.getMessage(), null);
@@ -413,7 +414,6 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
     }
 
 
-
     public void initNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -425,7 +425,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
 
         //set action bar
-        coordinatorLayoutMain = (CoordinatorLayout)  findViewById(R.id.cc_main);
+        coordinatorLayoutMain = (CoordinatorLayout) findViewById(R.id.cc_main);
         super.setCoordinatorLayout(coordinatorLayoutMain);
 
         //set action bar
@@ -436,8 +436,8 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
             @Override
             public void run() {
                 coordinatorLayoutMain.bringToFront();
-                ((View)coordinatorLayoutMain.getParent()).requestLayout();
-                ((View)coordinatorLayoutMain.getParent()).invalidate();
+                ((View) coordinatorLayoutMain.getParent()).requestLayout();
+                ((View) coordinatorLayoutMain.getParent()).invalidate();
             }
         });
     }
