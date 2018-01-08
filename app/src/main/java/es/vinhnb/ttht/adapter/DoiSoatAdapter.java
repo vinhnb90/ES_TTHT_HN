@@ -103,6 +103,9 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
             holder.btnSelectUpload.setText("CHỌN GỬI");
             holder.btnSelectUpload.setCompoundDrawablesWithIntrinsicBounds(null, null, ic_tththn_unmark, null);
             holder.btnSelectUpload.setVisibility(View.VISIBLE);
+//            holder.editTreo.setText(Common.TEXT_EDIT.CHINH_SUA.content);
+//            holder.editThao.setText(Common.TEXT_EDIT.CHINH_SUA.content);
+
 
             if (doiSoatAdapter.TRANG_THAI_CHON_GUI == DA_CHON_GUI) {
                 holder.btnSelectUpload.setVisibility(View.VISIBLE);
@@ -153,6 +156,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
 
             showChiso(holder.viewBOChisoThao, doiSoatAdapter.LOAI_CTO_THAO.code, doiSoatAdapter.CHI_SO_THAO, Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS, false);
 
+            enableChiso(holder.viewBOChisoThao, listData.get(position).isEditThao);
 
             pathAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_CONG_TO.name()) + "/" + doiSoatAdapter.TEN_ANH_TREO;
             bitmap = Common.getBitmapFromUri(pathAnh);
@@ -160,12 +164,20 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
                 holder.ivDoiSoatTreo.setImageBitmap(bitmap);
 
             showChiso(holder.viewBOChisoTreo, doiSoatAdapter.LOAI_CTO_TREO.code, doiSoatAdapter.CHI_SO_TREO, Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS, false);
-
+            enableChiso(holder.viewBOChisoTreo, listData.get(position).isEditTreo);
         } catch (Exception e) {
             e.printStackTrace();
             ((TthtHnBaseActivity) context).showSnackBar(Common.MESSAGE.ex04.getContent(), e.getMessage(), null);
         }
 
+    }
+
+    private void enableChiso(TthtHnChiTietCtoFragment.ViewBO_CHISO viewBOChiso, boolean isEditCS) {
+            viewBOChiso.etCS1.setEnabled(isEditCS);
+            viewBOChiso.etCS2.setEnabled(isEditCS);
+            viewBOChiso.etCS3.setEnabled(isEditCS);
+            viewBOChiso.etCS4.setEnabled(isEditCS);
+            viewBOChiso.etCS5.setEnabled(isEditCS);
     }
 
 
@@ -259,16 +271,39 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
+                    if (!listData.get(pos).isEditTreo) {
+                        viewBOChisoTreo.etCS1.requestFocus();
+                        viewBOChisoTreo.etCS1.setEnabled(true);
+                        viewBOChisoTreo.etCS2.setEnabled(true);
+                        viewBOChisoTreo.etCS3.setEnabled(true);
+                        viewBOChisoTreo.etCS4.setEnabled(true);
+                        viewBOChisoTreo.etCS5.setEnabled(true);
+                        editTreo.setText(Common.TEXT_EDIT.OK.content);
+                        listData.get(pos).isEditTreo = true;
+                        notifyDataSetChanged();
+                    } else {
+                        viewBOChisoTreo.etCS1.setEnabled(false);
+                        viewBOChisoTreo.etCS2.setEnabled(false);
+                        viewBOChisoTreo.etCS3.setEnabled(false);
+                        viewBOChisoTreo.etCS4.setEnabled(false);
+                        viewBOChisoTreo.etCS5.setEnabled(false);
 
-                    //data CHI_SO
-                    String etCS1Text = TextUtils.isEmpty(viewBOChisoTreo.etCS1.getText().toString()) ? "0" : viewBOChisoTreo.etCS1.getText().toString();
-                    String etCS2Text = TextUtils.isEmpty(viewBOChisoTreo.etCS2.getText().toString()) ? "0" : viewBOChisoTreo.etCS2.getText().toString();
-                    String etCS3Text = TextUtils.isEmpty(viewBOChisoTreo.etCS3.getText().toString()) ? "0" : viewBOChisoTreo.etCS3.getText().toString();
-                    String etCS4Text = TextUtils.isEmpty(viewBOChisoTreo.etCS4.getText().toString()) ? "0" : viewBOChisoTreo.etCS4.getText().toString();
-                    String etCS5Text = TextUtils.isEmpty(viewBOChisoTreo.etCS5.getText().toString()) ? "0" : viewBOChisoTreo.etCS5.getText().toString();
-                    String CHI_SO = Common.getStringChiSo(etCS1Text, etCS2Text, etCS3Text, etCS4Text, etCS5Text, listData.get(pos).LOAI_CTO_TREO);
-                    Bitmap bitmap = iIteractor.doClickEditCHI_SOCto(pos, listData.get(pos), CHI_SO, Common.MA_BDONG.B);
-                    ivDoiSoatTreo.setImageBitmap(bitmap);
+                        //data CHI_SO
+                        String etCS1Text = TextUtils.isEmpty(viewBOChisoTreo.etCS1.getText().toString()) ? "0" : viewBOChisoTreo.etCS1.getText().toString();
+                        String etCS2Text = TextUtils.isEmpty(viewBOChisoTreo.etCS2.getText().toString()) ? "0" : viewBOChisoTreo.etCS2.getText().toString();
+                        String etCS3Text = TextUtils.isEmpty(viewBOChisoTreo.etCS3.getText().toString()) ? "0" : viewBOChisoTreo.etCS3.getText().toString();
+                        String etCS4Text = TextUtils.isEmpty(viewBOChisoTreo.etCS4.getText().toString()) ? "0" : viewBOChisoTreo.etCS4.getText().toString();
+                        String etCS5Text = TextUtils.isEmpty(viewBOChisoTreo.etCS5.getText().toString()) ? "0" : viewBOChisoTreo.etCS5.getText().toString();
+                        String CHI_SO = Common.getStringChiSo(etCS1Text, etCS2Text, etCS3Text, etCS4Text, etCS5Text, listData.get(pos).LOAI_CTO_TREO);
+                        Bitmap bitmap = iIteractor.doClickEditCHI_SOCto(pos, listData.get(pos), CHI_SO, Common.MA_BDONG.B);
+                        ivDoiSoatTreo.setImageBitmap(bitmap);
+                        editTreo.setText(Common.TEXT_EDIT.CHINH_SUA.content);
+                        listData.get(pos).isEditTreo = false;
+                        notifyDataSetChanged();
+                        return;
+                    }
+
+
                 }
             });
 
@@ -276,16 +311,31 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
+                    if (!listData.get(pos).isEditThao) {
+                        viewBOChisoThao.etCS1.requestFocus();
+                        viewBOChisoThao.etCS1.setEnabled(true);
+                        viewBOChisoThao.etCS2.setEnabled(true);
+                        viewBOChisoThao.etCS3.setEnabled(true);
+                        viewBOChisoThao.etCS4.setEnabled(true);
+                        viewBOChisoThao.etCS5.setEnabled(true);
+                        editThao.setText(Common.TEXT_EDIT.OK.content);
+                        listData.get(pos).isEditThao = true;
+                        notifyDataSetChanged();
+                    } else {
+                        listData.get(pos).isEditThao = false;
+                        //data CHI_SO
+                        String etCS1Text = TextUtils.isEmpty(viewBOChisoThao.etCS1.getText().toString()) ? "0" : viewBOChisoThao.etCS1.getText().toString();
+                        String etCS2Text = TextUtils.isEmpty(viewBOChisoThao.etCS2.getText().toString()) ? "0" : viewBOChisoThao.etCS2.getText().toString();
+                        String etCS3Text = TextUtils.isEmpty(viewBOChisoThao.etCS3.getText().toString()) ? "0" : viewBOChisoThao.etCS3.getText().toString();
+                        String etCS4Text = TextUtils.isEmpty(viewBOChisoThao.etCS4.getText().toString()) ? "0" : viewBOChisoThao.etCS4.getText().toString();
+                        String etCS5Text = TextUtils.isEmpty(viewBOChisoThao.etCS5.getText().toString()) ? "0" : viewBOChisoThao.etCS5.getText().toString();
+                        String CHI_SO = Common.getStringChiSo(etCS1Text, etCS2Text, etCS3Text, etCS4Text, etCS5Text, listData.get(pos).LOAI_CTO_THAO);
+                        Bitmap bitmap = iIteractor.doClickEditCHI_SOCto(pos, listData.get(pos), CHI_SO, Common.MA_BDONG.E);
+                        ivDoiSoatTreo.setImageBitmap(bitmap);
+                        editThao.setText(Common.TEXT_EDIT.CHINH_SUA.content);
+                        notifyDataSetChanged();
+                    }
 
-                    //data CHI_SO
-                    String etCS1Text = TextUtils.isEmpty(viewBOChisoThao.etCS1.getText().toString()) ? "0" : viewBOChisoThao.etCS1.getText().toString();
-                    String etCS2Text = TextUtils.isEmpty(viewBOChisoThao.etCS2.getText().toString()) ? "0" : viewBOChisoThao.etCS2.getText().toString();
-                    String etCS3Text = TextUtils.isEmpty(viewBOChisoThao.etCS3.getText().toString()) ? "0" : viewBOChisoThao.etCS3.getText().toString();
-                    String etCS4Text = TextUtils.isEmpty(viewBOChisoThao.etCS4.getText().toString()) ? "0" : viewBOChisoThao.etCS4.getText().toString();
-                    String etCS5Text = TextUtils.isEmpty(viewBOChisoThao.etCS5.getText().toString()) ? "0" : viewBOChisoThao.etCS5.getText().toString();
-                    String CHI_SO = Common.getStringChiSo(etCS1Text, etCS2Text, etCS3Text, etCS4Text, etCS5Text, listData.get(pos).LOAI_CTO_THAO);
-                    Bitmap bitmap = iIteractor.doClickEditCHI_SOCto(pos, listData.get(pos), CHI_SO, Common.MA_BDONG.E);
-                    ivDoiSoatTreo.setImageBitmap(bitmap);
                 }
             });
 
@@ -369,6 +419,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
         public Common.TRANG_THAI_DOI_SOAT TRANG_THAI_DOI_SOAT;
         public int ID_BBAN_TRTH;
         public String SO_BBAN;
+        public boolean isEditTreo, isEditThao;
 
         @Override
         public Object clone() throws CloneNotSupportedException {

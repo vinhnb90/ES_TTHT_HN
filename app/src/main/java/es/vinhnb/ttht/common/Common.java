@@ -193,6 +193,16 @@ public class Common {
         }
     }
 
+    public enum TEXT_EDIT {
+        CHINH_SUA("CHỈNH SỬA"),
+        OK("CHẤP NHẬN");
+
+        public String content;
+
+        TEXT_EDIT(String content) {
+            this.content = content;
+        }
+    }
 
     public enum TYPE_SEARCH_BBAN {
         CHON("Tìm theo", true),

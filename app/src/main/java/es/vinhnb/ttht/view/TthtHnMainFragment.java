@@ -586,6 +586,7 @@ public class TthtHnMainFragment extends TthtHnBaseFragment {
         this.sizeList = sizeFitle;
         MainSharePref mainSharePref = new MainSharePref(pos, sizeFitle, onIDataCommon.getMA_BDONG() == Common.MA_BDONG.B ? TagMenuNaviLeft.CTO_TREO.tagFrag : TagMenuNaviLeft.CTO_THAO.tagFrag);
         sharePrefManager.writeDataSharePref(MainSharePref.class, mainSharePref);
+        onIDataCommon.setID_BBAN_TRTH(dataChiTietCtoAdaptersList.get(pos).getIdbbantrth());
     }
 
     public void searchDate(String date) {

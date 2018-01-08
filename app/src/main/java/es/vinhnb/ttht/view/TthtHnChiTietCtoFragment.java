@@ -1281,6 +1281,7 @@ public class TthtHnChiTietCtoFragment extends TthtHnBaseFragment {
             public void onClick(View view) {
                 try {
                     onIDataCommom.setPreCto(pos);
+                    pos--;
                 } catch (Exception e) {
                     e.printStackTrace();
                     ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex03.getContent(), e.getMessage(), null);

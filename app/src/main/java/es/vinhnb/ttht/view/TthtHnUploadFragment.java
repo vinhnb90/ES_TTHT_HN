@@ -1315,6 +1315,15 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                             tableChitietCto.setCHI_SO(CHI_SO);
 
 
+
+                            String[] agrsBB = new String[]{String.valueOf(dataDoiSoatAdapter.ID_BBAN_TRTH), onIDataCommon.getMaNVien()};
+                            List<TABLE_BBAN_CTO> tableBbanCtoList = mSqlDAO.getBBan(agrsBB);
+                            tableBbanCto = null;
+                            if (tableChitietCtoList.size() == 0)
+                                throw new Exception("Xảy ra lỗi khi tìm kiếm chi tiết biên bản : " + dataDoiSoatAdapter.ID_BBAN_TRTH);
+
+                                tableBbanCto = tableBbanCtoList.get(0);
+
                             String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
                             String SO_CTO = tableChitietCto.getSO_CTO();
                             String TEN_KHANG = tableBbanCto.getTEN_KHANG();

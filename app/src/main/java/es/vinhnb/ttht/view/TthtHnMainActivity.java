@@ -877,17 +877,23 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
     @Override
     public void setNextCto(int posOld) {
         try {
+            int sizeFitle = ((MainSharePref) sharePrefManager.getSharePrefObject(MainSharePref.class)).sizeList;
+            if(posOld >= sizeFitle-1)
+            {
+                super.showSnackBar("Đã hết công tơ kế tiếp!", null, null);
+                return;
+            }
+
             //check frag
             Fragment fragmentVisible = getSupportFragmentManager().findFragmentById(mRlMain.getId());
-            if (!(fragmentVisible instanceof TthtHnMainFragment))
+            if (!(fragmentVisible instanceof TthtHnChiTietCtoFragment))
                 return;
 
 
             //save pos new
             //kiem tra sharePref
-            int sizeFitle = ((MainSharePref) sharePrefManager.getSharePrefObject(MainSharePref.class)).sizeList;
-            int posNew = posOld++;
-            ((TthtHnMainFragment) fragmentVisible).savePosClick(posNew, sizeFitle);
+            int posNew = ++posOld;
+            fragmentMain.savePosClick(posNew, sizeFitle);
 
 
             //show body
@@ -909,17 +915,23 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
     @Override
     public void setPreCto(int posOld) {
         try {
+
+            if(posOld <= 0 )
+            {
+                super.showSnackBar("Đã hết công tơ phía trước!", null, null);
+                return;
+            }
             //check frag
             Fragment fragmentVisible = getSupportFragmentManager().findFragmentById(mRlMain.getId());
-            if (!(fragmentVisible instanceof TthtHnMainFragment))
+            if (!(fragmentVisible instanceof TthtHnChiTietCtoFragment))
                 return;
 
 
             //save pos new
             //kiem tra sharePref
             int sizeFitle = ((MainSharePref) sharePrefManager.getSharePrefObject(MainSharePref.class)).sizeList;
-            int posNew = posOld--;
-            ((TthtHnMainFragment) fragmentVisible).savePosClick(posNew, sizeFitle);
+            int posNew = --posOld;
+            fragmentMain.savePosClick(posNew, sizeFitle);
 
 
             //show body

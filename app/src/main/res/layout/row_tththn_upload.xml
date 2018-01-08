@@ -152,7 +152,7 @@
                                 android:visibility="visible"
                                 android:id="@+id/btn_edit_doisoat_thao"
                                 style="@style/buttonStyle4"
-                                android:text="CHỈNH SỬA"
+                                android:text="CHẤP NHẬN"
                                 android:layout_marginBottom="@dimen/_2sdp"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_24sdp" />
