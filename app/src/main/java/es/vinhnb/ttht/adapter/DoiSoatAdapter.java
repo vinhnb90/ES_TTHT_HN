@@ -37,7 +37,11 @@ import static es.vinhnb.ttht.view.TthtHnChiTietCtoFragment.showChiso;
 public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHolder> {
 
     public static Drawable xml_tththn_rectangle11_type1;
+    public static Drawable xml_tththn_edittext;
+
     public static Drawable xml_tththn_rectangle11;
+    public static Drawable xml_tththn_retangle_bottom;
+
     public static int tththn_button;
     public static int text_white;
     public static Drawable ic_tththn_mark;
@@ -74,6 +78,12 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
 
         if (ic_tththn_unmark == null)
             ic_tththn_unmark = ContextCompat.getDrawable(context, R.drawable.ic_tththn_unmark);
+
+        if (xml_tththn_retangle_bottom == null)
+            xml_tththn_retangle_bottom = ContextCompat.getDrawable(context, R.drawable.xml_tththn_retangle_bottom);
+
+        if (xml_tththn_edittext == null)
+            xml_tththn_edittext = ContextCompat.getDrawable(context, R.drawable.xml_tththn_edittext);
 
     }
 
@@ -156,7 +166,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
 
             showChiso(holder.viewBOChisoThao, doiSoatAdapter.LOAI_CTO_THAO.code, doiSoatAdapter.CHI_SO_THAO, Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS, false);
 
-            enableChiso(holder.viewBOChisoThao, listData.get(position).isEditThao);
+            enableChiso(holder.editThao, holder.viewBOChisoThao, listData.get(position).isEditThao);
 
             pathAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_CONG_TO.name()) + "/" + doiSoatAdapter.TEN_ANH_TREO;
             bitmap = Common.getBitmapFromUri(pathAnh);
@@ -164,7 +174,7 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
                 holder.ivDoiSoatTreo.setImageBitmap(bitmap);
 
             showChiso(holder.viewBOChisoTreo, doiSoatAdapter.LOAI_CTO_TREO.code, doiSoatAdapter.CHI_SO_TREO, Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS, false);
-            enableChiso(holder.viewBOChisoTreo, listData.get(position).isEditTreo);
+            enableChiso(holder.editTreo, holder.viewBOChisoTreo, listData.get(position).isEditTreo);
         } catch (Exception e) {
             e.printStackTrace();
             ((TthtHnBaseActivity) context).showSnackBar(Common.MESSAGE.ex04.getContent(), e.getMessage(), null);
@@ -172,12 +182,18 @@ public class DoiSoatAdapter extends RecyclerView.Adapter<DoiSoatAdapter.ViewHold
 
     }
 
-    private void enableChiso(TthtHnChiTietCtoFragment.ViewBO_CHISO viewBOChiso, boolean isEditCS) {
-            viewBOChiso.etCS1.setEnabled(isEditCS);
-            viewBOChiso.etCS2.setEnabled(isEditCS);
-            viewBOChiso.etCS3.setEnabled(isEditCS);
-            viewBOChiso.etCS4.setEnabled(isEditCS);
-            viewBOChiso.etCS5.setEnabled(isEditCS);
+    private void enableChiso(Button editChiSo, TthtHnChiTietCtoFragment.ViewBO_CHISO viewBOChiso, boolean isEditCS) {
+        viewBOChiso.etCS1.setEnabled(isEditCS);
+        viewBOChiso.etCS2.setEnabled(isEditCS);
+        viewBOChiso.etCS3.setEnabled(isEditCS);
+        viewBOChiso.etCS4.setEnabled(isEditCS);
+        viewBOChiso.etCS5.setEnabled(isEditCS);
+        editChiSo.setText(isEditCS? Common.TEXT_EDIT.OK.content: Common.TEXT_EDIT.CHINH_SUA.content);
+        viewBOChiso.etCS1.setBackground(isEditCS?xml_tththn_edittext:xml_tththn_retangle_bottom);
+        viewBOChiso.etCS2.setBackground(isEditCS?xml_tththn_edittext:xml_tththn_retangle_bottom);
+        viewBOChiso.etCS3.setBackground(isEditCS?xml_tththn_edittext:xml_tththn_retangle_bottom);
+        viewBOChiso.etCS4.setBackground(isEditCS?xml_tththn_edittext:xml_tththn_retangle_bottom);
+        viewBOChiso.etCS5.setBackground(isEditCS?xml_tththn_edittext:xml_tththn_retangle_bottom);
     }
 
 
