@@ -293,8 +293,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                 List<TABLE_BBAN_CTO> tableBbanCtoHetHieuLucList = mSqlDAO.getBBanHetHieuLuc(args);
 
                                 //close cursor
-                                if (tableBbanCtoHetHieuLucList.size()!=0)
-                                    ((LazyList<TABLE_BBAN_CTO>) tableBbanCtoHetHieuLucList).closeCursor();
+
 
                                 final int sizetableBbanCtoHetHieuLucList = tableBbanCtoHetHieuLucList.size();
                                 for (int i = 0; i < tableBbanCtoHetHieuLucList.size(); i++) {
@@ -314,7 +313,10 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                     mSqlDAO.updateRows(TABLE_BBAN_CTO.class, tableBbanCto, tableBbanCtoNew);
                                 }
 
+
                                 if (sizetableBbanCtoHetHieuLucList != 0) {
+//                                    if (tableBbanCtoHetHieuLucList.size()!=0)
+                                        ((LazyList<TABLE_BBAN_CTO>) tableBbanCtoHetHieuLucList).closeCursor();
                                     Thread.sleep(DELAY);
                                     getView().postDelayed(new Runnable() {
                                         @Override
