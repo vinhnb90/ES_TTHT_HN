@@ -199,18 +199,10 @@
             android:layout_marginRight="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_2sdp">
 
-            <Button
-                android:id="@+id/btn_bban_more"
-                style="@style/buttonStyle1"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_24sdp"
-                android:layout_alignParentRight="true"
-                android:text="THÊM THÔNG TIN"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+
 
             <ImageButton
-                android:layout_marginLeft="@dimen/_1sdp"
+                android:layout_marginLeft="@dimen/_2sdp"
                 android:id="@+id/ibtn_error_bban"
                 android:layout_width="@dimen/_24sdp"
                 android:layout_height="@dimen/_24sdp"
@@ -244,6 +236,7 @@
             android:layout_above="@+id/rl_bbb"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             tools:background="@color/tththn_submited_row_recyler">
 
             <TextView
@@ -262,6 +255,35 @@
 
         </RelativeLayout>
 
+
+        <RelativeLayout
+            android:padding="@dimen/_2sdp"
+            android:layout_below="@+id/rl_bbb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_bban_tuti_more"
+                style="@style/buttonStyle1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_alignParentRight="true"
+                android:text="BIÊN BẢN TU TI"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <Button
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_toLeftOf="@+id/btn_bban_tuti_more"
+                android:id="@+id/btn_bban_more"
+                style="@style/buttonStyle1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_24sdp"
+                android:text="BIÊN BẢN CÔNG TƠ"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

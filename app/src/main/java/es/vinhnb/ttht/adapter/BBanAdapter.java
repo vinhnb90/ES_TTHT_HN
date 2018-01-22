@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.es.tungnv.views.R;
 
@@ -127,7 +126,8 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
         public TextView tvmaGCS;
         public TextView tvmaTramCapDien;
         public TextView ngayTreothao;
-        public Button btnMore;
+        public Button btnBBTuTiMore;
+        public Button btnBBCtoMore;
         public ImageButton ibtnError;
         public TextView tvStatus;
         public RelativeLayout rlRow;
@@ -144,15 +144,26 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
             ibtnError = itemView.findViewById(R.id.ibtn_error_bban);
 
             rlRow = itemView.findViewById(R.id.rl_row_row);
-            btnMore = itemView.findViewById(R.id.btn_bban_more);
+            btnBBCtoMore = itemView.findViewById(R.id.btn_bban_more);
 
-            btnMore.setOnClickListener(new View.OnClickListener() {
+            btnBBTuTiMore = itemView.findViewById(R.id.btn_bban_tuti_more);
+
+            btnBBCtoMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
                     iOnBBanAdapter.clickBtnBBanMore(pos, listData.get(pos));
                 }
             });
+
+            btnBBTuTiMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    iOnBBanAdapter.clickBtnBBanTuTiMore(pos, listData.get(pos));
+                }
+            });
+
 
             ibtnError.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,6 +172,8 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
                     iOnBBanAdapter.clickBtnBBanEror(pos, listData.get(pos));
                 }
             });
+
+
         }
     }
 
@@ -174,8 +187,17 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
         private String lydo;
         private String ngayTrth;
         private String sobban;
+        private boolean isHasTuTi;
         private Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU;
         private String NOI_DUNG_LOI_DONG_BO;
+
+        public boolean isHasTuTi() {
+            return isHasTuTi;
+        }
+
+        public void setHasTuTi(boolean hasTuTi) {
+            isHasTuTi = hasTuTi;
+        }
 
         public String getSobban() {
             return sobban;
@@ -270,5 +292,7 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
         void clickBtnBBanMore(int pos, DataBBanAdapter dataBBanAdapter);
 
         void clickBtnBBanEror(int pos, DataBBanAdapter dataBBanAdapter);
+
+        void clickBtnBBanTuTiMore(int pos, DataBBanAdapter dataBBanAdapter);
     }
 }

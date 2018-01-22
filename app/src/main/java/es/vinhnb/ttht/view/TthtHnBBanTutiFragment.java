@@ -625,7 +625,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     //region TthtHnBaseFragment
     @Override
     public void initDataAndView(View viewRoot) throws Exception {
-        fillDataBBanTuti();
+//        fillDataBBanTuti();
     }
 
     private void fillDataBBanTuti() throws Exception {

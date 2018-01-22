@@ -63,6 +63,7 @@ import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import static com.es.tungnv.views.R.layout.activity_ttht_hn_main;
 import static es.vinhnb.ttht.adapter.BBanAdapter.*;
 import static es.vinhnb.ttht.view.TthtHnBBanTutiFragment.IOnTthtHnBBanTutiFragment;
+import static es.vinhnb.ttht.view.TthtHnBBanTutiNewFragment.*;
 import static es.vinhnb.ttht.view.TthtHnChiTietCtoFragment.OnITthtHnChiTietCtoFragment;
 import static es.vinhnb.ttht.view.TthtHnDownloadFragment.OnListenerTthtHnDownloadFragment;
 import static es.vinhnb.ttht.view.TthtHnMainActivity.TagMenuNaviLeft.CHITIET_BBAN_TUTI_THAO;
@@ -91,6 +92,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
         IOnTthtHnUploadFragment,
         IOnTthtHnHistoryFragment,
         IOnTthtHnTopUploadFragment,
+        IOnTthtHnBBanTutiNewFragment,
         HistoryBBanUploadAdapter.IOnBBanAdapter,
         IOnBBanAdapter {
 
@@ -106,6 +108,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
     private TthtHnHistoryFragment fragmentHistory;
     private TthtHnChiTietCtoFragment fragmentChitietCto;
     private TthtHnBBanTutiFragment fragmentBBanTuTi;
+    private TthtHnBBanTutiNewFragment fragmentBBanNewTuTi;
     private TthtHnTopMenuChiTietCtoFragment fragmentTopMenuChiTietCto;
     private TthtHnTopSearchFragment fragmentTopSearchFragment;
     private TthtHnTopUploadFragment fragmentTopUploadFragment;
@@ -1196,6 +1199,27 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
 
     //region IOnBBanAdapter
+
+
+    @Override
+    public void clickBtnBBanTuTiMore(int pos, DataBBanAdapter dataBBanAdapter) {
+//        tagMenuNaviLeftList = tagNew;
+
+
+//        if (fragmentVisible instanceof TthtHnDownloadFragment) {
+//            isAddMain = false;
+//        } else {
+//            fragmentDownload = new TthtHnDownloadFragment().newInstance();
+//            isAddMain = true;
+//        }
+
+
+        fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(pos);
+        Fragment emptyFragment = showTopMenuFragment(TagMenuNaviLeft.EMPTY1, TagMenuTop.EMPTY);
+        updateSessionBackstackFragment(emptyFragment, fragmentBBanTuTi, true);
+
+    }
+
     @Override
     public void clickBtnBBanMore(int pos, DataBBanAdapter dataBBanAdapter) {
         //show dialog
