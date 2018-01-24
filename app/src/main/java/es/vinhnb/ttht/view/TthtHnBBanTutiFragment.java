@@ -17,6 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,6 +29,7 @@ import com.github.clans.fab.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -94,6 +99,14 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     FloatingActionButton fabTtCannhapsaulap;
     @BindView(R.id.tv_anchor_saulap)
     TextView tvfabTtCannhapsaulap;
+
+
+    //row
+    @BindView(R.id.include_tuti)
+    LinearLayout rlIncludeTuTiB;
+
+    @BindView(R.id.bt_add_tuti_thao)
+    Button btnAddTuTiThao;
 
 
     //khach hang
@@ -336,10 +349,15 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
     private IInteractionDataCommon onIDataCommom;
     private TABLE_CHITIET_CTO tableChitietCto;
+    private TABLE_CHITIET_CTO tableChitietCtoE;
     private TABLE_BBAN_CTO tableBbanCto;
     private TABLE_LOAI_CONG_TO tableLoaiCongTo;
     private TABLE_TRAM tableTram;
     private TABLE_BBAN_TUTI tableBbanTuti;
+    private List<TABLE_CHITIET_TUTI> tutiListB;
+    private List<TABLE_CHITIET_TUTI> tutiListE;
+    private List<ViewIncludeTuTi> tutiListViewB = new ArrayList<>();
+    private List<ViewIncludeTuTi> tutiListViewE = new ArrayList<>();
     private TABLE_CHITIET_TUTI tuTreo;
     private TABLE_CHITIET_TUTI tuThao;
     private TABLE_CHITIET_TUTI tiTreo;
@@ -363,6 +381,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     private boolean isRefreshAnhNhiThuTi;
     private boolean isRefreshAnhNiemPhongTu;
     private boolean isRefreshAnhNiemPhongTi;
+    private View viewRoot;
 
 
     public TthtHnBBanTutiFragment() {
@@ -398,11 +417,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View viewRoot = inflater.inflate(R.layout.fragment_ttht_hn_bban_tuti, container, false);
-        unbinder = ButterKnife.bind(TthtHnBBanTutiFragment.this, viewRoot);
 
-
+        viewRoot = null;
         try {
+            viewRoot = inflater.inflate(R.layout.fragment_ttht_hn_bban_tuti, container, false);
+            unbinder = ButterKnife.bind(TthtHnBBanTutiFragment.this, viewRoot);
             initDataAndView(viewRoot);
             setAction(savedInstanceState);
         } catch (Exception e) {
@@ -625,15 +644,20 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     //region TthtHnBaseFragment
     @Override
     public void initDataAndView(View viewRoot) throws Exception {
-//        fillDataBBanTuti();
+        fillDataBBanTuti();
     }
 
     private void fillDataBBanTuti() throws Exception {
         //get Data Chi tiet cong to
-        String[] agrs = new String[]{String.valueOf(onIDataCommom.getID_BBAN_TRTH()), onIDataCommom.getMA_BDONG().code, onIDataCommom.getMaNVien()};
+        String[] agrs = new String[]{String.valueOf(onIDataCommom.getID_BBAN_TRTH()), Common.MA_BDONG.B.code, onIDataCommom.getMaNVien()};
         List<TABLE_CHITIET_CTO> tableChitietCtoList = mSqlDAO.getChiTietCongto(agrs);
         if (tableChitietCtoList.size() != 0)
             tableChitietCto = tableChitietCtoList.get(0);
+
+        agrs = new String[]{String.valueOf(onIDataCommom.getID_BBAN_TRTH()), Common.MA_BDONG.E.code, onIDataCommom.getMaNVien()};
+        tableChitietCtoList = mSqlDAO.getChiTietCongto(agrs);
+        if (tableChitietCtoList.size() != 0)
+            tableChitietCtoE = tableChitietCtoList.get(0);
 
 
         //get Data bien ban
@@ -660,146 +684,171 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
         //get Data Bban tuti
-        List<TABLE_BBAN_TUTI> tableBbanTutiList = mSqlDAO.getBBanTuti(onIDataCommom.getMA_BDONG() == Common.MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO(), onIDataCommom.getMaNVien());
+        List<TABLE_BBAN_TUTI> tableBbanTutiList = mSqlDAO.getBBanTuti(tableChitietCto.getID_BBAN_TUTI(), onIDataCommom.getMaNVien());
         if (tableBbanTutiList.size() != 0)
             tableBbanTuti = tableBbanTutiList.get(0);
 
 
         //get Data chi tiet tuti
-        List<TABLE_CHITIET_TUTI> tableChitietTutiList = mSqlDAO.getChitietTuTi(onIDataCommom.getMA_BDONG() == Common.MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO(), onIDataCommom.getMaNVien());
+        tutiListB = new ArrayList<>();
+        tutiListE = new ArrayList<>();
+        List<TABLE_CHITIET_TUTI> tableChitietTutiList = mSqlDAO.getChitietTuTi(tableChitietCto.getID_BBAN_TUTI(), onIDataCommom.getMaNVien());
         for (int i = 0; i < tableChitietTutiList.size(); i++) {
             TABLE_CHITIET_TUTI tableChitietTuti = tableChitietTutiList.get(i);
 
-            //nếu là TU
-            if (tableChitietTuti.getIS_TU().equals(String.valueOf(Common.IS_TU.TU.code))) {
-                //MA_BDONG cho biết là TU Treo hay tháo
-                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code))
-                    tuTreo = tableChitietTuti;
+            if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code)) {
+                tutiListB.add(tableChitietTuti);
+            } else
+                tutiListE.add(tableChitietTuti);
+//            //nếu là TU
+//            if (tableChitietTuti.getIS_TU().equals(String.valueOf(Common.IS_TU.TU.code))) {
+//                //MA_BDONG cho biết là TU Treo hay tháo
+//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code))
+//                    tuTreo = tableChitietTuti;
+//
+//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.E.code))
+//                    tuThao = tableChitietTuti;
+//            }
+//
+//
+//            //nếu là TI
+//            if (tableChitietTuti.getIS_TU().equals(String.valueOf(Common.IS_TU.TI.code))) {
+//                //MA_BDONG cho biết là TU Treo hay tháo
+//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code))
+//                    tiTreo = tableChitietTuti;
+//
+//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.E.code))
+//                    tiThao = tableChitietTuti;
+//            }
+        }
 
-                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.E.code))
-                    tuThao = tableChitietTuti;
-            }
+        for (int i = 0; i < tutiListB.size(); i++) {
+            ViewIncludeTuTi viewIncludeTuTi = new ViewIncludeTuTi(getActivity());
+            tutiListViewB.add(viewIncludeTuTi);
+            rlIncludeTuTiB.addView(viewIncludeTuTi);
+        }
 
-
-            //nếu là TI
-            if (tableChitietTuti.getIS_TU().equals(String.valueOf(Common.IS_TU.TI.code))) {
-                //MA_BDONG cho biết là TU Treo hay tháo
-                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code))
-                    tiTreo = tableChitietTuti;
-
-                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.E.code))
-                    tiThao = tableChitietTuti;
-            }
+        for (int i = 0; i < tutiListE.size(); i++) {
+            ViewIncludeTuTi viewIncludeTuTi = new ViewIncludeTuTi(getActivity());
+            tutiListViewE.add(viewIncludeTuTi);
         }
 
 
-        //get ảnh tu treo
-        String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tuTreo.getID_BBAN_TUTI()), String.valueOf(tuTreo.getID_CHITIET_TUTI())};
-        List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TU);
-        if (tableAnhHientruongList.size() != 0)
-            anhTU = tableAnhHientruongList.get(0);
+        viewRoot.post(new Runnable() {
+            @Override
+            public void run() {
+                viewRoot.invalidate();
+            }
+        });
 
 
-        //get anh nhi thu tu treo
-        tableAnhHientruongList.clear();
-        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TU);
-        if (tableAnhHientruongList.size() != 0)
-            anhNhiThuTU = tableAnhHientruongList.get(0);
-
-
-        //get anh niem phong tu treo
-        tableAnhHientruongList.clear();
-        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TU);
-        if (tableAnhHientruongList.size() != 0)
-            anhNiemPhongTU = tableAnhHientruongList.get(0);
-
-
-        //get ảnh ti treo
-        tableAnhHientruongList.clear();
-        argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tiTreo.getID_BBAN_TUTI()), String.valueOf(tiTreo.getID_CHITIET_TUTI())};
-        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_TI);
-        if (tableAnhHientruongList.size() != 0)
-            anhTI = tableAnhHientruongList.get(0);
-
-
-        //get anh nhi thu ti treo
-        tableAnhHientruongList.clear();
-        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TI);
-        if (tableAnhHientruongList.size() != 0)
-            anhNhiThuTI = tableAnhHientruongList.get(0);
-
-
-        //get anh niem phong ti treo
-        tableAnhHientruongList.clear();
-        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI);
-        if (tableAnhHientruongList.size() != 0)
-            anhNiemPhongTI = tableAnhHientruongList.get(0);
+//        //get ảnh tu treo
+//        String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tuTreo.getID_BBAN_TUTI()), String.valueOf(tuTreo.getID_CHITIET_TUTI())};
+//        List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TU);
+//        if (tableAnhHientruongList.size() != 0)
+//            anhTU = tableAnhHientruongList.get(0);
+//
+//
+//        //get anh nhi thu tu treo
+//        tableAnhHientruongList.clear();
+//        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TU);
+//        if (tableAnhHientruongList.size() != 0)
+//            anhNhiThuTU = tableAnhHientruongList.get(0);
+//
+//
+//        //get anh niem phong tu treo
+//        tableAnhHientruongList.clear();
+//        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TU);
+//        if (tableAnhHientruongList.size() != 0)
+//            anhNiemPhongTU = tableAnhHientruongList.get(0);
+//
+//
+//        //get ảnh ti treo
+//        tableAnhHientruongList.clear();
+//        argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tiTreo.getID_BBAN_TUTI()), String.valueOf(tiTreo.getID_CHITIET_TUTI())};
+//        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_TI);
+//        if (tableAnhHientruongList.size() != 0)
+//            anhTI = tableAnhHientruongList.get(0);
+//
+//
+//        //get anh nhi thu ti treo
+//        tableAnhHientruongList.clear();
+//        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TI);
+//        if (tableAnhHientruongList.size() != 0)
+//            anhNhiThuTI = tableAnhHientruongList.get(0);
+//
+//
+//        //get anh niem phong ti treo
+//        tableAnhHientruongList.clear();
+//        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI);
+//        if (tableAnhHientruongList.size() != 0)
+//            anhNiemPhongTI = tableAnhHientruongList.get(0);
 
 
         //fill KH
         fillInfoKH();
 
 
-        //fill Tu thao
-        fillInfoTuThao();
-
-
-        fillInfoTuTreo();
-
-
-        fillInfoTiThao();
-
-
-        fillInfoTiTreo();
+//        //fill Tu thao
+//        fillInfoTuThao();
+//
+//
+//        fillInfoTuTreo();
+//
+//
+//        fillInfoTiThao();
+//
+//
+//        fillInfoTiTreo();
 
 
         //fill sau lap
         //get TRANG_THAI_DU_LIEU
-        String TRANG_THAI_DU_LIEU = tableBbanTuti.getTRANG_THAI_DU_LIEU();
-        Common.TRANG_THAI_DU_LIEU trangThaiDuLieu = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(TRANG_THAI_DU_LIEU);
-        fillInfoSauLap(trangThaiDuLieu);
+//        String TRANG_THAI_DU_LIEU = tableBbanTuti.getTRANG_THAI_DU_LIEU();
+//        Common.TRANG_THAI_DU_LIEU trangThaiDuLieu = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(TRANG_THAI_DU_LIEU);
+//        fillInfoSauLap(trangThaiDuLieu);
 
 
         //fill data ảnh tu treo
-        ivAnhTu.setImageBitmap(getAnh(tuTreo, IMAGE_TU));
-        btnChupAnhTu.setEnabled(true);
-        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
-            btnChupAnhTu.setEnabled(false);
-
-
-        //fill data ảnh tu treo nhi thứ
-        ivAnhNhiThuTu.setImageBitmap(getAnh(tuTreo, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TU));
-        btnChupAnhNhiThuTu.setEnabled(true);
-        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
-            btnChupAnhNhiThuTu.setEnabled(false);
-
-
-        //fill data ảnh tu treo niêm phong
-        ivAnhNiemPhongTu.setImageBitmap(getAnh(tuTreo, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TU));
-        btnChupAnhNiemPhongTu.setEnabled(true);
-        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
-            btnChupAnhNiemPhongTu.setEnabled(false);
-
-
-        //fill data ảnh ti treo
-        ivAnhTi.setImageBitmap(getAnh(tiTreo, Common.TYPE_IMAGE.IMAGE_TI));
-        btnChupAnhTi.setEnabled(true);
-        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
-            btnChupAnhTi.setEnabled(false);
-
-
-        //fill data ảnh ti treo nhi thứ
-        ivAnhNhiThuTi.setImageBitmap(getAnh(tiTreo, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TI));
-        btnChupAnhNhiThuTi.setEnabled(true);
-        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
-            btnChupAnhNhiThuTi.setEnabled(false);
-
-
-        //fill data ảnh ti treo niêm phong
-        ivAnhNiemPhongTi.setImageBitmap(getAnh(tiTreo, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI));
-        btnChupAnhNiemPhongTi.setEnabled(true);
-        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
-            btnChupAnhNiemPhongTi.setEnabled(false);
+//        ivAnhTu.setImageBitmap(getAnh(tuTreo, IMAGE_TU));
+//        btnChupAnhTu.setEnabled(true);
+//        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
+//            btnChupAnhTu.setEnabled(false);
+//
+//
+//        //fill data ảnh tu treo nhi thứ
+//        ivAnhNhiThuTu.setImageBitmap(getAnh(tuTreo, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TU));
+//        btnChupAnhNhiThuTu.setEnabled(true);
+//        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
+//            btnChupAnhNhiThuTu.setEnabled(false);
+//
+//
+//        //fill data ảnh tu treo niêm phong
+//        ivAnhNiemPhongTu.setImageBitmap(getAnh(tuTreo, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TU));
+//        btnChupAnhNiemPhongTu.setEnabled(true);
+//        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
+//            btnChupAnhNiemPhongTu.setEnabled(false);
+//
+//
+//        //fill data ảnh ti treo
+//        ivAnhTi.setImageBitmap(getAnh(tiTreo, Common.TYPE_IMAGE.IMAGE_TI));
+//        btnChupAnhTi.setEnabled(true);
+//        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
+//            btnChupAnhTi.setEnabled(false);
+//
+//
+//        //fill data ảnh ti treo nhi thứ
+//        ivAnhNhiThuTi.setImageBitmap(getAnh(tiTreo, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TI));
+//        btnChupAnhNhiThuTi.setEnabled(true);
+//        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
+//            btnChupAnhNhiThuTi.setEnabled(false);
+//
+//
+//        //fill data ảnh ti treo niêm phong
+//        ivAnhNiemPhongTi.setImageBitmap(getAnh(tiTreo, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI));
+//        btnChupAnhNiemPhongTi.setEnabled(true);
+//        if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS)
+//            btnChupAnhNiemPhongTi.setEnabled(false);
 
 
     }
@@ -991,12 +1040,40 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     @Override
     public void setAction(Bundle savedInstanceState) throws Exception {
         //click fab
+        clickButton();
+
         clickFab();
 
         clickMenuBottom();
 
         clickCapture();
 
+    }
+
+    private void clickButton() {
+        btnAddTuTiThao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ViewIncludeTuTi viewIncludeTuTi = new ViewIncludeTuTi(getActivity());
+                    tutiListViewB.add(viewIncludeTuTi);
+                    rlIncludeTuTiB.addView(viewIncludeTuTi);
+
+                    viewRoot.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewRoot.invalidate();
+
+                            Common.runAnimationClickView(rlIncludeTuTiB, R.anim.tththn_scale_view_pull, 250);
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                }
+            }
+        });
     }
 
     private void clickCapture() {
@@ -1754,4 +1831,48 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     //endregion
     public interface IOnTthtHnBBanTutiFragment {
     }
+
+    private static class ViewIncludeTuTi extends LinearLayout {
+        EditText etSoTuTi, etSoBBKdinh, etNuocSX, etDienApTuTi, etTysobienTuTi, etTysoVongTuTi, etNgayKDinh, etTinhTrangVanHanh;
+        ImageView ivAnhTuti, ivAnhNhiThu, ivAnhNiemPhong;
+        Button btnAnhTuti, btnAnhNhiThu, btnAnhNiemPhong;
+
+        TextView tvTitle;
+        RadioGroup rgTuTi;
+        RadioButton rgTu, rgTi;
+
+
+
+        public ViewIncludeTuTi(Context context) {
+            super(context);
+            View rowView = LayoutInflater.from(context).inflate(R.layout.ttht_include_tuti, null);
+            etSoTuTi = rowView.findViewById(R.id.et_sotuti_thao_add);
+            etSoBBKdinh = rowView.findViewById(R.id.et_sobbkdinh_thao_add);
+            etNuocSX = rowView.findViewById(R.id.et_nuocsx_tuti_thao_add);
+            etDienApTuTi = rowView.findViewById(R.id.et_dienaptuti_thao_add);
+
+            etTysobienTuTi = rowView.findViewById(R.id.et_tysobientuti_thao_add);
+            etTysoVongTuTi = rowView.findViewById(R.id.et_tysovongtuti_thao_add);
+
+            etNgayKDinh = rowView.findViewById(R.id.et_ngaykdinh_tuti_thao_add);
+            etTinhTrangVanHanh = rowView.findViewById(R.id.et_ttvanhanh_tuti_thao_add);
+
+
+            ivAnhTuti = rowView.findViewById(R.id.iv_anh_tuti_thao);
+            ivAnhNhiThu = rowView.findViewById(R.id.iv_anhnhithu_tuti_thao);
+            ivAnhNiemPhong = rowView.findViewById(R.id.iv_anhniemphong_tuti_thao);
+
+            btnAnhTuti = rowView.findViewById(R.id.btn_anh_tuti_thao);
+            btnAnhNhiThu = rowView.findViewById(R.id.btn_saveannhithu_tuti_thao);
+            btnAnhNiemPhong = rowView.findViewById(R.id.btn_save_anhniemphong_tuti_thao);
+
+            tvTitle = rowView.findViewById(R.id.tv_tittle_tuti);
+            rgTuTi = rowView.findViewById(R.id.rg_tuti);
+            rgTu = rowView.findViewById(R.id.rb_tu);
+            rgTi = rowView.findViewById(R.id.rb_ti);
+
+            this.addView(rowView);
+        }
+    }
+
 }

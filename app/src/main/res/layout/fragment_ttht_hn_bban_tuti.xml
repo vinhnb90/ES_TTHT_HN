@@ -235,7 +235,7 @@
                         style="@style/textStyle3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tháo TU TI Tháo" />
+                        android:text="TU TI Tháo" />
 
                     <Button
                         android:id="@+id/bt_add_tuti_thao"
@@ -258,12 +258,21 @@
                         android:background="@color/tththn_text_more_less_black" />
                 </RelativeLayout>
 
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/include_tuti"
+                    android:background="@drawable/xml_tththn_rectangle"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                </LinearLayout>
 
-                <include tools:layout="@layout/ttht_include_tuti" />
+               <!-- <include tools:layout="@layout/ttht_include_tuti" />-->
 
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -323,6 +332,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -382,6 +392,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -466,6 +477,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -552,12 +564,14 @@
                 <!--END Tu thao-->
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_anchor_tutreo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <!--Tu treo-->
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rl_7_tutreo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -583,6 +597,7 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -642,6 +657,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -701,6 +717,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -785,6 +802,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -872,12 +890,14 @@
 
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_anchor_tithao"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <!--ti thao-->
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rl_7_tithao"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -903,6 +923,7 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -962,6 +983,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1021,6 +1043,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1105,6 +1128,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1192,12 +1216,14 @@
 
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_anchor_titreo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <!--ti treo-->
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rl_7_titreo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1223,6 +1249,7 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1282,6 +1309,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1341,6 +1369,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1425,6 +1454,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1513,11 +1543,13 @@
 
                 <!--CHUP ANH tu-->
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_anchor_camera_tu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1542,6 +1574,7 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1669,11 +1702,13 @@
 
                 <!--CHUP ANH ti-->
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_anchor_camera_ti"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -1698,6 +1733,7 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
@@ -2129,16 +2165,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginEnd="17dp"
-                            android:layout_marginRight="17dp"
+                            android:layout_below="@+id/tv_10a_td_saulap"
                             android:gravity="bottom"
                             android:inputType="number"
                             tools:text="s" />
 
                     </RelativeLayout>
+
                 </LinearLayout>
 
                 <LinearLayout

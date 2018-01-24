@@ -188,6 +188,7 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
         private String ngayTrth;
         private String sobban;
         private boolean isHasTuTi;
+        private int ID_BBAN_TRTH;
         private Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU;
         private String NOI_DUNG_LOI_DONG_BO;
 
@@ -213,6 +214,14 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
 
         public void setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU) {
             this.TRANG_THAI_DU_LIEU = TRANG_THAI_DU_LIEU;
+        }
+
+        public int getID_BBAN_TRTH() {
+            return ID_BBAN_TRTH;
+        }
+
+        public void setID_BBAN_TRTH(int ID_BBAN_TRTH) {
+            this.ID_BBAN_TRTH = ID_BBAN_TRTH;
         }
 
         public String getNgayTrth() {

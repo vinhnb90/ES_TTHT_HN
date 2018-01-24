@@ -309,6 +309,8 @@ public class TthtHnSQLDAO extends SqlDAO {
                 ", " +
                 TABLE_BBAN_CTO.table.SO_BBAN.name() +
                 ", " +
+                TABLE_BBAN_CTO.table.ID_BBAN_TRTH.name() +
+                ", " +
                 TABLE_BBAN_CTO.table.TRANG_THAI_DU_LIEU.name() +
                 ", " +
                 TABLE_BBAN_CTO.table.NOI_DUNG_LOI_DONG_BO.name() +
@@ -339,6 +341,7 @@ public class TthtHnSQLDAO extends SqlDAO {
                 dataBBanAdapter.setNgayTrth(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.NGAY_TRTH.name())));
                 dataBBanAdapter.setSobban(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.SO_BBAN.name())));
                 dataBBanAdapter.setNOI_DUNG_LOI_DONG_BO(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.NOI_DUNG_LOI_DONG_BO.name())));
+                dataBBanAdapter.setID_BBAN_TRTH(cursor.getInt(cursor.getColumnIndex(TABLE_BBAN_CTO.table.ID_BBAN_TRTH.name())));
 
 
                 String sTRANG_THAI_DU_LIEU = cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.TRANG_THAI_DU_LIEU.name()));
@@ -369,6 +372,8 @@ public class TthtHnSQLDAO extends SqlDAO {
                 TABLE_BBAN_CTO.table.NGAY_TRTH.name() +
                 ", " +
                 TABLE_BBAN_CTO.table.SO_BBAN.name() +
+                ", " +
+                TABLE_BBAN_CTO.table.ID_BBAN_TRTH.name() +
                 ", " +
                 TABLE_BBAN_CTO.table.TRANG_THAI_DU_LIEU.name() +
                 ", " +
@@ -401,6 +406,8 @@ public class TthtHnSQLDAO extends SqlDAO {
                 dataBBanAdapter.setNgayTrth(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.NGAY_TRTH.name())));
                 dataBBanAdapter.setSobban(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.SO_BBAN.name())));
                 dataBBanAdapter.setNOI_DUNG_LOI_DONG_BO(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.NOI_DUNG_LOI_DONG_BO.name())));
+                dataBBanAdapter.setID_BBAN_TRTH(cursor.getInt(cursor.getColumnIndex(TABLE_BBAN_CTO.table.ID_BBAN_TRTH.name())));
+
 
                 String sTRANG_THAI_DU_LIEU = cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.TRANG_THAI_DU_LIEU.name()));
                 dataBBanAdapter.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(sTRANG_THAI_DU_LIEU));

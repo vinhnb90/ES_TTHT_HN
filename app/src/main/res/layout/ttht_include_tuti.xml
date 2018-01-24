@@ -1,15 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioGroup
+            android:id="@+id/rg_tuti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_tu"
+                android:height="@dimen/_24sdp"
+                android:layout_width="wrap_content"
+                android:buttonTint="@color/tththn_button"
+                android:textColor="@color/tththn_text_less_black"
+                android:layout_height="wrap_content"
+                android:text="Thiết bị TU" />
+
+            <RadioButton
+                android:id="@+id/rb_ti"
+                android:height="@dimen/_24sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:buttonTint="@color/tththn_button"
+                android:textColor="@color/tththn_text_less_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thiết bị TI" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/tv_tittle_tuti"
+            style="@style/textStyle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/rg_tuti"
+            android:text="Thiết bị TU TI tháo 1" />
+    </RelativeLayout>
 
     <LinearLayout
-        android:padding="@dimen/_5sdp"
-        android:background="@drawable/xml_tththn_rectangle6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,12 +61,13 @@
             android:weightSum="3"
             tools:visibility="visible">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_sotuti_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_sotuti_thao_add"
@@ -44,23 +86,23 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
 
-
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_sobbkdinh_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_sobbkdinh_thao_add"
                     style="@style/textStyle1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số biên bản kiểm định" />
+                    android:text="Số b,bản kiểm định" />
 
                 <EditText
                     android:id="@+id/et_sobbkdinh_thao_add"
@@ -72,16 +114,17 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_nuocsx_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_nuocsx_thao_add"
@@ -100,8 +143,9 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,12 +156,13 @@
             android:weightSum="3"
             tools:visibility="visible">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_dienaptuti_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_dienaptuti_thao_add"
@@ -136,16 +181,17 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_tysobientuti_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_tysobientuti_thao_add"
@@ -164,23 +210,24 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_tysovongtuti_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_tysovongtuti_thao_add"
                     style="@style/textStyle1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tỷ số vòng thành cái" />
+                    android:text="Tỷ số vòng" />
 
                 <EditText
                     android:id="@+id/et_tysovongtuti_thao_add"
@@ -192,7 +239,7 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -204,12 +251,13 @@
             android:weightSum="3"
             tools:visibility="visible">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_ngaykdinh_tuti_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_ngaykdinh_tuti_thao_add"
@@ -228,16 +276,17 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_ttvanhanh_tuti_thao_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="2">
+                android:layout_weight="2"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_ttvanhanh_tuti_thao_add"
@@ -256,7 +305,7 @@
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
                     tools:text="s" />
-            </RelativeLayout>
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -270,11 +319,12 @@
             android:weightSum="3"
             tools:visibility="visible">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_anh_tutithao"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/iv_anh_tuti_thao"
@@ -294,14 +344,15 @@
                     android:text="Chụp ảnh TU TI THÁO"
                     android:textColor="@color/text_white"
                     android:textSize="@dimen/_10sdp" />
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_anhnhithu_tuti_thao"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/iv_anhnhithu_tuti_thao"
@@ -323,14 +374,15 @@
                     android:text="Chụp ảnh mạch nhị thứ"
                     android:textColor="@color/text_white"
                     android:textSize="@dimen/_10sdp" />
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl_anhniemphong_tuti_thao"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/iv_anhniemphong_tuti_thao"
@@ -340,15 +392,6 @@
                     android:background="@drawable/xml_tththn_rectangle8"
                     android:text="Loại công tơ" />
 
-                <ImageButton
-                    android:id="@+id/ibtn_anhniemphong_tuti_thao"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/xml_tththn_rectangle7"
-                    android:src="@drawable/ic_tththn_camera"
-                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/btn_save_anhniemphong_tuti_thao"
@@ -361,9 +404,8 @@
                     android:text="Chụp ảnh niêm phong"
                     android:textColor="@color/text_white"
                     android:textSize="@dimen/_10sdp" />
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
-
 
     </LinearLayout>
 </LinearLayout>

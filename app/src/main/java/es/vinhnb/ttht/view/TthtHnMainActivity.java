@@ -1215,7 +1215,10 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
 
         fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(pos);
-        Fragment emptyFragment = showTopMenuFragment(TagMenuNaviLeft.EMPTY1, TagMenuTop.EMPTY);
+        Fragment emptyFragment = showTopMenuFragment(TagMenuNaviLeft.BBAN_CTO, TagMenuTop.EMPTY);
+
+        ID_BBAN_TRTH = dataBBanAdapter.getID_BBAN_TRTH();
+
         updateSessionBackstackFragment(emptyFragment, fragmentBBanTuTi, true);
 
     }
