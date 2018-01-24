@@ -58,7 +58,7 @@ import static es.vinhnb.ttht.common.Common.DELAY_PROGESS_PBAR;
 import static es.vinhnb.ttht.common.Common.TRANG_THAI_CHON_GUI.DA_CHON_GUI;
 import static es.vinhnb.ttht.common.Common.TRANG_THAI_DU_LIEU.GUI_THAT_BAI;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_TI;
-import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_TU;
+import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_TUTI;
 import static es.vinhnb.ttht.server.TthtHnApiInterface.IAsync.BUNDLE_DATA;
 import static es.vinhnb.ttht.server.TthtHnApiInterface.IAsync.ERROR_BODY;
 import static es.vinhnb.ttht.server.TthtHnApiInterface.IAsync.STATUS_CODE;
@@ -559,7 +559,7 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                                 //get ảnh tu treo
                                 if (tuTreo != null) {
                                     String[] argsAnh = new String[]{onIDataCommon.getMaNVien(), String.valueOf(tuTreo.getID_BBAN_TUTI()), String.valueOf(tuTreo.getID_CHITIET_TUTI())};
-                                    List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TU);
+                                    List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
                                     if (tableAnhHientruongList.size() != 0) {
                                         anhTU = tableAnhHientruongList.get(0);
 
@@ -579,7 +579,7 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
 
 
                                     //get anh nhi thu tu treo
-                                    tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TU);
+                                    tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI);
                                     if (tableAnhHientruongList.size() != 0) {
                                         anhNhiThuTU = tableAnhHientruongList.get(0);
 
@@ -598,7 +598,7 @@ public class TthtHnUploadFragment extends TthtHnBaseFragment {
                                     }
 
 
-                                    tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TU);
+                                    tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TUTI);
                                     if (tableAnhHientruongList.size() != 0) {
                                         anhNiemPhongTU = tableAnhHientruongList.get(0);
 

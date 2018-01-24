@@ -260,14 +260,16 @@
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:id="@+id/include_tuti"
-                    android:background="@drawable/xml_tththn_rectangle"
-                    android:layout_margin="@dimen/_5sdp"
+                    android:id="@+id/include_tutiE"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                 </LinearLayout>
 
+                <View
+                    android:id="@+id/v_mark_tutiE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                <!-- <include tools:layout="@layout/ttht_include_tuti" />-->
 
 

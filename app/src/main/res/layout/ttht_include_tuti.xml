@@ -3,9 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/_5sdp"
+    android:layout_marginLeft="@dimen/_5sdp"
+    android:layout_marginBottom="@dimen/_10sdp"
+    android:background="@drawable/xml_tththn_rectangle"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:layout_margin="@dimen/_5sdp"
+        android:elevation="@dimen/_5sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -40,6 +46,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/tv_tittle_tuti"
             style="@style/textStyle2"
+            android:textSize="@dimen/_13sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/rg_tuti"
@@ -77,6 +84,7 @@
                     android:text="Số TU TI Tháo" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_sotuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -105,6 +113,7 @@
                     android:text="Số b,bản kiểm định" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_sobbkdinh_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -134,6 +143,7 @@
                     android:text="Nước sản xuất" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_nuocsx_tuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -172,6 +182,7 @@
                     android:text="Điện áp" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_dienaptuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -201,6 +212,7 @@
                     android:text="Tỷ số biến" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_tysobientuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -230,6 +242,7 @@
                     android:text="Tỷ số vòng" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_tysovongtuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -267,6 +280,7 @@
                     android:text="Ngày kiểm định" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_ngaykdinh_tuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -296,6 +310,7 @@
                     android:text="Tình trạng vận hành" />
 
                 <EditText
+                    android:hint=""
                     android:id="@+id/et_ttvanhanh_tuti_thao_add"
                     style="@style/edittextStyle2"
                     android:layout_width="match_parent"
@@ -405,6 +420,19 @@
                     android:textColor="@color/text_white"
                     android:textSize="@dimen/_10sdp" />
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_save_data_tuti"
+                style="@style/buttonStyle1"
+                android:text="Lưu thông tin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </LinearLayout>

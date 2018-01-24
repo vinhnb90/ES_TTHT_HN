@@ -924,12 +924,12 @@ public class TthtHnSQLDAO extends SqlDAO {
                 break;
 
 
-            case IMAGE_TU:
+            case IMAGE_TUTI:
             case IMAGE_TI:
             case IMAGE_NIEM_PHONG_TI:
-            case IMAGE_NIEM_PHONG_TU:
+            case IMAGE_NIEM_PHONG_TUTI:
             case IMAGE_MACH_NHI_THU_TI:
-            case IMAGE_MACH_NHI_THU_TU:
+            case IMAGE_MACH_NHI_THU_TUTI:
                 query.append(" AND " +
                         TABLE_ANH_HIENTRUONG.table.ID_BBAN_TUTI.name() +
                         " = ?" +
