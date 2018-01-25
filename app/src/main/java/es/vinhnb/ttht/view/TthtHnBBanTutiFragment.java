@@ -8,13 +8,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -47,6 +47,7 @@ import es.vinhnb.ttht.database.table.TABLE_BBAN_TUTI;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_CTO;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_TUTI;
 import es.vinhnb.ttht.database.table.TABLE_LOAI_CONG_TO;
+import es.vinhnb.ttht.database.table.TABLE_LYDO_TREOTHAO;
 import es.vinhnb.ttht.database.table.TABLE_TRAM;
 import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
@@ -54,11 +55,8 @@ import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 import static android.content.ContentValues.TAG;
 import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.sqlite2;
 import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.type6;
-import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TI;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI;
-import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TUTI;
-import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_TI;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_TUTI;
 import static es.vinhnb.ttht.view.TthtHnBaseActivity.BUNDLE_POS;
 
@@ -125,8 +123,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     @BindView(R.id.tv_3a_diachi_tuti)
     TextView tvDiachiTuti;
 
-    @BindView(R.id.tv_4a_lydo_tuti)
-    TextView tvLydoTuti;
+    @BindView(R.id.autoet_4a_lydo_tuti)
+    AutoCompleteTextView autoetLydoTuti;
+
+    @BindView(R.id.ibtn_perform_lydotuti)
+    ImageButton ibtnLydoTuti;
 
     @BindView(R.id.tv_5b_magcs_tuti)
     TextView tvMaGcsTuti;
@@ -392,6 +393,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     private boolean isRefreshAnhNiemPhongTu;
     private boolean isRefreshAnhNiemPhongTi;
     private View viewRoot;
+    private List<TABLE_LYDO_TREOTHAO> tableLydoTreothaos;
 
 
     public TthtHnBBanTutiFragment() {
@@ -448,28 +450,16 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == CAMERA_REQUEST_ANH_TU) {
+            if (requestCode == CAMERA_REQUEST_ANH_TUTI) {
                 onActivityResultCapture(IMAGE_TUTI);
             }
 
-            if (requestCode == CAMERA_REQUEST_ANH_TI) {
-                onActivityResultCapture(IMAGE_TI);
-            }
-
-            if (requestCode == CAMERA_REQUEST_ANH_NHITHU_TU) {
+            if (requestCode == CAMERA_REQUEST_ANH_NHITHU_TUTI) {
                 onActivityResultCapture(IMAGE_MACH_NHI_THU_TUTI);
             }
 
-            if (requestCode == CAMERA_REQUEST_ANH_NHITHU_TI) {
-                onActivityResultCapture(IMAGE_MACH_NHI_THU_TI);
-            }
-
-            if (requestCode == CAMERA_REQUEST_ANH_NIEMPHONG_TU) {
+            if (requestCode == CAMERA_REQUEST_ANH_NIEMPHONG_TUTI) {
                 onActivityResultCapture(IMAGE_NIEM_PHONG_TUTI);
-            }
-
-            if (requestCode == CAMERA_REQUEST_ANH_NIEMPHONG_TI) {
-                onActivityResultCapture(IMAGE_NIEM_PHONG_TI);
             }
         } catch (Exception e) {
             ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
@@ -483,6 +473,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         String TEN_ANH = "";
         String pathURICapturedAnh = null;
 
+        boolean isTu = false;
+        if (maBdongTuTi == MA_BDONG.E) {
+            isTu = tutiListViewE.get(indexTuTi).isTu;
+        } else
+            isTu = tutiListViewB.get(indexTuTi).isTu;
 
         //scale ảnh
         switch (typeImage) {
@@ -493,28 +488,24 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
             case IMAGE_TUTI:
                 TEN_ANH = Common.getImageName(typeImage.code, timeFileCaptureAnhTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-                pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + TEN_ANH;
+                if (isTu)
+                    pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + TEN_ANH;
+                else
+                    pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
                 break;
             case IMAGE_MACH_NHI_THU_TUTI:
                 TEN_ANH = Common.getImageName(typeImage.code, timeFileCaptureAnhNhiThuTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-                pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + TEN_ANH;
+                if (isTu)
+                    pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + TEN_ANH;
+                else
+                    pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
                 break;
             case IMAGE_NIEM_PHONG_TUTI:
                 TEN_ANH = Common.getImageName(typeImage.code, timeFileCaptureAnhNiemPhongTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-                pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + TEN_ANH;
-                break;
-
-            case IMAGE_TI:
-                TEN_ANH = Common.getImageName(typeImage.code, timeFileCaptureAnhTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-                pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
-                break;
-            case IMAGE_MACH_NHI_THU_TI:
-                TEN_ANH = Common.getImageName(typeImage.code, timeFileCaptureAnhNhiThuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-                pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
-                break;
-            case IMAGE_NIEM_PHONG_TI:
-                TEN_ANH = Common.getImageName(typeImage.code, timeFileCaptureAnhNiemPhongTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-                pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
+                if (isTu)
+                    pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + TEN_ANH;
+                else
+                    pathURICapturedAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
                 break;
         }
 
@@ -530,7 +521,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         Bitmap bitmap = BitmapFactory.decodeFile(pathURICapturedAnh, options);
 
 
-        TABLE_ANH_HIENTRUONG TABLE_ANH_HIENTRUONGOld;
+        TABLE_ANH_HIENTRUONG TABLE_ANH_HIENTRUONGOld = new TABLE_ANH_HIENTRUONG();
         //set image and gắn cờ đã chụp lại ảnh
         switch (typeImage) {
             case IMAGE_CONG_TO:
@@ -539,90 +530,113 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
             case IMAGE_TUTI:
                 if (maBdongTuTi == MA_BDONG.B) {
-                    tutiListViewB.get(pos).setBitmap(typeImage, bitmap);
-                    tutiListViewB.get(pos).refreshView(tutiListViewB.get(pos).ivAnhTuti);
-                    tutiListViewB.get(pos).flagChangeData = true;
+                    tutiListViewB.get(indexTuTi).setBitmap(typeImage, bitmap);
+                    tutiListViewB.get(indexTuTi).refreshView(tutiListViewB.get(indexTuTi).ivAnhTuti);
+                    tutiListViewB.get(indexTuTi).flagChangeData = true;
 
+                    if (tutiListViewB.get(indexTuTi).anhTuTi != null) {
+                        TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhTuTi.clone();
+                    } else
+                        tutiListViewB.get(indexTuTi).anhTuTi = new TABLE_ANH_HIENTRUONG();
 
-                    TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhTuTi.clone();
-                    tutiListViewB.get(pos).anhTuTi.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
-                    tutiListViewB.get(pos).anhTuTi.setCREATE_DAY(timeFileCaptureAnhTuTi);
-                    tutiListViewB.get(pos).anhTuTi.setMA_NVIEN(onIDataCommom.getMaNVien());
-                    tutiListViewB.get(pos).anhTuTi.setTYPE(IMAGE_TUTI.code);
-                    tutiListViewB.get(pos).anhTuTi.setTEN_ANH(TEN_ANH);
-                    tutiListViewB.get(pos).anhTuTi.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewB.get(indexTuTi).anhTuTi));
+                    tutiListViewB.get(indexTuTi).anhTuTi.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
+                    tutiListViewB.get(indexTuTi).anhTuTi.setCREATE_DAY(timeFileCaptureAnhTuTi);
+                    tutiListViewB.get(indexTuTi).anhTuTi.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewB.get(indexTuTi).anhTuTi.setTYPE(IMAGE_TUTI.code);
+                    tutiListViewB.get(indexTuTi).anhTuTi.setTEN_ANH(TEN_ANH);
+                    tutiListViewB.get(indexTuTi).anhTuTi.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewB.get(indexTuTi).anhTuTi));
+
                 } else {
-                    tutiListViewE.get(pos).setBitmap(typeImage, bitmap);
-                    tutiListViewE.get(pos).refreshView(tutiListViewE.get(pos).ivAnhTuti);
-                    tutiListViewE.get(pos).flagChangeData = true;
+                    tutiListViewE.get(indexTuTi).setBitmap(typeImage, bitmap);
+                    tutiListViewE.get(indexTuTi).refreshView(tutiListViewE.get(indexTuTi).ivAnhTuti);
+                    tutiListViewE.get(indexTuTi).flagChangeData = true;
 
-                    TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewE.get(indexTuTi).anhTuTi.clone();
-                    tutiListViewE.get(pos).anhTuTi.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
-                    tutiListViewE.get(pos).anhTuTi.setCREATE_DAY(timeFileCaptureAnhTuTi);
-                    tutiListViewE.get(pos).anhTuTi.setMA_NVIEN(onIDataCommom.getMaNVien());
-                    tutiListViewE.get(pos).anhTuTi.setTYPE(IMAGE_TUTI.code);
-                    tutiListViewE.get(pos).anhTuTi.setTEN_ANH(TEN_ANH);
-                    tutiListViewE.get(pos).anhTuTi.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewE.get(indexTuTi).anhTuTi));
+                    if (tutiListViewE.get(indexTuTi).anhTuTi != null)
+                        TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewE.get(indexTuTi).anhTuTi.clone();
+                    else
+                        tutiListViewE.get(indexTuTi).anhTuTi = new TABLE_ANH_HIENTRUONG();
+
+
+                    tutiListViewE.get(indexTuTi).anhTuTi.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
+                    tutiListViewE.get(indexTuTi).anhTuTi.setCREATE_DAY(timeFileCaptureAnhTuTi);
+                    tutiListViewE.get(indexTuTi).anhTuTi.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewE.get(indexTuTi).anhTuTi.setTYPE(IMAGE_TUTI.code);
+                    tutiListViewE.get(indexTuTi).anhTuTi.setTEN_ANH(TEN_ANH);
+                    tutiListViewE.get(indexTuTi).anhTuTi.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewE.get(indexTuTi).anhTuTi));
                 }
                 break;
             case IMAGE_MACH_NHI_THU_TUTI:
                 if (maBdongTuTi == MA_BDONG.B) {
-                    tutiListViewB.get(pos).setBitmap(typeImage, bitmap);
-                    tutiListViewB.get(pos).refreshView(tutiListViewB.get(pos).ivAnhNhiThu);
-                    tutiListViewB.get(pos).flagChangeData = true;
+                    tutiListViewB.get(indexTuTi).setBitmap(typeImage, bitmap);
+                    tutiListViewB.get(indexTuTi).refreshView(tutiListViewB.get(indexTuTi).ivAnhNhiThu);
+                    tutiListViewB.get(indexTuTi).flagChangeData = true;
+
+                    if (tutiListViewB.get(indexTuTi).anhNhiThu != null)
+                        TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhNhiThu.clone();
+                    else
+                        tutiListViewB.get(indexTuTi).anhNhiThu = new TABLE_ANH_HIENTRUONG();
 
 
-                    TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhNhiThu.clone();
-                    tutiListViewB.get(pos).anhNhiThu.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
-                    tutiListViewB.get(pos).anhNhiThu.setCREATE_DAY(timeFileCaptureAnhNhiThuTuTi);
-                    tutiListViewB.get(pos).anhNhiThu.setMA_NVIEN(onIDataCommom.getMaNVien());
-                    tutiListViewB.get(pos).anhNhiThu.setTYPE(IMAGE_MACH_NHI_THU_TUTI.code);
-                    tutiListViewB.get(pos).anhNhiThu.setTEN_ANH(TEN_ANH);
-                    tutiListViewB.get(pos).anhNhiThu.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewB.get(indexTuTi).anhNhiThu));
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setCREATE_DAY(timeFileCaptureAnhNhiThuTuTi);
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setTYPE(IMAGE_MACH_NHI_THU_TUTI.code);
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setTEN_ANH(TEN_ANH);
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewB.get(indexTuTi).anhNhiThu));
 //
                 } else {
-                    tutiListViewE.get(pos).setBitmap(typeImage, bitmap);
-                    tutiListViewE.get(pos).refreshView(tutiListViewE.get(pos).ivAnhNhiThu);
-                    tutiListViewE.get(pos).flagChangeData = true;
+                    tutiListViewE.get(indexTuTi).setBitmap(typeImage, bitmap);
+                    tutiListViewE.get(indexTuTi).refreshView(tutiListViewE.get(indexTuTi).ivAnhNhiThu);
+                    tutiListViewE.get(indexTuTi).flagChangeData = true;
 
+                    if (tutiListViewE.get(indexTuTi).anhNhiThu != null)
+                        TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewE.get(indexTuTi).anhNhiThu.clone();
+                    else
+                        tutiListViewE.get(indexTuTi).anhNhiThu = new TABLE_ANH_HIENTRUONG();
 
-                    TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewE.get(indexTuTi).anhNhiThu.clone();
-                    tutiListViewE.get(pos).anhNhiThu.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
-                    tutiListViewE.get(pos).anhNhiThu.setCREATE_DAY(timeFileCaptureAnhNhiThuTuTi);
-                    tutiListViewE.get(pos).anhNhiThu.setMA_NVIEN(onIDataCommom.getMaNVien());
-                    tutiListViewE.get(pos).anhNhiThu.setTYPE(IMAGE_MACH_NHI_THU_TUTI.code);
-                    tutiListViewE.get(pos).anhNhiThu.setTEN_ANH(TEN_ANH);
-                    tutiListViewE.get(pos).anhNhiThu.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewE.get(indexTuTi).anhNhiThu));
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setCREATE_DAY(timeFileCaptureAnhNhiThuTuTi);
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setTYPE(IMAGE_MACH_NHI_THU_TUTI.code);
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setTEN_ANH(TEN_ANH);
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewE.get(indexTuTi).anhNhiThu));
 
                 }
                 break;
             case IMAGE_NIEM_PHONG_TUTI:
                 if (maBdongTuTi == MA_BDONG.B) {
-                    tutiListViewB.get(pos).setBitmap(typeImage, bitmap);
-                    tutiListViewB.get(pos).refreshView(tutiListViewB.get(pos).ivAnhNiemPhong);
-                    tutiListViewB.get(pos).flagChangeData = true;
+                    tutiListViewB.get(indexTuTi).setBitmap(typeImage, bitmap);
+                    tutiListViewB.get(indexTuTi).refreshView(tutiListViewB.get(indexTuTi).ivAnhNiemPhong);
+                    tutiListViewB.get(indexTuTi).flagChangeData = true;
 
+                    if (tutiListViewB.get(indexTuTi).anhNiemPhong != null)
+                        TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhNiemPhong.clone();
+                    else
+                        tutiListViewB.get(indexTuTi).anhNiemPhong = new TABLE_ANH_HIENTRUONG();
 
-                    TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhNiemPhong.clone();
-                    tutiListViewB.get(pos).anhNiemPhong.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
-                    tutiListViewB.get(pos).anhNiemPhong.setCREATE_DAY(timeFileCaptureAnhNiemPhongTuTi);
-                    tutiListViewB.get(pos).anhNiemPhong.setMA_NVIEN(onIDataCommom.getMaNVien());
-                    tutiListViewB.get(pos).anhNiemPhong.setTYPE(IMAGE_NIEM_PHONG_TUTI.code);
-                    tutiListViewB.get(pos).anhNiemPhong.setTEN_ANH(TEN_ANH);
-                    tutiListViewB.get(pos).anhNiemPhong.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewB.get(indexTuTi).anhNiemPhong));
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setCREATE_DAY(timeFileCaptureAnhNiemPhongTuTi);
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setTYPE(IMAGE_NIEM_PHONG_TUTI.code);
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setTEN_ANH(TEN_ANH);
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewB.get(indexTuTi).anhNiemPhong));
 //
                 } else {
-                    tutiListViewE.get(pos).setBitmap(typeImage, bitmap);
-                    tutiListViewE.get(pos).refreshView(tutiListViewE.get(pos).ivAnhNiemPhong);
-                    tutiListViewE.get(pos).flagChangeData = true;
+                    tutiListViewE.get(indexTuTi).setBitmap(typeImage, bitmap);
+                    tutiListViewE.get(indexTuTi).refreshView(tutiListViewE.get(indexTuTi).ivAnhNiemPhong);
+                    tutiListViewE.get(indexTuTi).flagChangeData = true;
 
-                    TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewB.get(indexTuTi).anhNiemPhong.clone();
-                    tutiListViewB.get(pos).anhNiemPhong.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
-                    tutiListViewB.get(pos).anhNiemPhong.setCREATE_DAY(timeFileCaptureAnhNiemPhongTuTi);
-                    tutiListViewB.get(pos).anhNiemPhong.setMA_NVIEN(onIDataCommom.getMaNVien());
-                    tutiListViewB.get(pos).anhNiemPhong.setTYPE(IMAGE_NIEM_PHONG_TUTI.code);
-                    tutiListViewB.get(pos).anhNiemPhong.setTEN_ANH(TEN_ANH);
-                    tutiListViewB.get(pos).anhNiemPhong.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewE.get(indexTuTi).anhNiemPhong));
+                    if (tutiListViewE.get(indexTuTi).anhNiemPhong != null)
+                        TABLE_ANH_HIENTRUONGOld = (TABLE_ANH_HIENTRUONG) tutiListViewE.get(indexTuTi).anhNiemPhong.clone();
+                    else
+                        tutiListViewE.get(indexTuTi).anhNiemPhong = new TABLE_ANH_HIENTRUONG();
+
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setCREATE_DAY(timeFileCaptureAnhNiemPhongTuTi);
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setTYPE(IMAGE_NIEM_PHONG_TUTI.code);
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setTEN_ANH(TEN_ANH);
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, TABLE_ANH_HIENTRUONGOld, tutiListViewE.get(indexTuTi).anhNiemPhong));
 
                 }
                 break;
@@ -750,6 +764,23 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 //            }
         }
 
+        //getInfo LyDo
+        String MA_DVIQLY = onIDataCommom.getLoginData().getmMaDvi();
+        String[] args = new String[]{MA_DVIQLY};
+        tableLydoTreothaos = null;
+        tableLydoTreothaos = mSqlDAO.getLydoTreothao(args);
+
+        Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU = null;
+        if (tableBbanTuti == null)
+            TRANG_THAI_DU_LIEU = TRANG_THAI_DU_LIEU.CHUA_GHI;
+        else
+            TRANG_THAI_DU_LIEU = Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(tableBbanTuti.getTRANG_THAI_DU_LIEU());
+        fillSpinLyDo(TRANG_THAI_DU_LIEU);
+
+        //fill KH
+        fillInfoKH();
+
+
         for (int i = 0; i < tutiListB.size(); i++) {
             DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTi);
             tutiListViewB.add(dataViewIncludeTuTi);
@@ -811,10 +842,6 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 //        tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI);
 //        if (tableAnhHientruongList.size() != 0)
 //            anhNiemPhongTI = tableAnhHientruongList.get(0);
-
-
-        //fill KH
-        fillInfoKH();
 
 
 //        //fill Tu thao
@@ -977,14 +1004,8 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             case IMAGE_TUTI:
             case IMAGE_MACH_NHI_THU_TUTI:
             case IMAGE_NIEM_PHONG_TUTI:
-                folderAnh = Common.FOLDER_NAME.FOLDER_ANH_TU.name();
 
-                break;
-            case IMAGE_TI:
-            case IMAGE_MACH_NHI_THU_TI:
-            case IMAGE_NIEM_PHONG_TI:
                 folderAnh = Common.FOLDER_NAME.FOLDER_ANH_TI.name();
-
                 break;
         }
 
@@ -1052,16 +1073,55 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         }
     }
 
-    private void fillInfoKH() {
-        if (tableBbanTuti != null) {
-            tvKHTuti.setText(tableBbanTuti.getTEN_KHANG());
-            tvDiachiTuti.setText(tableBbanTuti.getDCHI_HDON());
-            tvLydoTuti.setText(tableBbanTuti.getLY_DO_TREO_THAO());
-            tvMaGcsTuti.setText(tableBbanTuti.getMA_GCS_CTO());
+    private void fillSpinLyDo(Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU) throws Exception {
+
+        String MA_LDO = tableBbanCto.getMA_LDO();
+        int pos = 0;
+        for (int i = 0; i < tableLydoTreothaos.size(); i++) {
+            if (tableLydoTreothaos.get(i).getMA_LDO().equalsIgnoreCase(MA_LDO)) {
+                pos = i;
+                break;
+            }
         }
+
+
+        //set adapter
+        ArrayAdapter<TABLE_LYDO_TREOTHAO> adapterLydo = new ArrayAdapter<>(getActivity(),
+                R.layout.row_tththn_spin, tableLydoTreothaos);
+        adapterLydo.setDropDownViewResource(R.layout.row_tththn_spin_dropdown_select);
+        autoetLydoTuti.setAdapter(adapterLydo);
+        autoetLydoTuti.setText(tableLydoTreothaos.get(pos).toString());
+        autoetLydoTuti.setThreshold(2);
+        autoetLydoTuti.invalidate();
+
+        //nếu đã ghi
+        autoetLydoTuti.setEnabled(true);
+        if (TRANG_THAI_DU_LIEU == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS || TRANG_THAI_DU_LIEU == Common.TRANG_THAI_DU_LIEU.DA_XAC_NHAN_TREN_CMIS) {
+            autoetLydoTuti.setEnabled(false);
+            ibtnLydoTuti.setEnabled(false);
+        }
+    }
+
+    private void fillInfoKH() {
+        if (tableBbanCto != null) {
+            tvKHTuti.setText(tableBbanCto.getTEN_KHANG());
+            tvDiachiTuti.setText(tableBbanCto.getDCHI_HDON());
+            tvMaGcsTuti.setText(tableBbanCto.getMA_GCS_CTO());
+
+            tvKHTuti.setHint(tableBbanCto.getTEN_KHANG());
+            tvDiachiTuti.setHint(tableBbanCto.getDCHI_HDON());
+            tvMaGcsTuti.setHint(tableBbanCto.getMA_GCS_CTO());
+        }
+
+//        if(tableBbanTuti!=null){
+//            autoetLydoTuti.setText(tableBbanTuti.getLY_DO_TREO_THAO());
+//            autoetLydoTuti.setHint(tableBbanTuti.getLY_DO_TREO_THAO());
+//        }
 
         if (tableChitietCto != null) {
             tvSoNoTuti.setText(tableChitietCto.getSO_CTO());
+
+            tvSoNoTuti.setHint(tableChitietCto.getSO_CTO());
         }
     }
 
@@ -1134,6 +1194,16 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     };
 
     private void clickButton() {
+        ibtnLydoTuti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoetLydoTuti.performClick();
+                if (!autoetLydoTuti.getText().toString().equals(""))
+                    ((ArrayAdapter<String>) autoetLydoTuti.getAdapter()).getFilter().filter(null);
+                autoetLydoTuti.showDropDown();
+            }
+        });
+
         btnAddTuTiE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1147,7 +1217,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                                 public void run() {
                                     tutiListViewE.get(indexTuTi).btnSaveDataTuTi.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).btnSaveDataTuTi, tutiListViewE.get(indexTuTi).btnSaveDataTuTi);
                                     scrollViewTuti.scrollTo(0, tutiListViewE.get(indexTuTi).btnSaveDataTuTi.getTop());
-                                    Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_scale_view_push, 50);
+                                    Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 50);
                                 }
                             });
 
@@ -1174,7 +1244,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                                         maBdongTuTi = MA_BDONG.E;
                                         viewRoot.invalidate();
 
-                                        Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_scale_view_pull, 250);
+                                        Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 250);
                                     }
                                 });
                             } catch (Exception e) {
@@ -1183,9 +1253,9 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                             }
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    ((TthtHnBaseActivity) getActivity()).showSnackBar(e.getMessage(), null , null);
+                    ((TthtHnBaseActivity) getActivity()).showSnackBar(e.getMessage(), null, null);
                 }
 
             }
@@ -1215,7 +1285,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NIEMPHONG_TU);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NIEMPHONG_TUTI);
     }
 
     private void captureAnhNhiThuTu() throws IOException {
@@ -1239,15 +1309,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NHITHU_TU);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NHITHU_TUTI);
     }
 
     private void captureAnhTuTi(boolean isTU) throws IOException {
-        if (isTU)
-            timeFileCaptureAnhTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
-        else
-            timeFileCaptureAnhTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
-
+        timeFileCaptureAnhTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
         String SO_CTO = tableChitietCto.getSO_CTO();
@@ -1261,7 +1327,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         else
             fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name())
                     + "/"
-                    + Common.getImageName(IMAGE_TI.name(), timeFileCaptureAnhTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
+                    + Common.getImageName(IMAGE_TUTI.name(), timeFileCaptureAnhTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
         File file = new File(fileName);
         if (file.exists()) {
             file.delete();
@@ -1271,18 +1337,12 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        if (isTU)
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_TU);
-        else
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_TI);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_TUTI);
     }
 
 
     private void captureAnhNiemPhongTuTi(boolean isTu) throws IOException {
-        if (!isTu)
-            timeFileCaptureAnhNiemPhongTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
-        else
-            timeFileCaptureAnhNiemPhongTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
+        timeFileCaptureAnhNiemPhongTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
 
 
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
@@ -1291,15 +1351,14 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
         String fileName = "";
-        if (!isTu)
-            fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name())
-                    + "/"
-                    + Common.getImageName(Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TI.name(), timeFileCaptureAnhNiemPhongTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-        else
+        if (isTu)
             fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name())
                     + "/"
                     + Common.getImageName(Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TUTI.name(), timeFileCaptureAnhNiemPhongTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-
+        else
+            fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name())
+                    + "/"
+                    + Common.getImageName(Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TUTI.name(), timeFileCaptureAnhNiemPhongTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
 
         File file = new File(fileName);
         if (file.exists()) {
@@ -1311,17 +1370,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
 
-        if (!isTu)
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NIEMPHONG_TI);
-        else
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NIEMPHONG_TU);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NIEMPHONG_TUTI);
     }
 
     private void captureAnhNhiThuTuTi(boolean isTu) throws IOException {
-        if (!isTu)
-            timeFileCaptureAnhNhiThuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
-        else
-            timeFileCaptureAnhNhiThuTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
+        timeFileCaptureAnhNhiThuTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
 
 
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
@@ -1329,43 +1382,15 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         String SO_CTO = tableChitietCto.getSO_CTO();
 
         String fileName = "";
-        if (!isTu)
-            fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name())
-                    + "/"
-                    + Common.getImageName(Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TI.name(), timeFileCaptureAnhNhiThuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-        else
+        if (isTu)
             fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name())
                     + "/"
                     + Common.getImageName(Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI.name(), timeFileCaptureAnhNhiThuTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
 
-
-        File file = new File(fileName);
-        if (file.exists()) {
-            file.delete();
-        }
-        file.createNewFile();
-
-
-        Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-
-        if (!isTu)
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NHITHU_TI);
         else
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NHITHU_TU);
-    }
-
-    private void captureAnhTi() throws IOException {
-        timeFileCaptureAnhTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
-        String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
-        String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
-
-
-        final String fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name())
-                + "/"
-                + Common.getImageName(Common.TYPE_IMAGE.IMAGE_TI.name(), timeFileCaptureAnhTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
-
+            fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TI.name())
+                    + "/"
+                    + Common.getImageName(Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI.name(), timeFileCaptureAnhNhiThuTuTi, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO);
 
         File file = new File(fileName);
         if (file.exists()) {
@@ -1376,8 +1401,10 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_TI);
+
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_ANH_NHITHU_TUTI);
     }
+
 
     private void clickMenuBottom() {
         ibtnGhiTuti.setOnClickListener(new View.OnClickListener() {
@@ -1398,24 +1425,114 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
     private void saveDataTuti(int pos) throws Exception {
 
-        //data common
+
         Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(tableChitietCto.getLOAI_CTO());
+        try {
+            //nếu chưa có biên bản thì tạo biên bản TU TI
+            if (tableBbanTuti == null) {
+                tableBbanTuti = new TABLE_BBAN_TUTI();
+                tableBbanTuti.setTEN_KHANG(tvKHTuti.getText().toString());
+                tableBbanTuti.setMA_DVIQLY(tableBbanCto.getMA_DVIQLY());
+                tableBbanTuti.setID_BBAN_TUTI(-1);
+                tableBbanTuti.setMA_DDO(tableBbanCto.getMA_DDO());
+                tableBbanTuti.setSO_BBAN("");
+                tableBbanTuti.setNGAY_TRTH(tableBbanCto.getNGAY_TRTH());
+                tableBbanTuti.setMA_NVIEN(tableBbanCto.getMA_NVIEN());
+                tableBbanTuti.setTRANG_THAI("");
+                tableBbanTuti.setTEN_KHANG(tvKHTuti.getText().toString());
+                tableBbanTuti.setDCHI_HDON(tvDiachiTuti.getText().toString());
+                tableBbanTuti.setDTHOAI(tableBbanCto.getDTHOAI());
+                tableBbanTuti.setMA_GCS_CTO(tableBbanCto.getMA_GCS_CTO());
+                tableBbanTuti.setMA_TRAM(tableBbanCto.getMA_TRAM());
+                tableBbanTuti.setLY_DO_TREO_THAO(autoetLydoTuti.getText().toString());
+                tableBbanTuti.setMA_KHANG(tableBbanCto.getMA_KHANG());
+                tableBbanTuti.setID_BBAN_WEB_TUTI(-1);
+                tableBbanTuti.setNVIEN_KCHI(tableBbanCto.getTEN_NVIEN_TREO_THAO());
+                tableBbanTuti.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.DA_GHI.content);
+                tableBbanTuti.setIS_BBAN_HIENTRUONG(Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG.content);
+                tableBbanTuti.setID_TABLE_BBAN_TUTI((int) mSqlDAO.insert(TABLE_BBAN_TUTI.class, tableBbanTuti));
+
+            }
+
+            if (tableBbanTuti.getID_TABLE_BBAN_TUTI() < 0)
+                throw new Exception("Gặp lỗi khi tạo biên bản TU TI ngoài hiện trường!");
 
 
-        if (maBdongTuTi == MA_BDONG.B) {
-            tutiListViewB.get(pos).setBitmap(IMAGE_TUTI, saveAndGetBitmap(IMAGE_TUTI));
-            tutiListViewB.get(pos).setBitmap(IMAGE_MACH_NHI_THU_TUTI, saveAndGetBitmap(IMAGE_MACH_NHI_THU_TUTI));
-            tutiListViewB.get(pos).setBitmap(IMAGE_NIEM_PHONG_TUTI, saveAndGetBitmap(IMAGE_NIEM_PHONG_TUTI));
+            //lưu ảnh TU TI
+            if (maBdongTuTi == MA_BDONG.B) {
+                tutiListViewB.get(pos).setBitmap(IMAGE_TUTI, saveAndGetBitmap(IMAGE_TUTI));
+                tutiListViewB.get(pos).setBitmap(IMAGE_MACH_NHI_THU_TUTI, saveAndGetBitmap(IMAGE_MACH_NHI_THU_TUTI));
+                tutiListViewB.get(pos).setBitmap(IMAGE_NIEM_PHONG_TUTI, saveAndGetBitmap(IMAGE_NIEM_PHONG_TUTI));
 
-            //reset
-            tutiListViewB.get(pos).flagChangeData = false;
-        } else {
-            tutiListViewE.get(pos).setBitmap(IMAGE_TUTI, saveAndGetBitmap(IMAGE_TUTI));
-            tutiListViewE.get(pos).setBitmap(IMAGE_MACH_NHI_THU_TUTI, saveAndGetBitmap(IMAGE_MACH_NHI_THU_TUTI));
-            tutiListViewE.get(pos).setBitmap(IMAGE_NIEM_PHONG_TUTI, saveAndGetBitmap(IMAGE_NIEM_PHONG_TUTI));
+                //reset
+                tutiListViewB.get(pos).flagChangeData = false;
 
-            //reset
-            tutiListViewE.get(pos).flagChangeData = false;
+            } else {
+                tutiListViewE.get(pos).setBitmap(IMAGE_TUTI, saveAndGetBitmap(IMAGE_TUTI));
+                tutiListViewE.get(pos).setBitmap(IMAGE_MACH_NHI_THU_TUTI, saveAndGetBitmap(IMAGE_MACH_NHI_THU_TUTI));
+                tutiListViewE.get(pos).setBitmap(IMAGE_NIEM_PHONG_TUTI, saveAndGetBitmap(IMAGE_NIEM_PHONG_TUTI));
+
+                //reset
+                tutiListViewE.get(pos).flagChangeData = false;
+
+            }
+
+            //lưu dữ liệu TU TI
+            if (maBdongTuTi == MA_BDONG.B) {
+                if(tutiListViewB.get(pos).tuti==null)
+                    tutiListViewB.get(pos).tuti=new TABLE_CHITIET_TUTI();
+                TABLE_CHITIET_TUTI tutiListViewBOld = (TABLE_CHITIET_TUTI) tutiListViewB.get(pos).tuti.clone();
+                tutiListViewB.get(pos).tuti.setCAP_CXAC(-1);
+                tutiListViewB.get(pos).tuti.setCAP_DAP(-1);
+                tutiListViewB.get(pos).tuti.setID_BBAN_TUTI(-1);
+                tutiListViewB.get(pos).tuti.setID_CHITIET_TUTI(-1);
+                tutiListViewB.get(pos).tuti.setIS_TU(Common.IS_TU.findIS_TU(tutiListViewB.get(pos).isTu).content);
+                tutiListViewB.get(pos).tuti.setLOAI_TU_TI("");
+                tutiListViewB.get(pos).tuti.setMA_BDONG(maBdongTuTi.code);
+                tutiListViewB.get(pos).tuti.setMA_CHI_HOP_DDAY("");
+                tutiListViewB.get(pos).tuti.setMA_CHI_KDINH("");
+                tutiListViewB.get(pos).tuti.setMA_CLOAI("");
+                tutiListViewB.get(pos).tuti.setMA_DVIQLY(tableBbanCto.getMA_DVIQLY());
+                tutiListViewB.get(pos).tuti.setMO_TA("");
+
+                tutiListViewB.get(pos).tuti.setSO_PHA(-1);
+                tutiListViewB.get(pos).tuti.setTYSO_DAU("");
+                tutiListViewB.get(pos).tuti.setMA_NUOC("");
+                tutiListViewB.get(pos).tuti.setMA_HANG("");
+                tutiListViewB.get(pos).tuti.setTRANG_THAI(-1);
+                tutiListViewB.get(pos).tuti.setSO_TU_TI(tutiListViewB.get(pos).etSoTuTi.toString());
+                tutiListViewB.get(pos).tuti.setNUOC_SX(tutiListViewB.get(pos).etNuocSX.toString());
+                tutiListViewB.get(pos).tuti.setSO_TEM_KDINH("");
+                tutiListViewB.get(pos).tuti.setNGAY_KDINH(tutiListViewB.get(pos).etNgayKDinh.toString());
+                tutiListViewB.get(pos).tuti.setMA_CHI_KDINH("");
+                tutiListViewB.get(pos).tuti.setMA_CHI_HOP_DDAY("");
+
+                tutiListViewB.get(pos).tuti.setSO_VONG_THANH_CAI(Integer.parseInt(tutiListViewB.get(pos).etTysoVongTuTi.toString()));
+                tutiListViewB.get(pos).tuti.setTYSO_BIEN(tutiListViewB.get(pos).etTysobienTuTi.toString());
+                tutiListViewB.get(pos).tuti.setMA_NVIEN(tableBbanCto.getMA_NVIEN());
+
+                tutiListViewB.get(pos).setHintAfterSave();
+
+                tutiListViewB.get(pos).tuti.setID_CHITIET_TUTI();
+                tutiListViewBOld
+            }else {
+
+
+                tutiListViewE.get(pos).setHintAfterSave();
+            }
+            tuti
+
+        } catch (Exception e) {
+            String[] collumnCheck = new String[]{
+                    TABLE_BBAN_TUTI.table.ID_TABLE_BBAN_TUTI.name()
+            };
+            String[] valuesCheck = new String[]{
+                    String.valueOf(tableBbanTuti.getID_TABLE_BBAN_TUTI())
+            };
+
+            int rowdelete = mSqlDAO.deleteRows(TABLE_BBAN_TUTI.class, collumnCheck, valuesCheck);
+            tableBbanTuti = null;
+            throw e;
         }
 
 
@@ -1509,7 +1626,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 if ((maBdongTuTi == MA_BDONG.B)) {
                     SO_TUTI_DRAW = (tutiListViewB.get(pos).isTu) ? "SỐ TU" : "SỐ TI" + " TREO: " + tutiListViewB.get(pos).etSoTuTi.getText().toString();
                 } else
-                    SO_TUTI_DRAW = (tutiListViewB.get(pos).isTu) ? "SỐ TU" : "SỐ TI" + " THÁO: " + tutiListViewB.get(pos).etSoTuTi.getText().toString();
+                    SO_TUTI_DRAW = (tutiListViewE.get(pos).isTu) ? "SỐ TU" : "SỐ TI" + " THÁO: " + tutiListViewE.get(pos).etSoTuTi.getText().toString();
                 break;
         }
 
@@ -1536,35 +1653,13 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 return null;
 
             case IMAGE_TUTI:
-                String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tableChitietCto.getID_CHITIET_CTO())};
-                List<TABLE_ANH_HIENTRUONG> anhTuTiList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_TUTI);
-
-                if (anhTuTiList.size() != 0) {
-                    TABLE_ANH_HIENTRUONG anhTuTiOld = anhTuTiList.get(0);
-                    ((LazyList<TABLE_ANH_HIENTRUONG>) anhTuTiList).closeCursor();
-                    pathOldAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + anhTuTiOld.getTEN_ANH();
-                }
-
+                pathOldAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewE.get(pos).anhTuTi.getTEN_ANH();
                 break;
             case IMAGE_MACH_NHI_THU_TUTI:
-                argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tableChitietCto.getID_CHITIET_CTO())};
-                List<TABLE_ANH_HIENTRUONG> anhNhiThuTuTiList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI);
-
-                if (anhNhiThuTuTiList.size() != 0) {
-                    TABLE_ANH_HIENTRUONG anhNhiThuTuTiOld = anhNhiThuTuTiList.get(0);
-                    ((LazyList<TABLE_ANH_HIENTRUONG>) anhNhiThuTuTiList).closeCursor();
-                    pathOldAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + anhNhiThuTuTiOld.getTEN_ANH();
-                }
+                pathOldAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewE.get(pos).anhNhiThu.getTEN_ANH();
                 break;
             case IMAGE_NIEM_PHONG_TUTI:
-                argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tableChitietCto.getID_CHITIET_CTO())};
-                List<TABLE_ANH_HIENTRUONG> anhNiemPhongTuTiList = mSqlDAO.getAnhHienTruong(argsAnh, Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI);
-
-                if (anhNiemPhongTuTiList.size() != 0) {
-                    TABLE_ANH_HIENTRUONG anhNiemPhongTuTiOld = anhNiemPhongTuTiList.get(0);
-                    ((LazyList<TABLE_ANH_HIENTRUONG>) anhNiemPhongTuTiList).closeCursor();
-                    pathOldAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + anhNiemPhongTuTiOld.getTEN_ANH();
-                }
+                pathOldAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewE.get(pos).anhNiemPhong.getTEN_ANH();
                 break;
         }
 
@@ -1576,19 +1671,45 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 return null;
 
             case IMAGE_TUTI:
-                anhTU.setCREATE_DAY(timeSQLSaveAnh);
-                anhTU.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
-                pathNewAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + anhTU.getTEN_ANH();
+                if (maBdongTuTi == MA_BDONG.E) {
+                    tableAnhHientruongOld = tutiListViewE.get(indexTuTi).anhTuTi;
+                    tutiListViewE.get(indexTuTi).anhTuTi.setCREATE_DAY(timeSQLSaveAnh);
+                    tutiListViewE.get(indexTuTi).anhTuTi.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
+                    pathNewAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewE.get(indexTuTi).anhTuTi.getTEN_ANH();
+                } else {
+                    tableAnhHientruongOld = tutiListViewB.get(indexTuTi).anhTuTi;
+                    tutiListViewB.get(indexTuTi).anhTuTi.setCREATE_DAY(timeSQLSaveAnh);
+                    tutiListViewB.get(indexTuTi).anhTuTi.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
+                    pathNewAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewB.get(indexTuTi).anhTuTi.getTEN_ANH();
+                }
                 break;
             case IMAGE_MACH_NHI_THU_TUTI:
-                anhNhiThuTU.setCREATE_DAY(timeSQLSaveAnh);
-                anhNhiThuTU.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
-                pathNewAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + anhNhiThuTU.getTEN_ANH();
+                if (maBdongTuTi == MA_BDONG.E) {
+                    tableAnhHientruongOld = tutiListViewE.get(indexTuTi).anhNhiThu;
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setCREATE_DAY(timeSQLSaveAnh);
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
+                    pathNewAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewE.get(indexTuTi).anhNhiThu.getTEN_ANH();
+                } else {
+                    tableAnhHientruongOld = tutiListViewB.get(indexTuTi).anhNhiThu;
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setCREATE_DAY(timeSQLSaveAnh);
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
+                    pathNewAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewB.get(indexTuTi).anhNhiThu.getTEN_ANH();
+                }
+
                 break;
             case IMAGE_NIEM_PHONG_TUTI:
-                anhNiemPhongTU.setCREATE_DAY(timeSQLSaveAnh);
-                anhNiemPhongTU.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
-                pathNewAnh = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name()) + "/" + anhNiemPhongTU.getTEN_ANH();
+                if (maBdongTuTi == MA_BDONG.E) {
+                    tableAnhHientruongOld = tutiListViewE.get(indexTuTi).anhNiemPhong;
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setCREATE_DAY(timeSQLSaveAnh);
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
+                    pathNewAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewE.get(indexTuTi).anhNiemPhong.getTEN_ANH();
+                } else {
+                    tableAnhHientruongOld = tutiListViewB.get(indexTuTi).anhNiemPhong;
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setCREATE_DAY(timeSQLSaveAnh);
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setTEN_ANH(Common.getImageName(typeImage.code, timeNameFileCapturedAnh, MA_DVIQLY, MA_TRAM, onIDataCommom.getID_BBAN_TRTH(), SO_CTO));
+                    pathNewAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + tutiListViewB.get(indexTuTi).anhNiemPhong.getTEN_ANH();
+                }
+
                 break;
         }
 
@@ -1607,41 +1728,43 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 return null;
 
             case IMAGE_TUTI:
-                anhTU.setMA_NVIEN(onIDataCommom.getMaNVien());
-                anhTU.setID_BBAN_TUTI(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO());
-                anhTU.setID_CHITIET_TUTI(tuTreo.getID_CHITIET_TUTI());
-                anhTU.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, anhTU));
+                if (maBdongTuTi == MA_BDONG.E) {
+                    tutiListViewE.get(indexTuTi).anhTuTi.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewE.get(indexTuTi).anhTuTi.setID_BBAN_TUTI(tableBbanTuti.getID_BBAN_TUTI());
+                    tutiListViewE.get(indexTuTi).anhTuTi.setID_CHITIET_TUTI(-1);
+                    tutiListViewE.get(indexTuTi).anhTuTi.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, tutiListViewE.get(indexTuTi).anhTuTi));
+                } else {
+                    tutiListViewB.get(indexTuTi).anhTuTi.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewB.get(indexTuTi).anhTuTi.setID_BBAN_TUTI(tableBbanTuti.getID_BBAN_TUTI());
+                    tutiListViewB.get(indexTuTi).anhTuTi.setID_CHITIET_TUTI(-1);
+                    tutiListViewB.get(indexTuTi).anhTuTi.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, tutiListViewB.get(indexTuTi).anhTuTi));
+                }
                 break;
             case IMAGE_MACH_NHI_THU_TUTI:
-                anhNhiThuTU.setMA_NVIEN(onIDataCommom.getMaNVien());
-                anhNhiThuTU.setID_BBAN_TUTI(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO());
-                anhNhiThuTU.setID_CHITIET_TUTI(tuTreo.getID_CHITIET_TUTI());
-                anhNhiThuTU.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, anhNhiThuTU));
+                if (maBdongTuTi == MA_BDONG.E) {
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setID_BBAN_TUTI(tableBbanTuti.getID_BBAN_TUTI());
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setID_CHITIET_TUTI(-1);
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, tutiListViewE.get(indexTuTi).anhNhiThu));
+                } else {
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setID_BBAN_TUTI(tableBbanTuti.getID_BBAN_TUTI());
+                    tutiListViewB.get(indexTuTi).anhNhiThu.setID_CHITIET_TUTI(-1);
+                    tutiListViewE.get(indexTuTi).anhNhiThu.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, tutiListViewB.get(indexTuTi).anhNhiThu));
+                }
                 break;
             case IMAGE_NIEM_PHONG_TUTI:
-                anhNiemPhongTU.setMA_NVIEN(onIDataCommom.getMaNVien());
-                anhNiemPhongTU.setID_BBAN_TUTI(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO());
-                anhNiemPhongTU.setID_CHITIET_TUTI(tuTreo.getID_CHITIET_TUTI());
-                anhNiemPhongTU.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, anhNiemPhongTU));
-                break;
-
-            case IMAGE_TI:
-                anhTI.setMA_NVIEN(onIDataCommom.getMaNVien());
-                anhTI.setID_BBAN_TUTI(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO());
-                anhTI.setID_CHITIET_TUTI(tiTreo.getID_CHITIET_TUTI());
-                anhTI.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, anhTI));
-                break;
-            case IMAGE_MACH_NHI_THU_TI:
-                anhNhiThuTI.setMA_NVIEN(onIDataCommom.getMaNVien());
-                anhNhiThuTI.setID_BBAN_TUTI(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO());
-                anhNhiThuTI.setID_CHITIET_TUTI(tiTreo.getID_CHITIET_TUTI());
-                anhNhiThuTI.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, anhNhiThuTI));
-                break;
-            case IMAGE_NIEM_PHONG_TI:
-                anhNiemPhongTI.setMA_NVIEN(onIDataCommom.getMaNVien());
-                anhNiemPhongTI.setID_BBAN_TUTI(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO());
-                anhNiemPhongTI.setID_CHITIET_TUTI(tiTreo.getID_CHITIET_TUTI());
-                anhNiemPhongTI.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, anhNiemPhongTI));
+                if (maBdongTuTi == MA_BDONG.E) {
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setID_BBAN_TUTI(tableBbanTuti.getID_BBAN_TUTI());
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setID_CHITIET_TUTI(-1);
+                    tutiListViewE.get(indexTuTi).anhNiemPhong.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, tutiListViewE.get(indexTuTi).anhNiemPhong));
+                } else {
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setMA_NVIEN(onIDataCommom.getMaNVien());
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setID_BBAN_TUTI(tableBbanTuti.getID_BBAN_TUTI());
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setID_CHITIET_TUTI(-1);
+                    tutiListViewB.get(indexTuTi).anhNiemPhong.setID_TABLE_ANH_HIENTRUONG((int) mSqlDAO.updateORInsertRows(TABLE_ANH_HIENTRUONG.class, tableAnhHientruongOld, tutiListViewB.get(indexTuTi).anhNiemPhong));
+                }
                 break;
         }
 
@@ -1771,7 +1894,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         MA_BDONG MA_BDONG;
         boolean flagChangeData;
 
-        String stringEtSoTuTi, stringEtSoBBKdinh, stringEtNuocSX, stringEtDienApTuTi, stringEtTysobienTuTi, stringEtTysoVongTuTi, stringEtNgayKDinh, stringEtTinhTrangVanHanh;
+        String stringEtSoTuTi = "", stringEtSoBBKdinh = "",
+                stringEtNuocSX = "", stringEtDienApTuTi = "",
+                stringEtTysobienTuTi = "", stringEtTysoVongTuTi = "",
+                stringEtNgayKDinh = "", stringEtTinhTrangVanHanh = "";
+
         Bitmap bitmapAnhTuTi, bitmapAnhNhiThu, bitmapAnhNiemPhong;
 
 
@@ -1779,36 +1906,38 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         TABLE_ANH_HIENTRUONG anhNhiThu;
         TABLE_ANH_HIENTRUONG anhNiemPhong;
 
+        TABLE_CHITIET_TUTI tuti;
+
         public DataViewIncludeTuTi(Context context, ListenerViewInCludeTuTi listener) {
             super(context);
 
             this.listener = listener;
 
             rowView = LayoutInflater.from(context).inflate(R.layout.ttht_include_tuti, null);
-            etSoTuTi = (EditText)rowView.findViewById(R.id.et_sotuti_thao_add);
-            etSoBBKdinh = (EditText)rowView.findViewById(R.id.et_sobbkdinh_thao_add);
-            etNuocSX = (EditText)rowView.findViewById(R.id.et_nuocsx_tuti_thao_add);
-            etDienApTuTi = (EditText)rowView.findViewById(R.id.et_dienaptuti_thao_add);
+            etSoTuTi = (EditText) rowView.findViewById(R.id.et_sotuti_thao_add);
+            etSoBBKdinh = (EditText) rowView.findViewById(R.id.et_sobbkdinh_thao_add);
+            etNuocSX = (EditText) rowView.findViewById(R.id.et_nuocsx_tuti_thao_add);
+            etDienApTuTi = (EditText) rowView.findViewById(R.id.et_dienaptuti_thao_add);
 
-            etTysobienTuTi = (EditText)rowView.findViewById(R.id.et_tysobientuti_thao_add);
-            etTysoVongTuTi = (EditText)rowView.findViewById(R.id.et_tysovongtuti_thao_add);
+            etTysobienTuTi = (EditText) rowView.findViewById(R.id.et_tysobientuti_thao_add);
+            etTysoVongTuTi = (EditText) rowView.findViewById(R.id.et_tysovongtuti_thao_add);
 
-            etNgayKDinh = (EditText)rowView.findViewById(R.id.et_ngaykdinh_tuti_thao_add);
-            etTinhTrangVanHanh = (EditText)rowView.findViewById(R.id.et_ttvanhanh_tuti_thao_add);
+            etNgayKDinh = (EditText) rowView.findViewById(R.id.et_ngaykdinh_tuti_thao_add);
+            etTinhTrangVanHanh = (EditText) rowView.findViewById(R.id.et_ttvanhanh_tuti_thao_add);
 
 
-            ivAnhTuti = (ImageView)rowView.findViewById(R.id.iv_anh_tuti_thao);
-            ivAnhNhiThu = (ImageView)rowView.findViewById(R.id.iv_anhnhithu_tuti_thao);
-            ivAnhNiemPhong = (ImageView)rowView.findViewById(R.id.iv_anhniemphong_tuti_thao);
+            ivAnhTuti = (ImageView) rowView.findViewById(R.id.iv_anh_tuti_thao);
+            ivAnhNhiThu = (ImageView) rowView.findViewById(R.id.iv_anhnhithu_tuti_thao);
+            ivAnhNiemPhong = (ImageView) rowView.findViewById(R.id.iv_anhniemphong_tuti_thao);
 
             btnAnhTuti = (Button) rowView.findViewById(R.id.btn_anh_tuti_thao);
             btnAnhNhiThu = (Button) rowView.findViewById(R.id.btn_saveannhithu_tuti_thao);
             btnAnhNiemPhong = (Button) rowView.findViewById(R.id.btn_save_anhniemphong_tuti_thao);
 
-            tvTitle = (TextView)rowView.findViewById(R.id.tv_tittle_tuti);
-            rgTuTi = (RadioGroup)rowView.findViewById(R.id.rg_tuti);
-            rbTu = (RadioButton)rowView.findViewById(R.id.rb_tu);
-            rbTi = (RadioButton)rowView.findViewById(R.id.rb_ti);
+            tvTitle = (TextView) rowView.findViewById(R.id.tv_tittle_tuti);
+            rgTuTi = (RadioGroup) rowView.findViewById(R.id.rg_tuti);
+            rbTu = (RadioButton) rowView.findViewById(R.id.rb_tu);
+            rbTi = (RadioButton) rowView.findViewById(R.id.rb_ti);
 
             btnSaveDataTuTi = rowView.findViewById(R.id.btn_save_data_tuti);
 
@@ -1846,7 +1975,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 }
             });
 
-            btnAnhTuti.setOnClickListener(new OnClickListener() {
+            btnAnhNiemPhong.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     listener.clickbtnAnhNiemPhong(isTu, index);
@@ -1926,7 +2055,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                     if (rbTi.isPressed()) {
                         if (b) {
                             isTu = false;
-                            tvTitle.setText("Thông tin TI " + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index);
+                            tvTitle.setText("Thông tin TI " + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
 
                             rowView.post(new Runnable() {
                                 @Override
@@ -1947,7 +2076,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                     if (rbTu.isPressed()) {
                         if (b) {
                             isTu = true;
-                            tvTitle.setText("Thông tin TU " + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index);
+                            tvTitle.setText("Thông tin TU " + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
 
                             rowView.post(new Runnable() {
                                 @Override
@@ -1959,6 +2088,13 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                             refreshView();
                         }
                     }
+                }
+            });
+
+            btnSaveDataTuTi.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.saveDataTuTi(index);
                 }
             });
             //endregion
@@ -1983,7 +2119,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         }
 
         private void fillData() {
-            tvTitle.setText("Thông tin " + ((isTu) ? "TU " : "TI ") + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index);
+            tvTitle.setText("Thông tin " + ((isTu) ? "TU " : "TI ") + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
             rbTu.setChecked(isTu);
             rbTi.setChecked(!isTu);
 
@@ -2036,21 +2172,39 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
             messageSave = (bitmapAnhTuTi == null) ? messageSave : "Vui lòng chụp ảnh niêm phong!";
 
-            TextInputEditText parentEtSoTuTi = (TextInputEditText) etSoTuTi.getParent();
+            boolean isHasChangeDataEditText = etSoTuTi.getText().toString().equalsIgnoreCase(etSoTuTi.getHint().toString())
+                    || etSoBBKdinh.getText().toString().equalsIgnoreCase(etSoBBKdinh.getHint().toString())
+                    || etNuocSX.getText().toString().equalsIgnoreCase(etNuocSX.getHint().toString())
+                    || etDienApTuTi.getText().toString().equalsIgnoreCase(etDienApTuTi.getHint().toString())
+                    || etTysobienTuTi.getText().toString().equalsIgnoreCase(etTysobienTuTi.getHint().toString())
+                    || etTysoVongTuTi.getText().toString().equalsIgnoreCase(etTysoVongTuTi.getHint().toString())
+                    || etNgayKDinh.getText().toString().equalsIgnoreCase(etNgayKDinh.getHint().toString())
+                    || etTinhTrangVanHanh.getText().toString().equalsIgnoreCase(etTinhTrangVanHanh.getHint().toString());
 
-            boolean isHasChangeDataEditText = etSoTuTi.getText().toString().equalsIgnoreCase(((TextInputEditText)etSoTuTi.getParent()).getHint().toString())
-                    || etSoBBKdinh.getText().toString().equalsIgnoreCase(((TextInputEditText)etSoBBKdinh.getParent()).getHint().toString())
-                    || etNuocSX.getText().toString().equalsIgnoreCase(((TextInputEditText)etNuocSX.getParent()).getHint().toString())
-                    || etDienApTuTi.getText().toString().equalsIgnoreCase(((TextInputEditText)etDienApTuTi.getParent()).getHint().toString())
-                    || etTysobienTuTi.getText().toString().equalsIgnoreCase(((TextInputEditText)etTysobienTuTi.getParent()).getHint().toString())
-                    || etTysoVongTuTi.getText().toString().equalsIgnoreCase(((TextInputEditText)etTysoVongTuTi.getParent()).getHint().toString())
-                    || etNgayKDinh.getText().toString().equalsIgnoreCase(((TextInputEditText)etNgayKDinh.getParent()).getHint().toString())
-                    || etTinhTrangVanHanh.getText().toString().equalsIgnoreCase(((TextInputEditText)etTinhTrangVanHanh.getParent()).getHint().toString())
-                    ;
 
-            messageSave = isHasChangeDataEditText ? messageSave : "Vui lòng lưu thông tin Tu hoặc Ti sau khi thay đổi dữ liệu";
+            messageSave = isHasChangeDataEditText ? "Cần lưu thông tin Tu hoặc Ti trước" : messageSave;
 
             return messageSave;
+        }
+
+        public void setHintAfterSave() {
+            stringEtSoTuTi = etSoTuTi.getText().toString();
+            stringEtSoBBKdinh = etSoBBKdinh.getText().toString();
+            stringEtNuocSX = etNuocSX.getText().toString();
+            stringEtDienApTuTi = etDienApTuTi.getText().toString();
+            stringEtTysobienTuTi = etTysobienTuTi.getText().toString();
+            stringEtTysoVongTuTi = etTysoVongTuTi.getText().toString();
+            stringEtNgayKDinh = etNgayKDinh.getText().toString();
+            stringEtTinhTrangVanHanh = etTinhTrangVanHanh.getText().toString();
+
+            etSoTuTi.setHint(stringEtSoTuTi);
+            etSoBBKdinh.setHint(stringEtSoBBKdinh);
+            etNuocSX.setHint(stringEtNuocSX);
+            etDienApTuTi.setHint(stringEtDienApTuTi);
+            etTysobienTuTi.setHint(stringEtTysobienTuTi);
+            etTysoVongTuTi.setHint(stringEtTysoVongTuTi);
+            etNgayKDinh.setHint(stringEtNgayKDinh);
+            etTinhTrangVanHanh.setHint(stringEtTinhTrangVanHanh);
         }
 
         interface ListenerViewInCludeTuTi {

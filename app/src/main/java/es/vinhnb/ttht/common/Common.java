@@ -623,6 +623,14 @@ public class Common {
             }
             return null;
         }
+
+        public static IS_TU findIS_TU(boolean code) {
+            for (IS_TU isTu : values()) {
+                if (isTu.code == code)
+                    return isTu;
+            }
+            return null;
+        }
     }
 
     //Mã biến động
@@ -728,6 +736,26 @@ public class Common {
             return null;
         }
     }
+
+    public enum IS_BBAN_HIENTRUONG {
+        LAP_TU_CMIS("LẬP TỪ CMIS"),
+        LAP_NGOAI_HIENTRUONG("LẬP NGOÀI HIỆN TRƯỜNG");
+
+        public String content;
+
+        IS_BBAN_HIENTRUONG(String content) {
+            this.content = content;
+        }
+
+        public static IS_BBAN_HIENTRUONG findIS_BBAN_HIENTRUONG(String content) {
+            for (IS_BBAN_HIENTRUONG isBbanHientruong : values()) {
+                if (isBbanHientruong.content.equalsIgnoreCase(content))
+                    return isBbanHientruong;
+            }
+            return null;
+        }
+    }
+
 
 
     public enum TRANG_THAI_DOI_SOAT {
@@ -946,11 +974,8 @@ public class Common {
         IMAGE_CONG_TO("IMAGE_CONG_TO", "ẢNH CÔNG TƠ"),
         IMAGE_CONG_TO_NIEM_PHONG("IMAGE_CONG_TO_NIEM_PHONG", "ẢNH NIÊM PHONG"),
         IMAGE_TUTI("IMAGE_TUTI", "ẢNH TU TI"),
-        IMAGE_TI("IMAGE_TI", "ẢNH TI TREO"),
         IMAGE_MACH_NHI_THU_TUTI("IMAGE_MACH_NHI_THU_TUTI", "ẢNH NHỊ THỨ"),
-        IMAGE_MACH_NHI_THU_TI("IMAGE_MACH_NHI_THU_TI", "ẢNH NHỊ THỨ TI TREO"),
-        IMAGE_NIEM_PHONG_TUTI("IMAGE_NIEM_PHONG_TUTI", "ẢNH NIÊM PHONG"),
-        IMAGE_NIEM_PHONG_TI("IMAGE_NIEM_PHONG_TI", "ẢNH NIÊM PHONG TI TREO");
+        IMAGE_NIEM_PHONG_TUTI("IMAGE_NIEM_PHONG_TUTI", "ẢNH NIÊM PHONG");
 
         public String code;
         public String nameImage;

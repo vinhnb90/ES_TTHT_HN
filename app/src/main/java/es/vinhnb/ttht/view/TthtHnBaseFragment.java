@@ -24,12 +24,9 @@ public abstract class TthtHnBaseFragment extends Fragment implements IBaseView{
     public static final int CAMERA_REQUEST_CONGTO = 1111;
     public static final int CAMERA_REQUEST_CONGTO_NIEMPHONG = 1112;
 
-    public static final int CAMERA_REQUEST_ANH_TU = 1113;
-    public static final int CAMERA_REQUEST_ANH_NHITHU_TU = 1114;
-    public static final int CAMERA_REQUEST_ANH_NIEMPHONG_TU = 1115;
-    public static final int CAMERA_REQUEST_ANH_TI = 1116;
-    public static final int CAMERA_REQUEST_ANH_NHITHU_TI = 1117;
-    public static final int CAMERA_REQUEST_ANH_NIEMPHONG_TI = 1118;
+    public static final int CAMERA_REQUEST_ANH_TUTI = 1113;
+    public static final int CAMERA_REQUEST_ANH_NHITHU_TUTI = 1114;
+    public static final int CAMERA_REQUEST_ANH_NIEMPHONG_TUTI = 1115;
 
 
 

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -162,8 +163,8 @@ public class TthtHnChiTietCtoFragment extends TthtHnBaseFragment {
 
     //spin
 
-    @BindView(R.id.sp_lydo)
-    Spinner spLydo;
+    @BindView(R.id.autoet_lydo)
+    AutoCompleteTextView autoEtLydo;
     @BindView(R.id.iv_sp_lydo)
     ImageButton ibtnLydo;
 
@@ -671,16 +672,16 @@ public class TthtHnChiTietCtoFragment extends TthtHnBaseFragment {
         ArrayAdapter<TABLE_LYDO_TREOTHAO> adapterLydo = new ArrayAdapter<>(getActivity(),
                 R.layout.row_tththn_spin, tableLydoTreothaos);
         adapterLydo.setDropDownViewResource(R.layout.row_tththn_spin_dropdown_select);
-        spLydo.setAdapter(adapterLydo);
-
-        spLydo.setSelection(pos);
-        spLydo.invalidate();
+        autoEtLydo.setThreshold(2);
+        autoEtLydo.setAdapter(adapterLydo);
+        autoEtLydo.setText(tableLydoTreothaos.get(pos).toString());
+        autoEtLydo.invalidate();
 
         //nếu đã ghi
-        spLydo.setEnabled(true);
+        autoEtLydo.setEnabled(true);
         ibtnLydo.setEnabled(true);
         if (TRANG_THAI_DU_LIEU == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS || TRANG_THAI_DU_LIEU == Common.TRANG_THAI_DU_LIEU.DA_XAC_NHAN_TREN_CMIS) {
-            spLydo.setEnabled(false);
+            autoEtLydo.setEnabled(false);
             ibtnLydo.setEnabled(false);
         }
     }
@@ -1235,7 +1236,10 @@ public class TthtHnChiTietCtoFragment extends TthtHnBaseFragment {
         ibtnLydo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                spLydo.performClick();
+                autoEtLydo.performClick();
+                if (!autoEtLydo.getText().toString().equals(""))
+                    ((ArrayAdapter<String>) autoEtLydo.getAdapter()).getFilter().filter(null);
+                autoEtLydo.showDropDown();
             }
         });
 
@@ -1588,8 +1592,8 @@ public class TthtHnChiTietCtoFragment extends TthtHnBaseFragment {
         TABLE_BBAN_CTO tableBbanCtoOld = (TABLE_BBAN_CTO) tableBbanCto.clone();
         tableBbanCto.setTRANG_THAI_DU_LIEU((isDaGhi) ? Common.TRANG_THAI_DU_LIEU.DA_GHI.content : Common.TRANG_THAI_DU_LIEU.CHUA_GHI.content);
 
-        String sMA_LDO = spLydo.getSelectedItem().toString();
-        int pos = 0;
+        String sMA_LDO = autoEtLydo.toString();
+        int pos = -1;
         if(!TextUtils.isEmpty(sMA_LDO))
         {
             for (int i = 0; i < tableLydoTreothaos.size(); i++) {
@@ -1599,6 +1603,9 @@ public class TthtHnChiTietCtoFragment extends TthtHnBaseFragment {
                 }
             }
         }
+
+        if(pos ==-1)
+            throw new Exception("Lý do treo tháo không có trong danh mục lý do treo tháo");
 
 
         tableBbanCto.setMA_LDO(tableLydoTreothaos.get(pos).getMA_LDO());

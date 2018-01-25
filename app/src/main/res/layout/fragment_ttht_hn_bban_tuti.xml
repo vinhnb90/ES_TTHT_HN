@@ -102,29 +102,6 @@
                         tools:text="abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rv_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    tools:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/tv_4a"
-                        style="@style/textStyle1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lý do treo tháo Tu Ti" />
-
-                    <EditText
-                        android:id="@+id/tv_4a_lydo_tuti"
-                        style="@style/textStyle6"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_4a"
-                        tools:text="abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc" />
-                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -228,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_7"
@@ -281,7 +258,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_9"
@@ -341,7 +318,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_11"
@@ -401,7 +378,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13"
@@ -486,7 +463,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_1_tuthao"
@@ -579,7 +556,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_7_tutreo"
@@ -606,7 +583,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_9_tutreo"
@@ -666,7 +643,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_11_tutreo"
@@ -726,7 +703,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_tutreo"
@@ -811,7 +788,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_1_tutreo"
@@ -905,7 +882,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_7_tithao"
@@ -932,7 +909,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_9_tithao"
@@ -992,7 +969,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_11_tithao"
@@ -1052,7 +1029,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_tithao"
@@ -1137,7 +1114,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_1_tithao"
@@ -1231,7 +1208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_7_titreo"
@@ -1258,7 +1235,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_9_titreo"
@@ -1318,7 +1295,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="2"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_11_titreo"
@@ -1378,7 +1355,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_titreo"
@@ -1463,7 +1440,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_13_1_titreo"
@@ -1556,7 +1533,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_t_4a_anh_tu"
@@ -1584,7 +1561,7 @@
                     android:background="@drawable/xml_tththn_rectangle6"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_37_anh_tu"
@@ -1608,7 +1585,7 @@
                             android:layout_alignParentTop="true"
                             android:background="@drawable/xml_tththn_rectangle7"
                             android:src="@drawable/ic_tththn_camera"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                         <Button
                             android:id="@+id/btn_37_save_anh_tu"
@@ -1646,7 +1623,7 @@
                             android:layout_alignParentTop="true"
                             android:background="@drawable/xml_tththn_rectangle7"
                             android:src="@drawable/ic_tththn_camera"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                         <Button
                             android:id="@+id/btn_37_save_anhnhithu_tu"
@@ -1684,7 +1661,7 @@
                             android:layout_alignParentTop="true"
                             android:background="@drawable/xml_tththn_rectangle7"
                             android:src="@drawable/ic_tththn_camera"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                         <Button
                             android:id="@+id/btn_37_save_anh_niemphong_tu"
@@ -1715,7 +1692,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_t_4a_anh_ti"
@@ -1743,7 +1720,7 @@
                     android:background="@drawable/xml_tththn_rectangle6"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rl_37_anh_ti"
@@ -1891,6 +1868,48 @@
                         android:background="@color/tththn_text_more_less_black" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rv_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/tv_4a"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lý do treo tháo Tu Ti" />
+
+                    <RelativeLayout
+                        android:layout_below="@+id/tv_4a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:background="@color/text_white"
+                            android:src="@drawable/ic_arrow_down"
+                            android:id="@+id/ibtn_perform_lydotuti"
+                            android:layout_alignParentRight="true"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_22sdp" />
+
+                        <AutoCompleteTextView
+                            android:layout_toLeftOf="@+id/ibtn_perform_lydotuti"
+                            android:id="@+id/autoet_4a_lydo_tuti"
+                            style="@style/edittextStyle21"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc" />
+
+
+                    </RelativeLayout>
+
+
+
+                </RelativeLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1899,6 +1918,7 @@
                     android:orientation="horizontal"
                     android:weightSum="3"
                     tools:visibility="visible">
+
 
                     <RelativeLayout
                         android:id="@+id/rl_9_dongdien_saulap"

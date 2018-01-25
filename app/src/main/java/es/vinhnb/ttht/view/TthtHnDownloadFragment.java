@@ -1397,7 +1397,8 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                 bbanTutiModel.MA_KHANG,
                 bbanTutiModel.ID_BBAN_WEB_TUTI,
                 bbanTutiModel.NVIEN_KCHI,
-                Common.TRANG_THAI_DU_LIEU.CHUA_GHI.content);
+                Common.TRANG_THAI_DU_LIEU.CHUA_GHI.content,
+                Common.IS_BBAN_HIENTRUONG.LAP_TU_CMIS.content);
 
 
         switch (trangThaiWebNew) {
@@ -1514,7 +1515,8 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                 tuTiModel.TYSO_BIEN,
                 tuTiModel.MA_BDONG,
                 tuTiModel.MA_DVIQLY,
-                onIDataCommon.getMaNVien());
+                onIDataCommon.getMaNVien(),
+                tuTiModel);
 
 
         if (!existRows) {

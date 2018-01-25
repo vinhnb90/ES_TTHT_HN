@@ -21,6 +21,7 @@ import es.vinhnb.ttht.database.table.TABLE_BBAN_CTO;
 import es.vinhnb.ttht.database.table.TABLE_BBAN_TUTI;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_CTO;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_TUTI;
+import es.vinhnb.ttht.database.table.TABLE_DVIQLY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY_UPLOAD;
 import es.vinhnb.ttht.database.table.TABLE_LOAI_CONG_TO;
@@ -925,10 +926,7 @@ public class TthtHnSQLDAO extends SqlDAO {
 
 
             case IMAGE_TUTI:
-            case IMAGE_TI:
-            case IMAGE_NIEM_PHONG_TI:
             case IMAGE_NIEM_PHONG_TUTI:
-            case IMAGE_MACH_NHI_THU_TI:
             case IMAGE_MACH_NHI_THU_TUTI:
                 query.append(" AND " +
                         TABLE_ANH_HIENTRUONG.table.ID_BBAN_TUTI.name() +
@@ -1073,5 +1071,16 @@ public class TthtHnSQLDAO extends SqlDAO {
                 return uploadHistoryAdapter;
             }
         });
+    }
+
+    public List<TABLE_DVIQLY> getDViQly() {
+        String[] agrs = new String[]{};
+        String query = "SELECT  * " +
+                " FROM " +
+                TABLE_DVIQLY.table.getName();
+
+        Cursor cursor = super.mDatabase.rawQuery(query, agrs);
+
+        return super.selectAllLazy(TABLE_DVIQLY.class, cursor);
     }
 }

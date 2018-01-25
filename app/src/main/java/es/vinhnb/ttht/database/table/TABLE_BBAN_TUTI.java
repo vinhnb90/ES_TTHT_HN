@@ -34,7 +34,8 @@ public class TABLE_BBAN_TUTI implements Cloneable{
         MA_KHANG,
         ID_BBAN_WEB_TUTI,
         NVIEN_KCHI,
-        TRANG_THAI_DU_LIEU;
+        TRANG_THAI_DU_LIEU,
+        IS_BBAN_HIENTRUONG;
 
         public static String getName()
         {
@@ -98,6 +99,9 @@ public class TABLE_BBAN_TUTI implements Cloneable{
     @Collumn(name = "TRANG_THAI_DU_LIEU", type = TYPE.TEXT)
     private String TRANG_THAI_DU_LIEU;
 
+    @Collumn(name = "IS_BBAN_HIENTRUONG", type = TYPE.TEXT)
+    private String IS_BBAN_HIENTRUONG;
+
 
     public TABLE_BBAN_TUTI() {
     }
@@ -120,7 +124,8 @@ public class TABLE_BBAN_TUTI implements Cloneable{
                            @Params(name = "MA_KHANG") String MA_KHANG,
                            @Params(name = "ID_BBAN_WEB_TUTI") int ID_BBAN_WEB_TUTI,
                            @Params(name = "NVIEN_KCHI") String NVIEN_KCHI,
-                           @Params(name = "TRANG_THAI_DU_LIEU") String TRANG_THAI_DU_LIEU
+                           @Params(name = "TRANG_THAI_DU_LIEU") String TRANG_THAI_DU_LIEU,
+                           @Params(name = "IS_BBAN_HIENTRUONG") String IS_BBAN_HIENTRUONG
                            ) {
         this.ID_TABLE_BBAN_TUTI = ID_TABLE_BBAN_TUTI;
         this.MA_DVIQLY = MA_DVIQLY;
@@ -140,6 +145,7 @@ public class TABLE_BBAN_TUTI implements Cloneable{
         this.ID_BBAN_WEB_TUTI = ID_BBAN_WEB_TUTI;
         this.NVIEN_KCHI = NVIEN_KCHI;
         this.TRANG_THAI_DU_LIEU = TRANG_THAI_DU_LIEU;
+        this.IS_BBAN_HIENTRUONG = IS_BBAN_HIENTRUONG;
     }
 
 
@@ -285,6 +291,14 @@ public class TABLE_BBAN_TUTI implements Cloneable{
 
     public void setTRANG_THAI_DU_LIEU(String TRANG_THAI_DU_LIEU) {
         this.TRANG_THAI_DU_LIEU = TRANG_THAI_DU_LIEU;
+    }
+
+    public String getIS_BBAN_HIENTRUONG() {
+        return IS_BBAN_HIENTRUONG;
+    }
+
+    public void setIS_BBAN_HIENTRUONG(String IS_BBAN_HIENTRUONG) {
+        this.IS_BBAN_HIENTRUONG = IS_BBAN_HIENTRUONG;
     }
 
     @Override

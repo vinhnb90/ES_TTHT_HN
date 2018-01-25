@@ -43,7 +43,8 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         TYSO_BIEN,
         MA_BDONG,
         MA_DVIQLY,
-        MA_NVIEN;
+        MA_NVIEN,
+        ID_CHITIET_CTO;
 
         public static String getName()
         {
@@ -131,6 +132,10 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
     private String MA_NVIEN;
 
 
+    @Collumn(name = "ID_CHITIET_CTO", type = TYPE.INTEGER)
+    private String ID_CHITIET_CTO;
+
+
     public TABLE_CHITIET_TUTI() {
     }
 
@@ -158,7 +163,8 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
                               @Params(name = "TYSO_BIEN") String TYSO_BIEN,
                               @Params(name = "MA_BDONG") String MA_BDONG,
                               @Params(name = "MA_DVIQLY") String MA_DVIQLY,
-                              @Params(name = "MA_NVIEN") String MA_NVIEN
+                              @Params(name = "MA_NVIEN") String MA_NVIEN,
+                              @Params(name = "ID_CHITIET_CTO") String ID_CHITIET_CTO
                               ) {
         this.ID_TABLE_CHITIET_TUTI = ID_TABLE_CHITIET_TUTI;
         this.MA_CLOAI = MA_CLOAI;
@@ -185,6 +191,7 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         this.MA_BDONG = MA_BDONG;
         this.MA_DVIQLY = MA_DVIQLY;
         this.MA_NVIEN = MA_NVIEN;
+        this.ID_CHITIET_CTO =  ID_CHITIET_CTO;
     }
 
     public int getID_TABLE_CHITIET_TUTI() {
@@ -388,6 +395,14 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         this.MA_NVIEN = MA_NVIEN;
     }
 
+
+    public String getID_CHITIET_CTO() {
+        return ID_CHITIET_CTO;
+    }
+
+    public void setID_CHITIET_CTO(String ID_CHITIET_CTO) {
+        this.ID_CHITIET_CTO = ID_CHITIET_CTO;
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {

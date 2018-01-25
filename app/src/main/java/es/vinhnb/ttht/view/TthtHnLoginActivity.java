@@ -381,7 +381,7 @@ public class TthtHnLoginActivity extends TthtHnBaseActivity implements LoginInte
     public List<TABLE_DVIQLY> selectDBDepart() {
         if (mSqlDAO == null)
             return new ArrayList<>();
-        return mSqlDAO.selectAllLazy(TABLE_DVIQLY.class, null);
+        return mSqlDAO.getDViQly();
     }
 
     @Override
