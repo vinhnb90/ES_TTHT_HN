@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by VinhNB on 11/22/2017.
  */
 
-public class MtbBbanTutiModel implements Parcelable{
+public class MtbBbanTutiModel implements Parcelable {
     @SerializedName("MA_DVIQLY")
     public String MA_DVIQLY;
 
@@ -61,8 +61,10 @@ public class MtbBbanTutiModel implements Parcelable{
     @SerializedName("NVIEN_KCHI")
     public String NVIEN_KCHI;
 
+    @SerializedName("ID_BBAN_CONGTO")
+    public int ID_BBAN_CONGTO;
 
-    public MtbBbanTutiModel(String MA_DVIQLY, int ID_BBAN_TUTI, String MA_DDO, String SO_BBAN, String NGAY_TRTH, String MA_NVIEN, int TRANG_THAI, String TEN_KHANG, String DCHI_HDON, String DTHOAI, String MA_GCS_CTO, String MA_TRAM, String LY_DO_TREO_THAO, String MA_KHANG, int ID_BBAN_WEB_TUTI, String NVIEN_KCHI) {
+    public MtbBbanTutiModel(String MA_DVIQLY, int ID_BBAN_TUTI, String MA_DDO, String SO_BBAN, String NGAY_TRTH, String MA_NVIEN, int TRANG_THAI, String TEN_KHANG, String DCHI_HDON, String DTHOAI, String MA_GCS_CTO, String MA_TRAM, String LY_DO_TREO_THAO, String MA_KHANG, int ID_BBAN_WEB_TUTI, String NVIEN_KCHI, int ID_BBAN_CONGTO) {
         this.MA_DVIQLY = MA_DVIQLY;
         this.ID_BBAN_TUTI = ID_BBAN_TUTI;
         this.MA_DDO = MA_DDO;
@@ -79,6 +81,7 @@ public class MtbBbanTutiModel implements Parcelable{
         this.MA_KHANG = MA_KHANG;
         this.ID_BBAN_WEB_TUTI = ID_BBAN_WEB_TUTI;
         this.NVIEN_KCHI = NVIEN_KCHI;
+        this.ID_BBAN_CONGTO = ID_BBAN_CONGTO;
     }
 
     protected MtbBbanTutiModel(Parcel in) {
@@ -98,6 +101,7 @@ public class MtbBbanTutiModel implements Parcelable{
         MA_KHANG = in.readString();
         ID_BBAN_WEB_TUTI = in.readInt();
         NVIEN_KCHI = in.readString();
+        ID_BBAN_CONGTO = in.readInt();
     }
 
     public static final Creator<MtbBbanTutiModel> CREATOR = new Creator<MtbBbanTutiModel>() {
@@ -135,5 +139,6 @@ public class MtbBbanTutiModel implements Parcelable{
         parcel.writeString(MA_KHANG);
         parcel.writeInt(ID_BBAN_WEB_TUTI);
         parcel.writeString(NVIEN_KCHI);
+        parcel.writeInt(ID_BBAN_CONGTO);
     }
 }

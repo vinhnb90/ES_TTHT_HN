@@ -32,7 +32,6 @@ import com.github.clans.fab.FloatingActionButton;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,7 +48,6 @@ import es.vinhnb.ttht.database.table.TABLE_CHITIET_TUTI;
 import es.vinhnb.ttht.database.table.TABLE_LOAI_CONG_TO;
 import es.vinhnb.ttht.database.table.TABLE_LYDO_TREOTHAO;
 import es.vinhnb.ttht.database.table.TABLE_TRAM;
-import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 
 import static android.content.ContentValues.TAG;
@@ -103,18 +101,29 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     TextView tvfabTtCannhapsaulap;
 
 
-    //row
+    //row E
     @BindView(R.id.include_tutiE)
     LinearLayout rlIncludeTuTiE;
 
-    @BindView(R.id.bt_add_tuti_thao)
+    @BindView(R.id.bt_add_tuti_E)
     Button btnAddTuTiE;
 
     @BindView(R.id.v_mark_tutiE)
     View vMarkTuTiE;
 
+    //row B
+    @BindView(R.id.include_tutiB)
+    LinearLayout rlIncludeTuTiB;
+
+    @BindView(R.id.bt_add_tuti_B)
+    Button btnAddTuTiB;
+
+    @BindView(R.id.v_mark_tutiB)
+    View vMarkTuTiB;
+
     int indexTuTi = -1;
     MA_BDONG maBdongTuTi;
+
 
     //khach hang
     @BindView(R.id.tv_2a_khachhang_tuti)
@@ -358,7 +367,6 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
     private IInteractionDataCommon onIDataCommom;
-    private TABLE_CHITIET_CTO tableChitietCto;
     private TABLE_CHITIET_CTO tableChitietCtoB;
     private TABLE_CHITIET_CTO tableChitietCtoE;
     private TABLE_BBAN_CTO tableBbanCto;
@@ -469,15 +477,15 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     private void onActivityResultCapture(Common.TYPE_IMAGE typeImage) throws Exception {
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
         String TEN_ANH = "";
         String pathURICapturedAnh = null;
 
         boolean isTu = false;
         if (maBdongTuTi == MA_BDONG.E) {
-            isTu = tutiListViewE.get(indexTuTi).isTu;
+            isTu = Common.IS_TU.findIS_TU(tutiListViewE.get(pos).tuti.getIS_TU()).code;
         } else
-            isTu = tutiListViewB.get(indexTuTi).isTu;
+            isTu = Common.IS_TU.findIS_TU(tutiListViewB.get(pos).tuti.getIS_TU()).code;
 
         //scale ảnh
         switch (typeImage) {
@@ -694,7 +702,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         String[] agrs = new String[]{String.valueOf(onIDataCommom.getID_BBAN_TRTH()), MA_BDONG.B.code, onIDataCommom.getMaNVien()};
         List<TABLE_CHITIET_CTO> tableChitietCtoList = mSqlDAO.getChiTietCongto(agrs);
         if (tableChitietCtoList.size() != 0)
-            tableChitietCto = tableChitietCtoList.get(0);
+            tableChitietCtoB = tableChitietCtoList.get(0);
 
         agrs = new String[]{String.valueOf(onIDataCommom.getID_BBAN_TRTH()), MA_BDONG.E.code, onIDataCommom.getMaNVien()};
         tableChitietCtoList = mSqlDAO.getChiTietCongto(agrs);
@@ -710,7 +718,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
         //getInfo Chung loai
-        String MA_CLOAI = tableChitietCto.getMA_CLOAI();
+        String MA_CLOAI = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getMA_CLOAI() : tableChitietCtoE.getMA_CLOAI();
         String[] argsCloai = new String[]{MA_CLOAI};
         List<TABLE_LOAI_CONG_TO> tableLoaiCongToList = mSqlDAO.getLoaiCongto(argsCloai);
         if (tableLoaiCongToList.size() != 0)
@@ -726,7 +734,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
         //get Data Bban tuti
-        List<TABLE_BBAN_TUTI> tableBbanTutiList = mSqlDAO.getBBanTuti(tableChitietCto.getID_BBAN_TUTI(), onIDataCommom.getMaNVien());
+        List<TABLE_BBAN_TUTI> tableBbanTutiList = mSqlDAO.getBBanTuti(tableBbanCto.getID_BBAN_CONGTO(), onIDataCommom.getMaNVien());
         if (tableBbanTutiList.size() != 0)
             tableBbanTuti = tableBbanTutiList.get(0);
 
@@ -734,34 +742,25 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         //get Data chi tiet tuti
         tutiListB = new ArrayList<>();
         tutiListE = new ArrayList<>();
-        List<TABLE_CHITIET_TUTI> tableChitietTutiList = mSqlDAO.getChitietTuTi(tableChitietCto.getID_BBAN_TUTI(), onIDataCommom.getMaNVien());
-        for (int i = 0; i < tableChitietTutiList.size(); i++) {
-            TABLE_CHITIET_TUTI tableChitietTuti = tableChitietTutiList.get(i);
+        List<TABLE_CHITIET_TUTI> tableChitietTutiListB = mSqlDAO.getChitietTuTi(tableChitietCtoB.getID_CHITIET_CTO(), onIDataCommom.getMaNVien());
+        for (int i = 0; i < tableChitietTutiListB.size(); i++) {
+            TABLE_CHITIET_TUTI tableChitietTuti = tableChitietTutiListB.get(i);
 
             if (tableChitietTuti.getMA_BDONG().equals(MA_BDONG.B.code)) {
                 tutiListB.add(tableChitietTuti);
             } else
                 tutiListE.add(tableChitietTuti);
-//            //nếu là TU
-//            if (tableChitietTuti.getIS_TU().equals(String.valueOf(Common.IS_TU.TU.code))) {
-//                //MA_BDONG cho biết là TU Treo hay tháo
-//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code))
-//                    tuTreo = tableChitietTuti;
-//
-//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.E.code))
-//                    tuThao = tableChitietTuti;
-//            }
-//
-//
-//            //nếu là TI
-//            if (tableChitietTuti.getIS_TU().equals(String.valueOf(Common.IS_TU.TI.code))) {
-//                //MA_BDONG cho biết là TU Treo hay tháo
-//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.B.code))
-//                    tiTreo = tableChitietTuti;
-//
-//                if (tableChitietTuti.getMA_BDONG().equals(Common.MA_BDONG.E.code))
-//                    tiThao = tableChitietTuti;
-//            }
+        }
+
+
+        List<TABLE_CHITIET_TUTI> tableChitietTutiListE = mSqlDAO.getChitietTuTi(tableChitietCtoE.getID_CHITIET_CTO(), onIDataCommom.getMaNVien());
+        for (int i = 0; i < tableChitietTutiListE.size(); i++) {
+            TABLE_CHITIET_TUTI tableChitietTuti = tableChitietTutiListE.get(i);
+
+            if (tableChitietTuti.getMA_BDONG().equals(MA_BDONG.B.code)) {
+                tutiListB.add(tableChitietTuti);
+            } else
+                tutiListE.add(tableChitietTuti);
         }
 
         //getInfo LyDo
@@ -782,14 +781,49 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
         for (int i = 0; i < tutiListB.size(); i++) {
-            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTi);
+            TABLE_ANH_HIENTRUONG anhTuTi = null, anhNhiThu = null, anhNiemPhong = null;
+            String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tutiListB.get(0).getID_CHITIET_CTO())};
+            List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhTuTi = tableAnhHientruongList.get(0);
+
+            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_MACH_NHI_THU_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhNhiThu = tableAnhHientruongList.get(0);
+
+
+            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_NIEM_PHONG_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhNiemPhong = tableAnhHientruongList.get(0);
+
+            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.get(i), anhTuTi, anhNhiThu, anhNiemPhong);
             tutiListViewB.add(dataViewIncludeTuTi);
-            rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+            rlIncludeTuTiB.addView(dataViewIncludeTuTi);
         }
 
         for (int i = 0; i < tutiListE.size(); i++) {
-            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTi);
+
+            TABLE_ANH_HIENTRUONG anhTuTi = null, anhNhiThu = null, anhNiemPhong = null;
+            String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tutiListE.get(0).getID_CHITIET_CTO())};
+            List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhTuTi = tableAnhHientruongList.get(0);
+
+            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_MACH_NHI_THU_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhNhiThu = tableAnhHientruongList.get(0);
+
+
+            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_NIEM_PHONG_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhNiemPhong = tableAnhHientruongList.get(0);
+
+            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.get(i), anhTuTi, anhNhiThu, anhNiemPhong);
+
             tutiListViewE.add(dataViewIncludeTuTi);
+            rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+
+
         }
 
 
@@ -804,7 +838,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 //        //get ảnh tu treo
 //        String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tuTreo.getID_BBAN_TUTI()), String.valueOf(tuTreo.getID_CHITIET_TUTI())};
 //        List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
-//        if (tableAnhHientruongList.size() != 0)
+//        if (tableAnhHientruongList.size(  ) != 0)
 //            anhTU = tableAnhHientruongList.get(0);
 //
 //
@@ -909,169 +943,68 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     }
 
 
-    private void fillInfoSauLap(Common.TRANG_THAI_DU_LIEU trangThaiDuLieu) {
-        if (tableChitietCto != null) {
-            etDongdienSaulap.setText(tableChitietCto.getDONG_DIEN_SAULAP_TUTI());
-            etDienapSaulap.setText(tableChitietCto.getDIEN_AP_SAULAP_TUTI());
-            etHesoKSaulap.setText(tableChitietCto.getHANGSO_K_SAULAP_TUTI());
-            etCCXSaulap.setText(String.valueOf(tableChitietCto.getCAP_CX_SAULAP_TUTI()));
+//    private void fillInfoSauLap(Common.TRANG_THAI_DU_LIEU trangThaiDuLieu) {
+//        if (tableChitietCto != null) {
+//            etDongdienSaulap.setText(tableChitietCto.getDONG_DIEN_SAULAP_TUTI());
+//            etDienapSaulap.setText(tableChitietCto.getDIEN_AP_SAULAP_TUTI());
+//            etHesoKSaulap.setText(tableChitietCto.getHANGSO_K_SAULAP_TUTI());
+//            etCCXSaulap.setText(String.valueOf(tableChitietCto.getCAP_CX_SAULAP_TUTI()));
+//
+//
+//            etLapquaTuSaulap.setText(tableChitietCto.getSO_TU_SAULAP_TUTI());
+//            etLapquaTiSaulap.setText(tableChitietCto.getSO_TI_SAULAP_TUTI());
+//            etHesonhanSaulap.setText(String.valueOf(tableChitietCto.getHS_NHAN_SAULAP_TUTI()));
+//
+//
+//            //chi so
+//            Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(tableChitietCto.getLOAI_CTO());
+//            String CHI_SO = tableChitietCto.getCHI_SO_SAULAP_TUTI();
+//            HashMap<String, String> dataCHI_SO = Common.spilitCHI_SO(loaiCto, CHI_SO);
+//
+//            etBTSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.BT.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.BT.code));
+//            etCDSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.CD.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.CD.code));
+//            etTDSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.TD.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.TD.code));
+//            etTongPSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.SG.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.SG.code));
+//            etTongQSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.VC.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.VC.code));
+//
+//            //set enable
+//
+//            etDongdienSaulap.setEnabled(true);
+//            etDienapSaulap.setEnabled(true);
+//            etHesoKSaulap.setEnabled(true);
+//            etCCXSaulap.setEnabled(true);
+//            etLapquaTuSaulap.setEnabled(true);
+//            etLapquaTiSaulap.setEnabled(true);
+//            etHesonhanSaulap.setEnabled(true);
+//
+//            etBTSaulap.setEnabled(true);
+//            etCDSaulap.setEnabled(true);
+//            etTDSaulap.setEnabled(true);
+//            etTongPSaulap.setEnabled(true);
+//            etTongQSaulap.setEnabled(true);
+//
+//            if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS) {
+//                etDongdienSaulap.setEnabled(false);
+//                etDienapSaulap.setEnabled(false);
+//                etHesoKSaulap.setEnabled(false);
+//                etCCXSaulap.setEnabled(false);
+//                etLapquaTuSaulap.setEnabled(false);
+//                etLapquaTiSaulap.setEnabled(false);
+//                etHesonhanSaulap.setEnabled(false);
+//
+//                etBTSaulap.setEnabled(false);
+//                etCDSaulap.setEnabled(false);
+//                etTDSaulap.setEnabled(false);
+//                etTongPSaulap.setEnabled(false);
+//                etTongQSaulap.setEnabled(false);
+//            }
+//
+//
+//            //chiso
+//
+//        }
+//    }
 
-
-            etLapquaTuSaulap.setText(tableChitietCto.getSO_TU_SAULAP_TUTI());
-            etLapquaTiSaulap.setText(tableChitietCto.getSO_TI_SAULAP_TUTI());
-            etHesonhanSaulap.setText(String.valueOf(tableChitietCto.getHS_NHAN_SAULAP_TUTI()));
-
-
-            //chi so
-            Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(tableChitietCto.getLOAI_CTO());
-            String CHI_SO = tableChitietCto.getCHI_SO_SAULAP_TUTI();
-            HashMap<String, String> dataCHI_SO = Common.spilitCHI_SO(loaiCto, CHI_SO);
-
-            etBTSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.BT.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.BT.code));
-            etCDSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.CD.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.CD.code));
-            etTDSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.TD.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.TD.code));
-            etTongPSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.SG.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.SG.code));
-            etTongQSaulap.setText(TextUtils.isEmpty(dataCHI_SO.get(Common.BO_CHISO.VC.code)) ? "0" : dataCHI_SO.get(Common.BO_CHISO.VC.code));
-
-            //set enable
-
-            etDongdienSaulap.setEnabled(true);
-            etDienapSaulap.setEnabled(true);
-            etHesoKSaulap.setEnabled(true);
-            etCCXSaulap.setEnabled(true);
-            etLapquaTuSaulap.setEnabled(true);
-            etLapquaTiSaulap.setEnabled(true);
-            etHesonhanSaulap.setEnabled(true);
-
-            etBTSaulap.setEnabled(true);
-            etCDSaulap.setEnabled(true);
-            etTDSaulap.setEnabled(true);
-            etTongPSaulap.setEnabled(true);
-            etTongQSaulap.setEnabled(true);
-
-            if (trangThaiDuLieu == Common.TRANG_THAI_DU_LIEU.DANG_CHO_XAC_NHAN_CMIS) {
-                etDongdienSaulap.setEnabled(false);
-                etDienapSaulap.setEnabled(false);
-                etHesoKSaulap.setEnabled(false);
-                etCCXSaulap.setEnabled(false);
-                etLapquaTuSaulap.setEnabled(false);
-                etLapquaTiSaulap.setEnabled(false);
-                etHesonhanSaulap.setEnabled(false);
-
-                etBTSaulap.setEnabled(false);
-                etCDSaulap.setEnabled(false);
-                etTDSaulap.setEnabled(false);
-                etTongPSaulap.setEnabled(false);
-                etTongQSaulap.setEnabled(false);
-            }
-
-
-            //chiso
-
-        }
-    }
-
-    private Bitmap getAnh(TABLE_CHITIET_TUTI dataTuTi, Common.TYPE_IMAGE typeImage) {
-        if (tableBbanTuti == null)
-            return null;
-        if (dataTuTi == null)
-            return null;
-
-        //get info ẢNH Tu
-        String[] argsAnhTuTreo;
-        argsAnhTuTreo = new String[]{onIDataCommom.getMaNVien(), String.valueOf(onIDataCommom.getMA_BDONG() == MA_BDONG.B ? onIDataCommom.getID_BBAN_TUTI_CTO_TREO() : onIDataCommom.getID_BBAN_TUTI_CTO_THAO()), String.valueOf(dataTuTi.getID_CHITIET_TUTI())};
-        List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnhTuTreo, typeImage);
-        TABLE_ANH_HIENTRUONG tableAnh = null;
-        if (tableAnhHientruongList.size() != 0)
-            tableAnh = tableAnhHientruongList.get(0);
-
-        if (tableAnh == null) {
-            Log.i(TAG, "getAnh: không có ảnh tu treo");
-            return null;
-        }
-
-
-        String TEN_ANH = tableAnh.getTEN_ANH();
-        if (TextUtils.isEmpty(TEN_ANH))
-            return null;
-
-        String folderAnh = "";
-        switch (typeImage) {
-            case IMAGE_CONG_TO:
-            case IMAGE_CONG_TO_NIEM_PHONG:
-                return null;
-
-            case IMAGE_TUTI:
-            case IMAGE_MACH_NHI_THU_TUTI:
-            case IMAGE_NIEM_PHONG_TUTI:
-
-                folderAnh = Common.FOLDER_NAME.FOLDER_ANH_TI.name();
-                break;
-        }
-
-        String pathAnh = Common.getRecordDirectoryFolder(folderAnh + "/" + TEN_ANH);
-        Bitmap bitmap = Common.getBitmapFromUri(pathAnh);
-        if (bitmap == null)
-            return null;
-
-        return bitmap;
-    }
-
-    private void fillInfoTiTreo() {
-        if (tiTreo != null) {
-            tvCapdienapTitreo.setText(String.valueOf(tiTreo.getCAP_DAP()));
-            tvTysobienTitreo.setText(String.valueOf(tiTreo.getTYSO_BIEN()));
-            //2016-11-02T00:00:00
-            tvNgayKiemdinhTitreo.setText(Common.convertDateToDate(String.valueOf(tiTreo.getNGAY_KDINH()), sqlite2, type6));
-            tvSoTitreo.setText(String.valueOf(tiTreo.getSO_TU_TI()));
-            tvNuocsxTitreo.setText(String.valueOf(tiTreo.getNUOC_SX()));
-            tvSovongTitreo.setText(String.valueOf(tiTreo.getSO_VONG_THANH_CAI()));
-            tvChiKiemdinhTitreo.setText(String.valueOf(tiTreo.getMA_CHI_KDINH()));
-            tvChihopdaudayTitreo.setText(String.valueOf(tiTreo.getMA_CHI_HOP_DDAY()));
-        }
-    }
-
-    private void fillInfoTiThao() {
-        if (tiThao != null) {
-            tvCapdienapTithao.setText(String.valueOf(tiThao.getCAP_DAP()));
-            tvTysobienTithao.setText(String.valueOf(tiThao.getTYSO_BIEN()));
-            //2016-11-02T00:00:00
-            tvNgayKiemdinhTithao.setText(Common.convertDateToDate(String.valueOf(tiThao.getNGAY_KDINH()), sqlite2, type6));
-            tvSoTithao.setText(String.valueOf(tiThao.getSO_TU_TI()));
-            tvNuocsxTithao.setText(String.valueOf(tiThao.getNUOC_SX()));
-            tvSovongTithao.setText(String.valueOf(tiThao.getSO_VONG_THANH_CAI()));
-            tvChiKiemdinhTithao.setText(String.valueOf(tiThao.getMA_CHI_KDINH()));
-            tvChihopdaudayTithao.setText(String.valueOf(tiThao.getMA_CHI_HOP_DDAY()));
-        }
-    }
-
-    private void fillInfoTuTreo() {
-        if (tuTreo != null) {
-            tvCapdienapTutreo.setText(String.valueOf(tuTreo.getCAP_DAP()));
-            tvTysobienTutreo.setText(String.valueOf(tuTreo.getTYSO_BIEN()));
-            //2016-11-02T00:00:00
-            tvNgayKiemdinhTutreo.setText(Common.convertDateToDate(String.valueOf(tuTreo.getNGAY_KDINH()), sqlite2, type6));
-            tvSoTutreo.setText(String.valueOf(tuTreo.getSO_TU_TI()));
-            tvNuocsxTutreo.setText(String.valueOf(tuTreo.getNUOC_SX()));
-            tvSovongTutreo.setText(String.valueOf(tuTreo.getSO_VONG_THANH_CAI()));
-            tvChiKiemdinhTutreo.setText(String.valueOf(tuTreo.getMA_CHI_KDINH()));
-            tvChihopdaudayTutreo.setText(String.valueOf(tuTreo.getMA_CHI_HOP_DDAY()));
-        }
-    }
-
-    private void fillInfoTuThao() {
-        if (tuThao != null) {
-            tvCapdienapTuthao.setText(String.valueOf(tuThao.getCAP_DAP()));
-            tvTysobienTuthao.setText(String.valueOf(tuThao.getTYSO_BIEN()));
-            //2016-11-02T00:00:00
-            tvNgayKiemdinhTuthao.setText(Common.convertDateToDate(String.valueOf(tuThao.getNGAY_KDINH()), sqlite2, type6));
-            tvSoTuthao.setText(String.valueOf(tuThao.getSO_TU_TI()));
-            tvNuocsxTuthao.setText(String.valueOf(tuThao.getNUOC_SX()));
-            tvSovongTuthao.setText(String.valueOf(tuThao.getSO_VONG_THANH_CAI()));
-            tvChiKiemdinhTuthao.setText(String.valueOf(tuThao.getMA_CHI_KDINH()));
-            tvChihopdaudayTuthao.setText(String.valueOf(tuThao.getMA_CHI_HOP_DDAY()));
-        }
-    }
 
     private void fillSpinLyDo(Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU) throws Exception {
 
@@ -1118,11 +1051,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 //            autoetLydoTuti.setHint(tableBbanTuti.getLY_DO_TREO_THAO());
 //        }
 
-        if (tableChitietCto != null) {
-            tvSoNoTuti.setText(tableChitietCto.getSO_CTO());
-
-            tvSoNoTuti.setHint(tableChitietCto.getSO_CTO());
-        }
+//        if (tableChitietCto != null) {
+//            tvSoNoTuti.setText(tableChitietCto.getSO_CTO());
+//
+//            tvSoNoTuti.setHint(tableChitietCto.getSO_CTO());
+//        }
     }
 
     @Override
@@ -1137,7 +1070,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
     }
 
-    DataViewIncludeTuTi.ListenerViewInCludeTuTi listenerTuTi = new DataViewIncludeTuTi.ListenerViewInCludeTuTi() {
+    DataViewIncludeTuTi.ListenerViewInCludeTuTi listenerTuTiE = new DataViewIncludeTuTi.ListenerViewInCludeTuTi() {
 
         @Override
         public void saveDataTuTi(int pos) {
@@ -1193,6 +1126,64 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         }
     };
 
+
+    DataViewIncludeTuTi.ListenerViewInCludeTuTi listenerTuTiB = new DataViewIncludeTuTi.ListenerViewInCludeTuTi() {
+
+        @Override
+        public void saveDataTuTi(int pos) {
+            try {
+                indexTuTi = pos;
+                maBdongTuTi = MA_BDONG.B;
+
+                String messageSave = tutiListViewB.get(indexTuTi).checkCanSave();
+                if (!TextUtils.isEmpty(messageSave))
+                    throw new Exception(messageSave);
+
+                saveDataTuti(pos);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+            }
+        }
+
+        @Override
+        public void clickbtnAnhTuti(boolean isTu, int pos) {
+            try {
+                indexTuTi = pos;
+                maBdongTuTi = MA_BDONG.B;
+                captureAnhTuTi(isTu);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+            }
+        }
+
+        @Override
+        public void clickbtnAnhNhiThu(boolean isTu, int pos) {
+            try {
+                indexTuTi = pos;
+                maBdongTuTi = MA_BDONG.B;
+                captureAnhNhiThuTuTi(isTu);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+            }
+        }
+
+        @Override
+        public void clickbtnAnhNiemPhong(boolean isTu, int pos) {
+            try {
+                indexTuTi = pos;
+                maBdongTuTi = MA_BDONG.B;
+                captureAnhNiemPhongTuTi(isTu);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+            }
+        }
+    };
+
+
     private void clickButton() {
         ibtnLydoTuti.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1233,7 +1224,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                                 vMarkTuTiE.getParent().requestChildFocus(vMarkTuTiE, vMarkTuTiE);
                                 scrollViewTuti.scrollTo(0, vMarkTuTiE.getTop());
 
-                                DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTi);
+                                DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, new TABLE_CHITIET_TUTI(), null, null, null);
                                 tutiListViewE.add(dataViewIncludeTuTi);
                                 rlIncludeTuTiE.addView(dataViewIncludeTuTi);
 
@@ -1268,7 +1259,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         timeFileCaptureAnhNiemPhongTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
 
 
         final String fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name())
@@ -1292,7 +1283,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         timeFileCaptureAnhNhiThuTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
 
 
         final String fileName = Common.getRecordDirectoryFolder(Common.FOLDER_NAME.FOLDER_ANH_TU.name())
@@ -1316,7 +1307,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         timeFileCaptureAnhTuTi = Common.getDateTimeNow(Common.DATE_TIME_TYPE.type12);
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
 
 
         String fileName = "";
@@ -1347,7 +1338,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
 
 
         String fileName = "";
@@ -1379,7 +1370,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
 
         String fileName = "";
         if (isTu)
@@ -1424,9 +1415,6 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     }
 
     private void saveDataTuti(int pos) throws Exception {
-
-
-        Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(tableChitietCto.getLOAI_CTO());
         try {
             //nếu chưa có biên bản thì tạo biên bản TU TI
             if (tableBbanTuti == null) {
@@ -1479,14 +1467,14 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
             //lưu dữ liệu TU TI
             if (maBdongTuTi == MA_BDONG.B) {
-                if(tutiListViewB.get(pos).tuti==null)
-                    tutiListViewB.get(pos).tuti=new TABLE_CHITIET_TUTI();
+                if (tutiListViewB.get(pos).tuti == null)
+                    tutiListViewB.get(pos).tuti = new TABLE_CHITIET_TUTI();
                 TABLE_CHITIET_TUTI tutiListViewBOld = (TABLE_CHITIET_TUTI) tutiListViewB.get(pos).tuti.clone();
                 tutiListViewB.get(pos).tuti.setCAP_CXAC(-1);
                 tutiListViewB.get(pos).tuti.setCAP_DAP(-1);
                 tutiListViewB.get(pos).tuti.setID_BBAN_TUTI(-1);
                 tutiListViewB.get(pos).tuti.setID_CHITIET_TUTI(-1);
-                tutiListViewB.get(pos).tuti.setIS_TU(Common.IS_TU.findIS_TU(tutiListViewB.get(pos).isTu).content);
+                tutiListViewB.get(pos).tuti.setIS_TU(Common.IS_TU.findIS_TU(Common.IS_TU.findIS_TU(tutiListViewB.get(pos).tuti.getIS_TU()).code).content);
                 tutiListViewB.get(pos).tuti.setLOAI_TU_TI("");
                 tutiListViewB.get(pos).tuti.setMA_BDONG(maBdongTuTi.code);
                 tutiListViewB.get(pos).tuti.setMA_CHI_HOP_DDAY("");
@@ -1500,27 +1488,65 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 tutiListViewB.get(pos).tuti.setMA_NUOC("");
                 tutiListViewB.get(pos).tuti.setMA_HANG("");
                 tutiListViewB.get(pos).tuti.setTRANG_THAI(-1);
-                tutiListViewB.get(pos).tuti.setSO_TU_TI(tutiListViewB.get(pos).etSoTuTi.toString());
-                tutiListViewB.get(pos).tuti.setNUOC_SX(tutiListViewB.get(pos).etNuocSX.toString());
+                tutiListViewB.get(pos).tuti.setSO_TU_TI(tutiListViewB.get(pos).etSoTuTi.getText().toString());
+                tutiListViewB.get(pos).tuti.setNUOC_SX(tutiListViewB.get(pos).etNuocSX.getText().toString());
                 tutiListViewB.get(pos).tuti.setSO_TEM_KDINH("");
-                tutiListViewB.get(pos).tuti.setNGAY_KDINH(tutiListViewB.get(pos).etNgayKDinh.toString());
+                tutiListViewB.get(pos).tuti.setNGAY_KDINH(tutiListViewB.get(pos).etNgayKDinh.getText().toString());
                 tutiListViewB.get(pos).tuti.setMA_CHI_KDINH("");
                 tutiListViewB.get(pos).tuti.setMA_CHI_HOP_DDAY("");
 
-                tutiListViewB.get(pos).tuti.setSO_VONG_THANH_CAI(Integer.parseInt(tutiListViewB.get(pos).etTysoVongTuTi.toString()));
-                tutiListViewB.get(pos).tuti.setTYSO_BIEN(tutiListViewB.get(pos).etTysobienTuTi.toString());
+                tutiListViewB.get(pos).tuti.setSO_VONG_THANH_CAI(Integer.parseInt(tutiListViewB.get(pos).etTysoVongTuTi.getText().toString()));
+                tutiListViewB.get(pos).tuti.setTYSO_BIEN(tutiListViewB.get(pos).etTysobienTuTi.getText().toString());
                 tutiListViewB.get(pos).tuti.setMA_NVIEN(tableBbanCto.getMA_NVIEN());
+                tutiListViewB.get(pos).tuti.setSO_BBAN_KDINH_TUTI(-1);
+                tutiListViewB.get(pos).tuti.setDIEN_AP(Integer.parseInt(tutiListViewB.get(pos).etDienApTuTi.getText().toString()));
+                tutiListViewB.get(pos).tuti.setTY_SO_VONG(Integer.parseInt(tutiListViewB.get(pos).etTysoVongTuTi.getText().toString()));
+                tutiListViewB.get(pos).tuti.setTINH_TRANG_VAN_HANH(tutiListViewB.get(pos).etTinhTrangVanHanh.getText().toString());
+                tutiListViewB.get(pos).tuti.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
+                tutiListViewB.get(pos).tuti.setID_TABLE_CHITIET_TUTI((int) mSqlDAO.updateORInsertRows(TABLE_CHITIET_TUTI.class, tutiListViewBOld, tutiListViewB.get(indexTuTi).tuti));
 
                 tutiListViewB.get(pos).setHintAfterSave();
 
-                tutiListViewB.get(pos).tuti.setID_CHITIET_TUTI();
-                tutiListViewBOld
-            }else {
+            } else {
+                if (tutiListViewE.get(pos).tuti == null)
+                    tutiListViewE.get(pos).tuti = new TABLE_CHITIET_TUTI();
+                TABLE_CHITIET_TUTI tutiListViewEOld = (TABLE_CHITIET_TUTI) tutiListViewE.get(pos).tuti.clone();
+                tutiListViewE.get(pos).tuti.setCAP_CXAC(-1);
+                tutiListViewE.get(pos).tuti.setCAP_DAP(-1);
+                tutiListViewE.get(pos).tuti.setID_BBAN_TUTI(-1);
+                tutiListViewE.get(pos).tuti.setID_CHITIET_TUTI(-1);
+                tutiListViewE.get(pos).tuti.setIS_TU(Common.IS_TU.findIS_TU(Common.IS_TU.findIS_TU(tutiListViewE.get(pos).tuti.getIS_TU()).code).content);
+                tutiListViewE.get(pos).tuti.setLOAI_TU_TI("");
+                tutiListViewE.get(pos).tuti.setMA_BDONG(maBdongTuTi.code);
+                tutiListViewE.get(pos).tuti.setMA_CHI_HOP_DDAY("");
+                tutiListViewE.get(pos).tuti.setMA_CHI_KDINH("");
+                tutiListViewE.get(pos).tuti.setMA_CLOAI("");
+                tutiListViewE.get(pos).tuti.setMA_DVIQLY(tableBbanCto.getMA_DVIQLY());
+                tutiListViewE.get(pos).tuti.setMO_TA("");
 
+                tutiListViewE.get(pos).tuti.setSO_PHA(-1);
+                tutiListViewE.get(pos).tuti.setTYSO_DAU("");
+                tutiListViewE.get(pos).tuti.setMA_NUOC("");
+                tutiListViewE.get(pos).tuti.setMA_HANG("");
+                tutiListViewE.get(pos).tuti.setTRANG_THAI(-1);
+                tutiListViewE.get(pos).tuti.setSO_TU_TI(tutiListViewE.get(pos).etSoTuTi.getText().toString());
+                tutiListViewE.get(pos).tuti.setNUOC_SX(tutiListViewE.get(pos).etNuocSX.getText().toString());
+                tutiListViewE.get(pos).tuti.setSO_TEM_KDINH("");
+                tutiListViewE.get(pos).tuti.setNGAY_KDINH(tutiListViewE.get(pos).etNgayKDinh.getText().toString());
+                tutiListViewE.get(pos).tuti.setMA_CHI_KDINH("");
+                tutiListViewE.get(pos).tuti.setMA_CHI_HOP_DDAY("");
+                tutiListViewE.get(pos).tuti.setSO_VONG_THANH_CAI(Integer.parseInt(tutiListViewE.get(pos).etTysoVongTuTi.getText().toString()));
+                tutiListViewE.get(pos).tuti.setTYSO_BIEN(tutiListViewE.get(pos).etTysobienTuTi.getText().toString());
+                tutiListViewE.get(pos).tuti.setMA_NVIEN(tableBbanCto.getMA_NVIEN());
+                tutiListViewE.get(pos).tuti.setSO_BBAN_KDINH_TUTI(-1);
+                tutiListViewE.get(pos).tuti.setDIEN_AP(Integer.parseInt(tutiListViewE.get(pos).etDienApTuTi.getText().toString()));
+                tutiListViewE.get(pos).tuti.setTY_SO_VONG(Integer.parseInt(tutiListViewE.get(pos).etTysoVongTuTi.getText().toString()));
+                tutiListViewE.get(pos).tuti.setTINH_TRANG_VAN_HANH(tutiListViewE.get(pos).etTinhTrangVanHanh.getText().toString());
+                tutiListViewE.get(pos).tuti.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
+                tutiListViewE.get(pos).tuti.setID_TABLE_CHITIET_TUTI((int) mSqlDAO.updateORInsertRows(TABLE_CHITIET_TUTI.class, tutiListViewEOld, tutiListViewE.get(indexTuTi).tuti));
 
                 tutiListViewE.get(pos).setHintAfterSave();
             }
-            tuti
 
         } catch (Exception e) {
             String[] collumnCheck = new String[]{
@@ -1532,7 +1558,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
             int rowdelete = mSqlDAO.deleteRows(TABLE_BBAN_TUTI.class, collumnCheck, valuesCheck);
             tableBbanTuti = null;
-            throw e;
+            throw new Exception("Lưu thông tin tu ti không thành công. Nội dung lỗi: " + e.getMessage());
         }
 
 
@@ -1599,11 +1625,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     private Bitmap saveAndGetBitmap(Common.TYPE_IMAGE typeImage) throws Exception {
         //TODO save
         String MA_DVIQLY = tableBbanCto.getMA_DVIQLY();
-        String SO_CTO = tableChitietCto.getSO_CTO();
+        String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
         String TEN_KHANG = tableBbanCto.getTEN_KHANG();
         String MA_DDO = tableBbanCto.getMA_DDO();
         String MA_TRAM = tableBbanCto.getMA_TRAM();
-        Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(tableChitietCto.getLOAI_CTO());
+        Common.LOAI_CTO loaiCto = Common.LOAI_CTO.findLOAI_CTO(maBdongTuTi == MA_BDONG.B ? tableChitietCtoB.getLOAI_CTO() : tableChitietCtoE.getLOAI_CTO());
         String TYPE_IMAGE_DRAW;
         String SO_TUTI_DRAW = "";
         String MA_DDO_DRAW;
@@ -1624,9 +1650,9 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             case IMAGE_MACH_NHI_THU_TUTI:
             case IMAGE_NIEM_PHONG_TUTI:
                 if ((maBdongTuTi == MA_BDONG.B)) {
-                    SO_TUTI_DRAW = (tutiListViewB.get(pos).isTu) ? "SỐ TU" : "SỐ TI" + " TREO: " + tutiListViewB.get(pos).etSoTuTi.getText().toString();
+                    SO_TUTI_DRAW = (Common.IS_TU.findIS_TU(tutiListViewB.get(pos).tuti.getIS_TU()).code) ? "SỐ TU" : "SỐ TI" + " TREO: " + tutiListViewB.get(pos).etSoTuTi.getText().toString();
                 } else
-                    SO_TUTI_DRAW = (tutiListViewE.get(pos).isTu) ? "SỐ TU" : "SỐ TI" + " THÁO: " + tutiListViewE.get(pos).etSoTuTi.getText().toString();
+                    SO_TUTI_DRAW = (Common.IS_TU.findIS_TU(tutiListViewE.get(pos).tuti.getIS_TU()).code) ? "SỐ TU" : "SỐ TI" + " THÁO: " + tutiListViewE.get(pos).etSoTuTi.getText().toString();
                 break;
         }
 
@@ -1641,9 +1667,9 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         boolean isTu;
         if (maBdongTuTi == MA_BDONG.B)
-            isTu = tutiListViewB.get(pos).isTu;
+            isTu = Common.IS_TU.findIS_TU(tutiListViewB.get(pos).tuti.getIS_TU()).code;
         else
-            isTu = tutiListViewE.get(pos).isTu;
+            isTu = Common.IS_TU.findIS_TU(tutiListViewE.get(pos).tuti.getIS_TU()).code;
 
 
         //clone data old
@@ -1890,28 +1916,29 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
 
         int index;
-        boolean isTu;
-        MA_BDONG MA_BDONG;
         boolean flagChangeData;
 
-        String stringEtSoTuTi = "", stringEtSoBBKdinh = "",
-                stringEtNuocSX = "", stringEtDienApTuTi = "",
-                stringEtTysobienTuTi = "", stringEtTysoVongTuTi = "",
-                stringEtNgayKDinh = "", stringEtTinhTrangVanHanh = "";
-
-        Bitmap bitmapAnhTuTi, bitmapAnhNhiThu, bitmapAnhNiemPhong;
-
+//        String stringEtSoTuTi = "", stringEtSoBBKdinh = "",
+//                stringEtNuocSX = "", stringEtDienApTuTi = "",
+//                stringEtTysobienTuTi = "", stringEtTysoVongTuTi = "",
+//                stringEtNgayKDinh = "", stringEtTinhTrangVanHanh = "";
 
         TABLE_ANH_HIENTRUONG anhTuTi;
         TABLE_ANH_HIENTRUONG anhNhiThu;
         TABLE_ANH_HIENTRUONG anhNiemPhong;
 
         TABLE_CHITIET_TUTI tuti;
+        private Bitmap bitmapAnhNiemPhong;
+        private Bitmap bitmapAnhNhiThu;
+        private Bitmap bitmapAnhTuTi;
 
-        public DataViewIncludeTuTi(Context context, ListenerViewInCludeTuTi listener) {
+        public DataViewIncludeTuTi(Context context, ListenerViewInCludeTuTi listener, TABLE_CHITIET_TUTI tableChitietTuti, TABLE_ANH_HIENTRUONG anhTuTi, TABLE_ANH_HIENTRUONG anhNhiThu, TABLE_ANH_HIENTRUONG anhNiemPhong) {
             super(context);
 
             this.listener = listener;
+            this.anhTuTi = anhTuTi;
+            this.anhNhiThu = anhNhiThu;
+            this.anhNiemPhong = anhNiemPhong;
 
             rowView = LayoutInflater.from(context).inflate(R.layout.ttht_include_tuti, null);
             etSoTuTi = (EditText) rowView.findViewById(R.id.et_sotuti_thao_add);
@@ -1941,7 +1968,11 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
             btnSaveDataTuTi = rowView.findViewById(R.id.btn_save_data_tuti);
 
-            fillData();
+
+            tuti = tableChitietTuti;
+
+
+            fillData(tableChitietTuti);
 
             clickButton();
 
@@ -1953,7 +1984,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             btnAnhTuti.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.clickbtnAnhTuti(isTu, index);
+                    listener.clickbtnAnhNiemPhong(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
 
 //                    if(bitmap == null)
 //                        return;
@@ -1966,7 +1997,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             btnAnhNhiThu.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.clickbtnAnhNhiThu(isTu, index);
+                    listener.clickbtnAnhNiemPhong(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
 //                    if(bitmap == null)
 //                        return;
 //
@@ -1978,7 +2009,8 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             btnAnhNiemPhong.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.clickbtnAnhNiemPhong(isTu, index);
+
+                    listener.clickbtnAnhNiemPhong(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
 //                    Bitmap bitmap =  listener.clickbtnAnhTuti();
 //
 //                    if(bitmap == null)
@@ -2054,8 +2086,8 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (rbTi.isPressed()) {
                         if (b) {
-                            isTu = false;
-                            tvTitle.setText("Thông tin TI " + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
+                            tuti.setIS_TU(Common.IS_TU.TI.content);
+                            tvTitle.setText("Thông tin TI " + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
 
                             rowView.post(new Runnable() {
                                 @Override
@@ -2075,8 +2107,8 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (rbTu.isPressed()) {
                         if (b) {
-                            isTu = true;
-                            tvTitle.setText("Thông tin TU " + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
+                            tuti.setIS_TU(Common.IS_TU.TU.content);
+                            tvTitle.setText("Thông tin TU " + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
 
                             rowView.post(new Runnable() {
                                 @Override
@@ -2118,32 +2150,61 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             });
         }
 
-        private void fillData() {
-            tvTitle.setText("Thông tin " + ((isTu) ? "TU " : "TI ") + ((MA_BDONG == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
-            rbTu.setChecked(isTu);
-            rbTi.setChecked(!isTu);
+        private void fillData(TABLE_CHITIET_TUTI tableChitietTuti) {
+            tvTitle.setText("Thông tin " + ((Common.IS_TU.findIS_TU(tableChitietTuti.getIS_TU()).code) ? "TU " : "TI ") + ((MA_BDONG.findMA_BDONGByCode(tableChitietTuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
+            rbTu.setChecked(Common.IS_TU.findIS_TU(tableChitietTuti.getIS_TU()).code);
+            rbTi.setChecked(!rbTu.isChecked());
 
 
-            etSoTuTi.setText(stringEtSoTuTi);
-            etSoBBKdinh.setText(stringEtSoBBKdinh);
-            etNuocSX.setText(stringEtNuocSX);
-            etDienApTuTi.setText(stringEtDienApTuTi);
-            etTysobienTuTi.setText(stringEtTysobienTuTi);
-            etTysoVongTuTi.setText(stringEtTysoVongTuTi);
-            etNgayKDinh.setText(stringEtNgayKDinh);
-            etTinhTrangVanHanh.setText(stringEtTinhTrangVanHanh);
-
-            etSoTuTi.setHint(stringEtSoTuTi);
-            etSoBBKdinh.setHint(stringEtSoBBKdinh);
-            etNuocSX.setHint(stringEtNuocSX);
-            etDienApTuTi.setHint(stringEtDienApTuTi);
-            etTysobienTuTi.setHint(stringEtTysobienTuTi);
-            etTysoVongTuTi.setHint(stringEtTysoVongTuTi);
-            etNgayKDinh.setHint(stringEtNgayKDinh);
-            etTinhTrangVanHanh.setHint(stringEtTinhTrangVanHanh);
+            etSoTuTi.setText(tableChitietTuti.getSO_TU_TI());
+            etSoBBKdinh.setText(tableChitietTuti.getSO_BBAN_KDINH_TUTI() + "");
+            etNuocSX.setText(tableChitietTuti.getNUOC_SX());
+            etDienApTuTi.setText(tableChitietTuti.getDIEN_AP() + "");
+            etTysobienTuTi.setText(tableChitietTuti.getTYSO_BIEN());
+            etTysoVongTuTi.setText(tableChitietTuti.getTY_SO_VONG() + "");
+            etNgayKDinh.setText(tableChitietTuti.getCAP_CXAC() + "");
+            etTinhTrangVanHanh.setText(tableChitietTuti.getTINH_TRANG_VAN_HANH());
 
 
+            etSoTuTi.setHint(tableChitietTuti.getSO_TU_TI());
+            etSoBBKdinh.setHint(tableChitietTuti.getSO_BBAN_KDINH_TUTI() + "");
+            etNuocSX.setHint(tableChitietTuti.getNUOC_SX());
+            etDienApTuTi.setHint(tableChitietTuti.getDIEN_AP() + "");
+            etTysobienTuTi.setHint(tableChitietTuti.getTYSO_BIEN());
+            etTysoVongTuTi.setHint(tableChitietTuti.getTY_SO_VONG() + "");
+            etNgayKDinh.setHint(tableChitietTuti.getCAP_CXAC() + "");
+            etTinhTrangVanHanh.setHint(tableChitietTuti.getTINH_TRANG_VAN_HANH());
+
+
+//            String MA_DVIQLY = tuti.getMA_DVIQLY();
+//            String MA_TRAM = tuti.getMA_TRAM();
+//            String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
+
+            String pathURICapturedAnh = null;
+
+            boolean isTu = Common.IS_TU.findIS_TU(tuti.getIS_TU()).code;
+
+
+            bitmapAnhTuTi = getBitmap(anhTuTi, isTu);
+            ivAnhTuti.setImageBitmap(bitmapAnhTuTi);
+
+            bitmapAnhNhiThu = getBitmap(anhNhiThu, isTu);
+            ivAnhNhiThu.setImageBitmap(bitmapAnhNhiThu);
+
+            bitmapAnhNiemPhong = getBitmap(anhNiemPhong, isTu);
+            ivAnhNiemPhong.setImageBitmap(bitmapAnhNiemPhong);
         }
+
+        private Bitmap getBitmap(TABLE_ANH_HIENTRUONG anhHientruong, boolean isTu) {
+            String TEN_ANH = anhHientruong.getTEN_ANH();
+            String pathURICapturedAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
+            //get bitmap tu URI
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(pathURICapturedAnh, options);
+            return bitmap;
+        }
+
 
         public void setBitmap(Common.TYPE_IMAGE typeImage, Bitmap bitmap) {
             switch (typeImage) {
@@ -2152,12 +2213,15 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 case IMAGE_CONG_TO_NIEM_PHONG:
                     break;
                 case IMAGE_TUTI:
+                    bitmapAnhTuTi = bitmap;
                     ivAnhTuti.setImageBitmap(bitmap);
                     break;
                 case IMAGE_MACH_NHI_THU_TUTI:
+                    bitmapAnhNhiThu = bitmap;
                     ivAnhNhiThu.setImageBitmap(bitmap);
                     break;
                 case IMAGE_NIEM_PHONG_TUTI:
+                    bitmapAnhNiemPhong = bitmap;
                     ivAnhNiemPhong.setImageBitmap(bitmap);
                     break;
             }
@@ -2188,14 +2252,14 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         }
 
         public void setHintAfterSave() {
-            stringEtSoTuTi = etSoTuTi.getText().toString();
-            stringEtSoBBKdinh = etSoBBKdinh.getText().toString();
-            stringEtNuocSX = etNuocSX.getText().toString();
-            stringEtDienApTuTi = etDienApTuTi.getText().toString();
-            stringEtTysobienTuTi = etTysobienTuTi.getText().toString();
-            stringEtTysoVongTuTi = etTysoVongTuTi.getText().toString();
-            stringEtNgayKDinh = etNgayKDinh.getText().toString();
-            stringEtTinhTrangVanHanh = etTinhTrangVanHanh.getText().toString();
+            String stringEtSoTuTi = etSoTuTi.getText().toString();
+            String stringEtSoBBKdinh = etSoBBKdinh.getText().toString();
+            String stringEtNuocSX = etNuocSX.getText().toString();
+            String stringEtDienApTuTi = etDienApTuTi.getText().toString();
+            String stringEtTysobienTuTi = etTysobienTuTi.getText().toString();
+            String stringEtTysoVongTuTi = etTysoVongTuTi.getText().toString();
+            String stringEtNgayKDinh = etNgayKDinh.getText().toString();
+            String stringEtTinhTrangVanHanh = etTinhTrangVanHanh.getText().toString();
 
             etSoTuTi.setHint(stringEtSoTuTi);
             etSoBBKdinh.setHint(stringEtSoBBKdinh);

@@ -318,7 +318,6 @@
                     android:layout_alignParentBottom="true"
                     android:layout_below="@+id/tv_ttvanhanh_tuti_thao_add"
                     android:gravity="bottom"
-                    android:inputType="numberDecimal"
                     tools:text="s" />
             </LinearLayout>
 

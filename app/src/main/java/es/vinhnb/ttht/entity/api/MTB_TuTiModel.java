@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by VinhNB on 11/23/2017.
  */
 
-public class MTB_TuTiModel implements Parcelable{
+public class MTB_TuTiModel implements Parcelable {
     @SerializedName("MA_DVIQLY")
     public String MA_DVIQLY ;
 
@@ -79,8 +79,23 @@ public class MTB_TuTiModel implements Parcelable{
     @SerializedName("MA_BDONG")
     public String MA_BDONG ;
 
+    @SerializedName("ID_CHITIET_CTO")
+    public int ID_CHITIET_CTO ;
 
-    public MTB_TuTiModel(String MA_DVIQLY, String MA_CLOAI, String LOAI_TU_TI, String MO_TA, int SO_PHA, String TYSO_DAU, int CAP_CXAC, int CAP_DAP, String MA_NUOC, String MA_HANG, int TRANG_THAI, boolean IS_TU, int ID_BBAN_TUTI, int ID_CHITIET_TUTI, String SO_TU_TI, String NUOC_SX, String SO_TEM_KDINH, String NGAY_KDINH, String MA_CHI_KDINH, String MA_CHI_HOP_DDAY, int SO_VONG_THANH_CAI, String TYSO_BIEN, String MA_BDONG) {
+    @SerializedName("SO_BBAN_KDINH_TUTI")
+    public int SO_BBAN_KDINH_TUTI ;
+
+    @SerializedName("DIEN_AP")
+    public int DIEN_AP ;
+
+    @SerializedName("TY_SO_VONG")
+    public int TY_SO_VONG ;
+
+    @SerializedName("TINH_TRANG_VAN_HANH")
+    public String TINH_TRANG_VAN_HANH ;
+
+
+    public MTB_TuTiModel(String MA_DVIQLY, String MA_CLOAI, String LOAI_TU_TI, String MO_TA, int SO_PHA, String TYSO_DAU, int CAP_CXAC, int CAP_DAP, String MA_NUOC, String MA_HANG, int TRANG_THAI, boolean IS_TU, int ID_BBAN_TUTI, int ID_CHITIET_TUTI, String SO_TU_TI, String NUOC_SX, String SO_TEM_KDINH, String NGAY_KDINH, String MA_CHI_KDINH, String MA_CHI_HOP_DDAY, int SO_VONG_THANH_CAI, String TYSO_BIEN, String MA_BDONG, int ID_CHITIET_CTO, int SO_BBAN_KDINH_TUTI, int DIEN_AP, int TY_SO_VONG, String TINH_TRANG_VAN_HANH) {
         this.MA_DVIQLY = MA_DVIQLY;
         this.MA_CLOAI = MA_CLOAI;
         this.LOAI_TU_TI = LOAI_TU_TI;
@@ -104,6 +119,11 @@ public class MTB_TuTiModel implements Parcelable{
         this.SO_VONG_THANH_CAI = SO_VONG_THANH_CAI;
         this.TYSO_BIEN = TYSO_BIEN;
         this.MA_BDONG = MA_BDONG;
+        this.ID_CHITIET_CTO = ID_CHITIET_CTO;
+        this.DIEN_AP = DIEN_AP;
+        this.TY_SO_VONG = TY_SO_VONG;
+        this.SO_BBAN_KDINH_TUTI = SO_BBAN_KDINH_TUTI;
+        this.TINH_TRANG_VAN_HANH = TINH_TRANG_VAN_HANH;
     }
 
     protected MTB_TuTiModel(Parcel in) {
@@ -130,6 +150,11 @@ public class MTB_TuTiModel implements Parcelable{
         SO_VONG_THANH_CAI = in.readInt();
         TYSO_BIEN = in.readString();
         MA_BDONG = in.readString();
+        ID_CHITIET_CTO = in.readInt();
+        SO_BBAN_KDINH_TUTI = in.readInt();
+        DIEN_AP = in.readInt();
+        TY_SO_VONG = in.readInt();
+        TINH_TRANG_VAN_HANH = in.readString();
     }
 
     public static final Creator<MTB_TuTiModel> CREATOR = new Creator<MTB_TuTiModel>() {
@@ -174,5 +199,10 @@ public class MTB_TuTiModel implements Parcelable{
         parcel.writeInt(SO_VONG_THANH_CAI);
         parcel.writeString(TYSO_BIEN);
         parcel.writeString(MA_BDONG);
+        parcel.writeInt(ID_CHITIET_CTO);
+        parcel.writeInt(SO_BBAN_KDINH_TUTI);
+        parcel.writeInt(DIEN_AP);
+        parcel.writeInt(TY_SO_VONG);
+        parcel.writeString(TINH_TRANG_VAN_HANH);
     }
 }

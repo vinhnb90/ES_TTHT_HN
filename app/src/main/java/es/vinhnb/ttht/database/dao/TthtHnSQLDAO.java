@@ -800,13 +800,13 @@ public class TthtHnSQLDAO extends SqlDAO {
         return super.selectAllLazy(TABLE_CHITIET_CTO.class, cursor);
     }
 
-    public List<TABLE_BBAN_TUTI> getBBanTuti(int ID_BBAN_TUTI, String MA_NVIEN) {
-        String[] agrs = new String[]{String.valueOf(ID_BBAN_TUTI), MA_NVIEN};
+    public List<TABLE_BBAN_TUTI> getBBanTuti(int ID_BBAN_CONGTO, String MA_NVIEN) {
+        String[] agrs = new String[]{String.valueOf(ID_BBAN_CONGTO), MA_NVIEN};
         String query = "SELECT  * " +
                 " FROM " +
                 TABLE_BBAN_TUTI.table.getName() +
                 " WHERE " +
-                TABLE_BBAN_TUTI.table.ID_BBAN_TUTI.name() +
+                TABLE_BBAN_TUTI.table.ID_BBAN_CONGTO.name() +
                 " = ?" +
                 " AND " +
                 TABLE_BBAN_TUTI.table.MA_NVIEN.name() +
@@ -819,13 +819,13 @@ public class TthtHnSQLDAO extends SqlDAO {
     }
 
 
-    public List<TABLE_CHITIET_TUTI> getChitietTuTi(int ID_BBAN_TUTI, String MA_NVIEN) {
-        String[] agrs = new String[]{String.valueOf(ID_BBAN_TUTI), MA_NVIEN};
+    public List<TABLE_CHITIET_TUTI> getChitietTuTi(int ID_CHITIET_CTO, String MA_NVIEN) {
+        String[] agrs = new String[]{String.valueOf(ID_CHITIET_CTO), MA_NVIEN};
         String query = "SELECT  * " +
                 " FROM " +
                 TABLE_CHITIET_TUTI.table.getName() +
                 " WHERE " +
-                TABLE_CHITIET_TUTI.table.ID_BBAN_TUTI.name() +
+                TABLE_CHITIET_TUTI.table.ID_CHITIET_CTO.name() +
                 " = ?" +
                 " AND " +
                 TABLE_BBAN_TUTI.table.MA_NVIEN.name() +
@@ -907,6 +907,9 @@ public class TthtHnSQLDAO extends SqlDAO {
                 TABLE_ANH_HIENTRUONG.table.MA_NVIEN.name() +
                 " = ? " +
                 "AND " +
+                TABLE_ANH_HIENTRUONG.table.ID_CHITIET_CTO.name() +
+                " = ? " +
+                "AND " +
                 TABLE_ANH_HIENTRUONG.table.TYPE.name() +
                 " = " +
                 "'" +
@@ -916,27 +919,27 @@ public class TthtHnSQLDAO extends SqlDAO {
         );
 
 
-        switch (typeImage) {
-            case IMAGE_CONG_TO:
-            case IMAGE_CONG_TO_NIEM_PHONG:
-                query.append(" AND " +
-                        TABLE_ANH_HIENTRUONG.table.ID_CHITIET_CTO.name() +
-                        " = ?");
-                break;
-
-
-            case IMAGE_TUTI:
-            case IMAGE_NIEM_PHONG_TUTI:
-            case IMAGE_MACH_NHI_THU_TUTI:
-                query.append(" AND " +
-                        TABLE_ANH_HIENTRUONG.table.ID_BBAN_TUTI.name() +
-                        " = ?" +
-                        " AND " +
-                        TABLE_ANH_HIENTRUONG.table.ID_CHITIET_TUTI.name() +
-                        " = ?");
-                break;
-
-        }
+//        switch (typeImage) {
+//            case IMAGE_CONG_TO:
+//            case IMAGE_CONG_TO_NIEM_PHONG:
+//                query.append(" AND " +
+//                        TABLE_ANH_HIENTRUONG.table.ID_CHITIET_CTO.name() +
+//                        " = ?");
+//                break;
+//
+//
+//            case IMAGE_TUTI:
+//            case IMAGE_NIEM_PHONG_TUTI:
+//            case IMAGE_MACH_NHI_THU_TUTI:
+//                query.append(" AND " +
+//                        TABLE_ANH_HIENTRUONG.table.ID_BBAN_TUTI.name() +
+//                        " = ?" +
+//                        " AND " +
+//                        TABLE_ANH_HIENTRUONG.table.ID_CHITIET_TUTI.name() +
+//                        " = ?");
+//                break;
+//
+//        }
 
         Cursor cursor = super.mDatabase.rawQuery(query.toString(), argsAnhHienTruong);
 

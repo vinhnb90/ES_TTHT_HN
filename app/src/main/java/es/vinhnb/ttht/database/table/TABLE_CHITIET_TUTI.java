@@ -44,7 +44,13 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         MA_BDONG,
         MA_DVIQLY,
         MA_NVIEN,
-        ID_CHITIET_CTO;
+        ID_CHITIET_CTO,
+        SO_BBAN_KDINH_TUTI,
+
+        //add
+        DIEN_AP,
+        TY_SO_VONG,
+        TINH_TRANG_VAN_HANH;
 
         public static String getName()
         {
@@ -133,7 +139,20 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
 
 
     @Collumn(name = "ID_CHITIET_CTO", type = TYPE.INTEGER)
-    private String ID_CHITIET_CTO;
+    private int ID_CHITIET_CTO;
+
+    @Collumn(name = "SO_BBAN_KDINH_TUTI", type = TYPE.INTEGER)
+    private int SO_BBAN_KDINH_TUTI;
+
+    @Collumn(name = "DIEN_AP", type = TYPE.INTEGER)
+    private int DIEN_AP;
+
+    @Collumn(name = "TY_SO_VONG", type = TYPE.INTEGER)
+    private int TY_SO_VONG;
+
+    @Collumn(name = "TINH_TRANG_VAN_HANH", type = TYPE.TEXT)
+    private String TINH_TRANG_VAN_HANH;
+
 
 
     public TABLE_CHITIET_TUTI() {
@@ -164,7 +183,11 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
                               @Params(name = "MA_BDONG") String MA_BDONG,
                               @Params(name = "MA_DVIQLY") String MA_DVIQLY,
                               @Params(name = "MA_NVIEN") String MA_NVIEN,
-                              @Params(name = "ID_CHITIET_CTO") String ID_CHITIET_CTO
+                              @Params(name = "ID_CHITIET_CTO") int ID_CHITIET_CTO,
+                              @Params(name = "SO_BBAN_KDINH_TUTI") int SO_BBAN_KDINH_TUTI,
+                              @Params(name = "DIEN_AP") int DIEN_AP,
+                              @Params(name = "TY_SO_VONG") int TY_SO_VONG,
+                              @Params(name = "TINH_TRANG_VAN_HANH") String TINH_TRANG_VAN_HANH
                               ) {
         this.ID_TABLE_CHITIET_TUTI = ID_TABLE_CHITIET_TUTI;
         this.MA_CLOAI = MA_CLOAI;
@@ -192,6 +215,11 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         this.MA_DVIQLY = MA_DVIQLY;
         this.MA_NVIEN = MA_NVIEN;
         this.ID_CHITIET_CTO =  ID_CHITIET_CTO;
+        this.SO_BBAN_KDINH_TUTI =  SO_BBAN_KDINH_TUTI;
+        this.DIEN_AP =  DIEN_AP;
+        this.TY_SO_VONG =  TY_SO_VONG;
+        this.TINH_TRANG_VAN_HANH =  TINH_TRANG_VAN_HANH;
+
     }
 
     public int getID_TABLE_CHITIET_TUTI() {
@@ -396,12 +424,44 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
     }
 
 
-    public String getID_CHITIET_CTO() {
+    public int getID_CHITIET_CTO() {
         return ID_CHITIET_CTO;
     }
 
-    public void setID_CHITIET_CTO(String ID_CHITIET_CTO) {
+    public void setID_CHITIET_CTO(int ID_CHITIET_CTO) {
         this.ID_CHITIET_CTO = ID_CHITIET_CTO;
+    }
+
+    public int getSO_BBAN_KDINH_TUTI() {
+        return SO_BBAN_KDINH_TUTI;
+    }
+
+    public void setSO_BBAN_KDINH_TUTI(int SO_BBAN_KDINH_TUTI) {
+        this.SO_BBAN_KDINH_TUTI = SO_BBAN_KDINH_TUTI;
+    }
+
+    public int getDIEN_AP() {
+        return DIEN_AP;
+    }
+
+    public void setDIEN_AP(int DIEN_AP) {
+        this.DIEN_AP = DIEN_AP;
+    }
+
+    public int getTY_SO_VONG() {
+        return TY_SO_VONG;
+    }
+
+    public void setTY_SO_VONG(int TY_SO_VONG) {
+        this.TY_SO_VONG = TY_SO_VONG;
+    }
+
+    public String getTINH_TRANG_VAN_HANH() {
+        return TINH_TRANG_VAN_HANH;
+    }
+
+    public void setTINH_TRANG_VAN_HANH(String TINH_TRANG_VAN_HANH) {
+        this.TINH_TRANG_VAN_HANH = TINH_TRANG_VAN_HANH;
     }
 
     @Override

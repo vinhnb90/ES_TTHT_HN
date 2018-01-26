@@ -49,7 +49,8 @@ public class TABLE_BBAN_CTO implements Cloneable {
         TRANG_THAI_DU_LIEU,
         NOI_DUNG_LOI_DONG_BO,
         TRANG_THAI_CHON_GUI,
-        TRANG_THAI_DOI_SOAT;
+        TRANG_THAI_DOI_SOAT,
+        ;
 
         public static String getName() {
             return "TABLE_BBAN_CTO";
@@ -152,8 +153,6 @@ public class TABLE_BBAN_CTO implements Cloneable {
     private String TRANG_THAI_DOI_SOAT;
 
 
-
-
     public TABLE_BBAN_CTO() {
     }
 
@@ -188,8 +187,6 @@ public class TABLE_BBAN_CTO implements Cloneable {
                           @Params(name = "NOI_DUNG_LOI_DONG_BO") String NOI_DUNG_LOI_DONG_BO,
                           @Params(name = "TRANG_THAI_CHON_GUI") String TRANG_THAI_CHON_GUI,
                           @Params(name = "TRANG_THAI_DOI_SOAT") String TRANG_THAI_DOI_SOAT
-
-
     ) {
         this.ID_TABLE_BBAN_CTO = ID_TABLE_BBAN_CTO;
         this.MA_DVIQLY = MA_DVIQLY;

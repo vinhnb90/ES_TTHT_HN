@@ -316,7 +316,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 
                                 if (sizetableBbanCtoHetHieuLucList != 0) {
 //                                    if (tableBbanCtoHetHieuLucList.size()!=0)
-                                        ((LazyList<TABLE_BBAN_CTO>) tableBbanCtoHetHieuLucList).closeCursor();
+                                    ((LazyList<TABLE_BBAN_CTO>) tableBbanCtoHetHieuLucList).closeCursor();
                                     Thread.sleep(DELAY);
                                     getView().postDelayed(new Runnable() {
                                         @Override
@@ -356,9 +356,8 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                     }
 
 
-                                    if(bbanModel.ID_BBAN_TRTH == 2732707)
-                                    {
-                                        Log.e("TAG", "run: " );
+                                    if (bbanModel.ID_BBAN_TRTH == 2732707) {
+                                        Log.e("TAG", "run: ");
                                     }
 
                                     //call Get_cto
@@ -386,7 +385,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
 //                                                resultGet_cto = (List<MtbCtoModel>) resultGet_ctoResponse;
                                             } catch (Exception e) {
                                                 error = "Định dạng dữ liệu trả về từ máy chủ không đúng yêu cầu! Liên hệ nhân viên lập trình, tại biên bản " + bbanModel.ID_BBAN_TRTH;
-                                                messageServer.append("\n"  + error);
+                                                messageServer.append("\n" + error);
                                             }
 //                                            Object o = ((List) resultGet_ctoResponse).get(0);
 //                                            if (o instanceof MtbCtoModel) {
@@ -395,10 +394,10 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                         }
                                     } else if (resultGet_ctoResponse instanceof String) {
                                         error = "\nMÁY CHỦ THÔNG BÁO: tại biên bản " + bbanModel.ID_BBAN_TRTH + " " + (String) resultGet_ctoResponse;
-                                        messageServer.append("\n"  + error);
+                                        messageServer.append("\n" + error);
                                     } else {
                                         error = "\nMất kết nối khi đang lấy dữ liệu công tơ!. Vui lòng kiểm tra mạng và thử đồng bộ lại, Nếu vẫn xảy ra liên hệ nhân viên lập trình";
-                                        messageServer.append("\n"  + error);
+                                        messageServer.append("\n" + error);
                                     }
 
                                     //nếu có lỗi server trả về
@@ -411,7 +410,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                         List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(args);
                                         //close cursor
                                         TABLE_BBAN_CTO tableBbanCto = new TABLE_BBAN_CTO();
-                                        if (tableBbanCtos.size()!=0) {
+                                        if (tableBbanCtos.size() != 0) {
                                             tableBbanCto = tableBbanCtos.get(0);
                                             ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
                                         }
@@ -659,7 +658,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                                 TABLE_TRAM tableTramNew = null;
                                 if (tableTrams.size() != 0) {
                                     tableTram = tableTrams.get(0);
-                                    ((LazyList<TABLE_TRAM>)tableTrams).closeCursor();
+                                    ((LazyList<TABLE_TRAM>) tableTrams).closeCursor();
                                 }
 
                                 if (tableTram != null) {
@@ -1116,7 +1115,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
         List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(args);
         TABLE_BBAN_CTO tableBbanCto = new TABLE_BBAN_CTO();
         //close cursor
-        if (tableBbanCtos.size()!=0) {
+        if (tableBbanCtos.size() != 0) {
             tableBbanCto = tableBbanCtos.get(0);
             ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
         }
@@ -1134,11 +1133,10 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             List<TABLE_CHITIET_CTO> tableChitietCtoHienTais = mSqlDAO.getChiTietCongto(args);
             TABLE_CHITIET_CTO tableChitietCtoHienTai = new TABLE_CHITIET_CTO();
             //close cursor
-            if (tableChitietCtoHienTais.size()!=0) {
+            if (tableChitietCtoHienTais.size() != 0) {
                 tableChitietCtoHienTai = tableChitietCtoHienTais.get(0);
                 ((LazyList<TABLE_CHITIET_CTO>) tableChitietCtoHienTais).closeCursor();
             }
-
 
 
             //không quan tâm tới trạng thái của công tơ trên server, chỉ quan tâm trạng thái của biên bản trên server, đã đc cập nhật mới
@@ -1343,13 +1341,10 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             List<TABLE_BBAN_CTO> tableBbanCtos = mSqlDAO.getBBan(args);
             TABLE_BBAN_CTO tableBbanCtoHienTai = new TABLE_BBAN_CTO();
             //close cursor
-            if (tableBbanCtos.size()!=0) {
+            if (tableBbanCtos.size() != 0) {
                 tableBbanCtoHienTai = tableBbanCtos.get(0);
                 ((LazyList<TABLE_BBAN_CTO>) tableBbanCtos).closeCursor();
             }
-
-
-
 
 
             if (isMustUpdate) {
@@ -1398,7 +1393,8 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                 bbanTutiModel.ID_BBAN_WEB_TUTI,
                 bbanTutiModel.NVIEN_KCHI,
                 Common.TRANG_THAI_DU_LIEU.CHUA_GHI.content,
-                Common.IS_BBAN_HIENTRUONG.LAP_TU_CMIS.content);
+                Common.IS_BBAN_HIENTRUONG.LAP_TU_CMIS.content,
+                bbanTutiModel.ID_BBAN_CONGTO);
 
 
         switch (trangThaiWebNew) {
@@ -1429,7 +1425,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             List<TABLE_BBAN_TUTI> tableBbanTutiHienTais = mSqlDAO.getBBanTuti(tableBbanTutiNew.getID_BBAN_TUTI(), onIDataCommon.getMaNVien());
             TABLE_BBAN_TUTI tableBbanTutiHienTai = new TABLE_BBAN_TUTI();
             //close cursor
-            if (tableBbanTutiHienTais.size()!=0) {
+            if (tableBbanTutiHienTais.size() != 0) {
                 tableBbanTutiHienTai = tableBbanTutiHienTais.get(0);
                 ((LazyList<TABLE_BBAN_TUTI>) tableBbanTutiHienTais).closeCursor();
             }
@@ -1516,7 +1512,12 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                 tuTiModel.MA_BDONG,
                 tuTiModel.MA_DVIQLY,
                 onIDataCommon.getMaNVien(),
-                tuTiModel);
+                tuTiModel.ID_CHITIET_CTO,
+                tuTiModel.SO_BBAN_KDINH_TUTI,
+                tuTiModel.DIEN_AP,
+                tuTiModel.TY_SO_VONG,
+                tuTiModel.TINH_TRANG_VAN_HANH
+        );
 
 
         if (!existRows) {
@@ -1531,7 +1532,7 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
             List<TABLE_CHITIET_TUTI> tableChitietTutiHienTais = mSqlDAO.getChitietTuTi(tuTiModel.ID_BBAN_TUTI, onIDataCommon.getMaNVien());
             TABLE_CHITIET_TUTI tableChitietTutiHienTai = new TABLE_CHITIET_TUTI();
             //close cursor
-            if (tableChitietTutiHienTais.size()!=0) {
+            if (tableChitietTutiHienTais.size() != 0) {
                 tableChitietTutiHienTai = tableChitietTutiHienTais.get(0);
                 ((LazyList<TABLE_CHITIET_TUTI>) tableChitietTutiHienTais).closeCursor();
             }
