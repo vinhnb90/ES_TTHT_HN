@@ -42,6 +42,7 @@ public abstract class TthtHnBaseActivity extends AppCompatActivity implements IB
     public static final String BUNDLE_ID_BBAN_TUTI = "BUNDLE_ID_BBAN_TUTI";
 
     public static final String BUNDLE_POS = "BUNDLE_POS";
+    public static final String BUNDLE_IS_NGOAIHIENTRUONG_BBAN_TUTI = "BUNDLE_IS_NGOAIHIENTRUONG_BBAN_TUTI";
     public static final String BUNDLE_PRE_CTO = "BUNDLE_PRE_CTO";
     public static final String BUNDLE_NEXT_CTO = "BUNDLE_NEXT_CTO";
     public static final String BUNDLE_MA_BDONG = "BUNDLE_MA_BDONG";

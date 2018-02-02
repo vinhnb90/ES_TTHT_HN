@@ -50,7 +50,8 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         //add
         DIEN_AP,
         TY_SO_VONG,
-        TINH_TRANG_VAN_HANH;
+        TINH_TRANG_VAN_HANH,
+        IS_BBAN_HIENTRUONG;
 
         public static String getName()
         {
@@ -153,6 +154,10 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
     @Collumn(name = "TINH_TRANG_VAN_HANH", type = TYPE.TEXT)
     private String TINH_TRANG_VAN_HANH;
 
+    @Collumn(name = "IS_BBAN_HIENTRUONG", type = TYPE.TEXT)
+    private String IS_BBAN_HIENTRUONG;
+
+
 
 
     public TABLE_CHITIET_TUTI() {
@@ -187,7 +192,8 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
                               @Params(name = "SO_BBAN_KDINH_TUTI") int SO_BBAN_KDINH_TUTI,
                               @Params(name = "DIEN_AP") int DIEN_AP,
                               @Params(name = "TY_SO_VONG") int TY_SO_VONG,
-                              @Params(name = "TINH_TRANG_VAN_HANH") String TINH_TRANG_VAN_HANH
+                              @Params(name = "TINH_TRANG_VAN_HANH") String TINH_TRANG_VAN_HANH,
+                              @Params(name = "IS_BBAN_HIENTRUONG") String IS_BBAN_HIENTRUONG
                               ) {
         this.ID_TABLE_CHITIET_TUTI = ID_TABLE_CHITIET_TUTI;
         this.MA_CLOAI = MA_CLOAI;
@@ -219,7 +225,7 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
         this.DIEN_AP =  DIEN_AP;
         this.TY_SO_VONG =  TY_SO_VONG;
         this.TINH_TRANG_VAN_HANH =  TINH_TRANG_VAN_HANH;
-
+        this.IS_BBAN_HIENTRUONG =  IS_BBAN_HIENTRUONG;
     }
 
     public int getID_TABLE_CHITIET_TUTI() {
@@ -462,6 +468,14 @@ public class TABLE_CHITIET_TUTI implements Cloneable{
 
     public void setTINH_TRANG_VAN_HANH(String TINH_TRANG_VAN_HANH) {
         this.TINH_TRANG_VAN_HANH = TINH_TRANG_VAN_HANH;
+    }
+
+    public String getIS_BBAN_HIENTRUONG() {
+        return IS_BBAN_HIENTRUONG;
+    }
+
+    public void setIS_BBAN_HIENTRUONG(String IS_BBAN_HIENTRUONG) {
+        this.IS_BBAN_HIENTRUONG = IS_BBAN_HIENTRUONG;
     }
 
     @Override

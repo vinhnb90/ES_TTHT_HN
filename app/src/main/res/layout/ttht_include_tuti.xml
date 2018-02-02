@@ -1,438 +1,451 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/_5sdp"
     android:layout_marginLeft="@dimen/_5sdp"
+
+    android:paddingBottom="@dimen/_10sdp"
     android:layout_marginBottom="@dimen/_10sdp"
-    android:background="@drawable/xml_tththn_rectangle"
-    android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_margin="@dimen/_5sdp"
-        android:elevation="@dimen/_5sdp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RadioGroup
-            android:id="@+id/rg_tuti"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rb_tu"
-                android:height="@dimen/_24sdp"
-                android:layout_width="wrap_content"
-                android:buttonTint="@color/tththn_button"
-                android:textColor="@color/tththn_text_less_black"
-                android:layout_height="wrap_content"
-                android:text="Thiết bị TU" />
-
-            <RadioButton
-                android:id="@+id/rb_ti"
-                android:height="@dimen/_24sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:buttonTint="@color/tththn_button"
-                android:textColor="@color/tththn_text_less_black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thiết bị TI" />
-        </RadioGroup>
-
-        <TextView
-            android:layout_centerVertical="true"
-            android:id="@+id/tv_tittle_tuti"
-            style="@style/textStyle2"
-            android:textSize="@dimen/_13sdp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/rg_tuti"
-            android:text="Thiết bị TU TI tháo 1" />
-    </RelativeLayout>
+>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/_5sdp">
-
-        <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/xml_tththn_rectangle"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="aaaaa"
+            android:id="@+id/rl_mark"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:id="@+id/rl_sotuti_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_sotuti_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Số TU TI Tháo" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_sotuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_sotuti_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/rl_sobbkdinh_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_sobbkdinh_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Số b,bản kiểm định" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_sobbkdinh_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_sobbkdinh_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/rl_nuocsx_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_nuocsx_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nước sản xuất" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_nuocsx_tuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_nuocsx_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:id="@+id/rl_dienaptuti_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_dienaptuti_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Điện áp" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_dienaptuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_dienaptuti_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/rl_tysobientuti_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_tysobientuti_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tỷ số biến" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_tysobientuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_tysobientuti_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/rl_tysovongtuti_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_tysovongtuti_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tỷ số vòng" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_tysovongtuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_tysovongtuti_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:id="@+id/rl_ngaykdinh_tuti_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_ngaykdinh_tuti_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ngày kiểm định" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_ngaykdinh_tuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_ngaykdinh_tuti_thao_add"
-                    android:gravity="bottom"
-                    android:inputType="numberDecimal"
-                    tools:text="s" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/rl_ttvanhanh_tuti_thao_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="2"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_ttvanhanh_tuti_thao_add"
-                    style="@style/textStyle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tình trạng vận hành" />
-
-                <EditText
-                    android:hint=""
-                    android:id="@+id/et_ttvanhanh_tuti_thao_add"
-                    style="@style/edittextStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/tv_ttvanhanh_tuti_thao_add"
-                    android:gravity="bottom"
-                    tools:text="s" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:id="@+id/rl_anh_tutithao"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/iv_anh_tuti_thao"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/xml_tththn_rectangle8" />
-
-                <Button
-                    android:id="@+id/btn_anh_tuti_thao"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_32sdp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/iv_anh_tuti_thao"
-                    android:layout_marginBottom="@dimen/_5sdp"
-                    android:background="@drawable/xml_tththn_rectangle9"
-                    android:text="Chụp ảnh TU TI THÁO"
-                    android:textColor="@color/text_white"
-                    android:textSize="@dimen/_10sdp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/rl_anhnhithu_tuti_thao"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/iv_anhnhithu_tuti_thao"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/xml_tththn_rectangle8"
-                    android:text="Loại công tơ" />
-
-
-                <Button
-                    android:id="@+id/btn_saveannhithu_tuti_thao"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_32sdp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/iv_anhnhithu_tuti_thao"
-                    android:layout_marginBottom="@dimen/_5sdp"
-                    android:background="@drawable/xml_tththn_rectangle9"
-                    android:text="Chụp ảnh mạch nhị thứ"
-                    android:textColor="@color/text_white"
-                    android:textSize="@dimen/_10sdp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/rl_anhniemphong_tuti_thao"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/iv_anhniemphong_tuti_thao"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/xml_tththn_rectangle8"
-                    android:text="Loại công tơ" />
-
-
-                <Button
-                    android:id="@+id/btn_save_anhniemphong_tuti_thao"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_32sdp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/iv_anhniemphong_tuti_thao"
-                    android:layout_marginBottom="@dimen/_5sdp"
-                    android:background="@drawable/xml_tththn_rectangle9"
-                    android:text="Chụp ảnh niêm phong"
-                    android:textColor="@color/text_white"
-                    android:textSize="@dimen/_10sdp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:gravity="right"
+            android:layout_height="@dimen/_1sdp"/>
+        <RelativeLayout
+            android:layout_margin="@dimen/_5sdp"
+            android:elevation="@dimen/_5sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/btn_save_data_tuti"
-                style="@style/buttonStyle1"
-                android:text="Lưu thông tin"
+
+            <RadioGroup
+                android:id="@+id/rg_tuti"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_tu"
+                    android:height="@dimen/_24sdp"
+                    android:layout_width="wrap_content"
+                    android:buttonTint="@color/tththn_button"
+                    android:textColor="@color/tththn_text_less_black"
+                    android:layout_height="wrap_content"
+                    android:text="Thiết bị TU" />
+
+                <RadioButton
+                    android:id="@+id/rb_ti"
+                    android:height="@dimen/_24sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:buttonTint="@color/tththn_button"
+                    android:textColor="@color/tththn_text_less_black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thiết bị TI" />
+            </RadioGroup>
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:id="@+id/tv_tittle_tuti"
+                style="@style/textStyle2"
+                android:textSize="@dimen/_13sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/rg_tuti"
+                android:text="Thiết bị TU TI tháo 1" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/rl_sotuti_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_sotuti_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số TU TI Tháo *" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_sotuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_sotuti_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/rl_sobbkdinh_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_sobbkdinh_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số b,bản kiểm định" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_sobbkdinh_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_sobbkdinh_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/rl_nuocsx_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_nuocsx_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nước sản xuất *" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_nuocsx_tuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_nuocsx_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/rl_dienaptuti_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_dienaptuti_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Điện áp *" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_dienaptuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_dienaptuti_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/rl_tysobientuti_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_tysobientuti_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tỷ số biến *" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_tysobientuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_tysobientuti_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/rl_tysovongtuti_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_tysovongtuti_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tỷ số vòng *" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_tysovongtuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_tysovongtuti_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/rl_ngaykdinh_tuti_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_ngaykdinh_tuti_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ngày kiểm định *" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_ngaykdinh_tuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_ngaykdinh_tuti_thao_add"
+                        android:gravity="bottom"
+                        android:inputType="numberDecimal"
+                        tools:text="s" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/rl_ttvanhanh_tuti_thao_add"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_ttvanhanh_tuti_thao_add"
+                        style="@style/textStyle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tình trạng vận hành" />
+
+                    <EditText
+                        android:hint=""
+                        android:id="@+id/et_ttvanhanh_tuti_thao_add"
+                        style="@style/edittextStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/tv_ttvanhanh_tuti_thao_add"
+                        android:gravity="bottom"
+                        tools:text="s" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/rl_anh_tutithao"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/iv_anh_tuti_thao"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/xml_tththn_rectangle8" />
+
+                    <Button
+                        android:id="@+id/btn_anh_tuti_thao"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_32sdp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/iv_anh_tuti_thao"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:background="@drawable/xml_tththn_rectangle9"
+                        android:text="Chụp ảnh TU TI THÁO"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/_10sdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/rl_anhnhithu_tuti_thao"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/iv_anhnhithu_tuti_thao"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/xml_tththn_rectangle8"
+                        android:text="Loại công tơ" />
+
+
+                    <Button
+                        android:id="@+id/btn_saveannhithu_tuti_thao"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_32sdp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/iv_anhnhithu_tuti_thao"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:background="@drawable/xml_tththn_rectangle9"
+                        android:text="Chụp ảnh mạch nhị thứ"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/_10sdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/rl_anhniemphong_tuti_thao"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/iv_anhniemphong_tuti_thao"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/xml_tththn_rectangle8"
+                        android:text="Loại công tơ" />
+
+
+                    <Button
+                        android:id="@+id/btn_save_anhniemphong_tuti_thao"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_32sdp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/iv_anhniemphong_tuti_thao"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:background="@drawable/xml_tththn_rectangle9"
+                        android:text="Chụp ảnh niêm phong"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/_10sdp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/btn_save_data_tuti"
+                    style="@style/buttonStyle1"
+                    android:text="Lưu thông tin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

@@ -291,8 +291,15 @@ public class TthtHnSQLDAO extends SqlDAO {
     public List<BBanAdapter.DataBBanAdapter> getBBanAdapter2Day(String[] agrs) {
         String timeNow = Common.getDateTimeNow(Common.DATE_TIME_TYPE.sqlite1);
 
-        String query = "SELECT " +
+        String query = "SELECT * FROM \n" +
+                "(SELECT * FROM " +
+                TABLE_BBAN_TUTI.table.getName()+
+                ") A " +
+                " join " +
+                " (SELECT " +
                 TABLE_BBAN_CTO.table.DCHI_HDON.name() +
+                ", " +
+                TABLE_BBAN_CTO.table.ID_BBAN_CONGTO.name() +
                 ", " +
                 TABLE_BBAN_CTO.table.LY_DO_TREO_THAO.name() +
                 ", " +
@@ -322,7 +329,13 @@ public class TthtHnSQLDAO extends SqlDAO {
                 " = ?" +
                 " AND " +
                 TABLE_BBAN_CTO.table.NGAY_TRTH.name() +
-                " > (SELECT strftime('%Y-%m-%d', DATETIME('now', '-2 day')))";
+                " > (SELECT strftime('%Y-%m-%d', DATETIME('now', '-2 day')))) B" +
+                " on " +
+                "A." +
+                TABLE_BBAN_CTO.table.ID_BBAN_CONGTO.name() +
+                " = B." +
+                TABLE_BBAN_CTO.table.ID_BBAN_CONGTO.name() +
+                "";
 
         Cursor cursor = super.mDatabase.rawQuery(query, agrs);
 
@@ -344,6 +357,7 @@ public class TthtHnSQLDAO extends SqlDAO {
                 dataBBanAdapter.setNOI_DUNG_LOI_DONG_BO(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.NOI_DUNG_LOI_DONG_BO.name())));
                 dataBBanAdapter.setID_BBAN_TRTH(cursor.getInt(cursor.getColumnIndex(TABLE_BBAN_CTO.table.ID_BBAN_TRTH.name())));
 
+                dataBBanAdapter.setIS_BBAN_HIENTRUONG(cursor.getString(cursor.getColumnIndex(TABLE_BBAN_TUTI.table.IS_BBAN_HIENTRUONG.name())));
 
                 String sTRANG_THAI_DU_LIEU = cursor.getString(cursor.getColumnIndex(TABLE_BBAN_CTO.table.TRANG_THAI_DU_LIEU.name()));
                 dataBBanAdapter.setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU.findTRANG_THAI_DU_LIEU(sTRANG_THAI_DU_LIEU));

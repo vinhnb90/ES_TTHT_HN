@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +103,21 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
                 break;
             default:
                 holder.rlRow.setBackground(xml_tththn_rectangle3_normal);
+        }
 
+        if(TextUtils.isEmpty(data.getIS_BBAN_HIENTRUONG()))
+        {
+            holder.btnBBTuTiMore.setText("THÊM BIÊN BẢN TUTI");
+        }else {
+            Common.IS_BBAN_HIENTRUONG isBbanHientruongTuTi = Common.IS_BBAN_HIENTRUONG.findIS_BBAN_HIENTRUONG(data.getIS_BBAN_HIENTRUONG());
+            switch (isBbanHientruongTuTi) {
+                case LAP_TU_CMIS:
+                    holder.btnBBTuTiMore.setText("BB TU TI CMIS");
+                    break;
+                case LAP_NGOAI_HIENTRUONG:
+                    holder.btnBBTuTiMore.setText("BB TU TI HIỆN TRƯỜNG");
+                    break;
+            }
         }
     }
 
@@ -187,18 +202,11 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
         private String lydo;
         private String ngayTrth;
         private String sobban;
-        private boolean isHasTuTi;
+        private String IS_BBAN_HIENTRUONG;
         private int ID_BBAN_TRTH;
         private Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU;
         private String NOI_DUNG_LOI_DONG_BO;
 
-        public boolean isHasTuTi() {
-            return isHasTuTi;
-        }
-
-        public void setHasTuTi(boolean hasTuTi) {
-            isHasTuTi = hasTuTi;
-        }
 
         public String getSobban() {
             return sobban;
@@ -214,6 +222,14 @@ public class BBanAdapter extends RecyclerView.Adapter<BBanAdapter.ViewHolder> {
 
         public void setTRANG_THAI_DU_LIEU(Common.TRANG_THAI_DU_LIEU TRANG_THAI_DU_LIEU) {
             this.TRANG_THAI_DU_LIEU = TRANG_THAI_DU_LIEU;
+        }
+
+        public String getIS_BBAN_HIENTRUONG() {
+            return IS_BBAN_HIENTRUONG;
+        }
+
+        public void setIS_BBAN_HIENTRUONG(String IS_BBAN_HIENTRUONG) {
+            this.IS_BBAN_HIENTRUONG = IS_BBAN_HIENTRUONG;
         }
 
         public int getID_BBAN_TRTH() {

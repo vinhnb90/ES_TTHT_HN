@@ -1516,7 +1516,8 @@ public class TthtHnDownloadFragment extends TthtHnBaseFragment {
                 tuTiModel.SO_BBAN_KDINH_TUTI,
                 tuTiModel.DIEN_AP,
                 tuTiModel.TY_SO_VONG,
-                tuTiModel.TINH_TRANG_VAN_HANH
+                tuTiModel.TINH_TRANG_VAN_HANH,
+                Common.IS_BBAN_HIENTRUONG.LAP_TU_CMIS.content
         );
 
 

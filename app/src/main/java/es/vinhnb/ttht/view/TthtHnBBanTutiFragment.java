@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,12 +50,11 @@ import es.vinhnb.ttht.database.table.TABLE_LYDO_TREOTHAO;
 import es.vinhnb.ttht.database.table.TABLE_TRAM;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 
-import static android.content.ContentValues.TAG;
-import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.sqlite2;
-import static es.vinhnb.ttht.common.Common.DATE_TIME_TYPE.type6;
+import static android.app.Activity.RESULT_OK;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_MACH_NHI_THU_TUTI;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_NIEM_PHONG_TUTI;
 import static es.vinhnb.ttht.common.Common.TYPE_IMAGE.IMAGE_TUTI;
+import static es.vinhnb.ttht.view.TthtHnBaseActivity.BUNDLE_IS_NGOAIHIENTRUONG_BBAN_TUTI;
 import static es.vinhnb.ttht.view.TthtHnBaseActivity.BUNDLE_POS;
 
 public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
@@ -124,6 +123,9 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     int indexTuTi = -1;
     MA_BDONG maBdongTuTi;
 
+
+    @BindView(R.id.title_bbantuti)
+    TextView tvTitleBbanTuTi;
 
     //khach hang
     @BindView(R.id.tv_2a_khachhang_tuti)
@@ -388,6 +390,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     private TABLE_ANH_HIENTRUONG anhTI;
     private TABLE_ANH_HIENTRUONG anhNiemPhongTI;
     private int pos = -1;
+    private String isBBTuTiNgoaiHienTruong;
     private String timeFileCaptureAnhTuTi;
     private String timeFileCaptureAnhNhiThuTuTi;
     private String timeFileCaptureAnhNiemPhongTuTi;
@@ -402,16 +405,19 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     private boolean isRefreshAnhNiemPhongTi;
     private View viewRoot;
     private List<TABLE_LYDO_TREOTHAO> tableLydoTreothaos;
+    private Common.IS_BBAN_HIENTRUONG bbanTuTiLapNgoaiHienTruong;
 
 
     public TthtHnBBanTutiFragment() {
         // Required empty public constructor
     }
 
-    public static TthtHnBBanTutiFragment newInstance(int pos) {
+    public static TthtHnBBanTutiFragment newInstance(int pos, String is_bban_hientruong) {
 
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_POS, pos);
+        bundle.putString(BUNDLE_IS_NGOAIHIENTRUONG_BBAN_TUTI, is_bban_hientruong);
+
         TthtHnBBanTutiFragment fragment = new TthtHnBBanTutiFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -430,6 +436,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
         if (getArguments() != null) {
             pos = getArguments().getInt(BUNDLE_POS, -1);
+            isBBTuTiNgoaiHienTruong = getArguments().getString(BUNDLE_IS_NGOAIHIENTRUONG_BBAN_TUTI, "");
         }
     }
 
@@ -458,15 +465,15 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == CAMERA_REQUEST_ANH_TUTI) {
+            if (requestCode == CAMERA_REQUEST_ANH_TUTI && resultCode == RESULT_OK) {
                 onActivityResultCapture(IMAGE_TUTI);
             }
 
-            if (requestCode == CAMERA_REQUEST_ANH_NHITHU_TUTI) {
+            if (requestCode == CAMERA_REQUEST_ANH_NHITHU_TUTI && resultCode == RESULT_OK) {
                 onActivityResultCapture(IMAGE_MACH_NHI_THU_TUTI);
             }
 
-            if (requestCode == CAMERA_REQUEST_ANH_NIEMPHONG_TUTI) {
+            if (requestCode == CAMERA_REQUEST_ANH_NIEMPHONG_TUTI && resultCode == RESULT_OK) {
                 onActivityResultCapture(IMAGE_NIEM_PHONG_TUTI);
             }
         } catch (Exception e) {
@@ -698,6 +705,12 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
     }
 
     private void fillDataBBanTuti() throws Exception {
+        if (TextUtils.isEmpty(isBBTuTiNgoaiHienTruong)) {
+            bbanTuTiLapNgoaiHienTruong = Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG;
+        } else {
+            bbanTuTiLapNgoaiHienTruong = Common.IS_BBAN_HIENTRUONG.findIS_BBAN_HIENTRUONG(isBBTuTiNgoaiHienTruong);
+        }
+
         //get Data Chi tiet cong to
         String[] agrs = new String[]{String.valueOf(onIDataCommom.getID_BBAN_TRTH()), MA_BDONG.B.code, onIDataCommom.getMaNVien()};
         List<TABLE_CHITIET_CTO> tableChitietCtoList = mSqlDAO.getChiTietCongto(agrs);
@@ -780,7 +793,37 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         fillInfoKH();
 
 
+        //tu ti thao
+        for (int i = 0; i < tutiListE.size(); i++) {
+            TABLE_ANH_HIENTRUONG anhTuTi = null, anhNhiThu = null, anhNiemPhong = null;
+            String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tutiListE.get(0).getID_CHITIET_CTO())};
+            List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhTuTi = tableAnhHientruongList.get(0);
+
+            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_MACH_NHI_THU_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhNhiThu = tableAnhHientruongList.get(0);
+
+            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_NIEM_PHONG_TUTI);
+            if (tableAnhHientruongList.size() != 0)
+                anhNiemPhong = tableAnhHientruongList.get(0);
+
+            Common.IS_BBAN_HIENTRUONG tutiLapNgoaiHienTruong = Common.IS_BBAN_HIENTRUONG.findIS_BBAN_HIENTRUONG(tutiListB.get(i).getIS_BBAN_HIENTRUONG());
+
+            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, i, MA_BDONG.E, tutiListE.get(i), anhTuTi, anhNhiThu, anhNiemPhong,
+//                    bbanTuTiLapNgoaiHienTruong,
+                    tutiLapNgoaiHienTruong);
+            tutiListViewE.add(dataViewIncludeTuTi);
+            rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+
+            indexTuTi = i;
+            maBdongTuTi = MA_BDONG.E;
+        }
+
+        //tu ti treo
         for (int i = 0; i < tutiListB.size(); i++) {
+
             TABLE_ANH_HIENTRUONG anhTuTi = null, anhNhiThu = null, anhNiemPhong = null;
             String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tutiListB.get(0).getID_CHITIET_CTO())};
             List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
@@ -796,34 +839,14 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             if (tableAnhHientruongList.size() != 0)
                 anhNiemPhong = tableAnhHientruongList.get(0);
 
-            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.get(i), anhTuTi, anhNhiThu, anhNiemPhong);
+            Common.IS_BBAN_HIENTRUONG tutiLapNgoaiHienTruong = Common.IS_BBAN_HIENTRUONG.findIS_BBAN_HIENTRUONG(tutiListB.get(i).getIS_BBAN_HIENTRUONG());
+            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiB, i, MA_BDONG.B, tutiListB.get(i), anhTuTi, anhNhiThu, anhNiemPhong, tutiLapNgoaiHienTruong);
+
             tutiListViewB.add(dataViewIncludeTuTi);
             rlIncludeTuTiB.addView(dataViewIncludeTuTi);
-        }
 
-        for (int i = 0; i < tutiListE.size(); i++) {
-
-            TABLE_ANH_HIENTRUONG anhTuTi = null, anhNhiThu = null, anhNiemPhong = null;
-            String[] argsAnh = new String[]{onIDataCommom.getMaNVien(), String.valueOf(tutiListE.get(0).getID_CHITIET_CTO())};
-            List<TABLE_ANH_HIENTRUONG> tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_TUTI);
-            if (tableAnhHientruongList.size() != 0)
-                anhTuTi = tableAnhHientruongList.get(0);
-
-            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_MACH_NHI_THU_TUTI);
-            if (tableAnhHientruongList.size() != 0)
-                anhNhiThu = tableAnhHientruongList.get(0);
-
-
-            tableAnhHientruongList = mSqlDAO.getAnhHienTruong(argsAnh, IMAGE_NIEM_PHONG_TUTI);
-            if (tableAnhHientruongList.size() != 0)
-                anhNiemPhong = tableAnhHientruongList.get(0);
-
-            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.get(i), anhTuTi, anhNhiThu, anhNiemPhong);
-
-            tutiListViewE.add(dataViewIncludeTuTi);
-            rlIncludeTuTiE.addView(dataViewIncludeTuTi);
-
-
+            indexTuTi = i;
+            maBdongTuTi = MA_BDONG.B;
         }
 
 
@@ -1083,6 +1106,9 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                     throw new Exception(messageSave);
 
                 saveDataTuti(pos);
+
+                //reset index nếu thành công
+                indexTuTi = -1;
             } catch (Exception e) {
                 e.printStackTrace();
                 ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
@@ -1140,6 +1166,9 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                     throw new Exception(messageSave);
 
                 saveDataTuti(pos);
+
+                //reset index nếu thành công
+                indexTuTi = -1;
             } catch (Exception e) {
                 e.printStackTrace();
                 ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
@@ -1195,55 +1224,319 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             }
         });
 
+
         btnAddTuTiE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //check save
                 try {
                     if (indexTuTi != -1) {
-                        String message = tutiListViewE.get(indexTuTi).checkCanSave();
-                        if (!TextUtils.isEmpty(message)) {
-                            scrollViewTuti.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tutiListViewE.get(indexTuTi).btnSaveDataTuTi.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).btnSaveDataTuTi, tutiListViewE.get(indexTuTi).btnSaveDataTuTi);
-                                    scrollViewTuti.scrollTo(0, tutiListViewE.get(indexTuTi).btnSaveDataTuTi.getTop());
-                                    Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 50);
-                                }
-                            });
+                        if (maBdongTuTi == MA_BDONG.B) {
+                            String message = tutiListViewB.get(indexTuTi).checkCanAddNew();
+                            if (TextUtils.isEmpty(message)) {
+                                scrollViewTuti.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
 
-                            ((TthtHnBaseActivity) getActivity()).showSnackBar(message, null, null);
+                                            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.size(), MA_BDONG.E, null, null, null, null, Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG);
+                                            tutiListViewE.add(dataViewIncludeTuTi);
+                                            rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+
+                                            viewRoot.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    indexTuTi = tutiListE.size();
+                                                    maBdongTuTi = MA_BDONG.E;
+                                                    Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 50);
+                                                    viewRoot.invalidate();
+
+                                                    scrollViewTuti.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Rect rectf = new Rect();
+                                                            tutiListViewE.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                                            tutiListViewE.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).rlMark, tutiListViewE.get(indexTuTi).rlMark);
+                                                            scrollViewTuti.scrollTo(0, rectf.top);
+                                                            scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                                        }
+                                                    });
+
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                                        }
+                                    }
+                                });
+                            } else {
+
+                                scrollViewTuti.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Rect rectf = new Rect();
+                                        tutiListViewB.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                        tutiListViewB.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewB.get(indexTuTi).rlMark, tutiListViewB.get(indexTuTi).rlMark);
+                                        scrollViewTuti.scrollTo(0, rectf.top);
+                                        scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                    }
+                                });
+
+                                ((TthtHnBaseActivity) getActivity()).showSnackBar("Cần lưu thông tin Tu Ti Treo thứ " + (indexTuTi + 1) + " trước khi thêm mới Tu Ti Treo: \n" + message, null, null);
+                            }
+                            return;
+                        } else {
+                            String message = tutiListViewE.get(indexTuTi).checkCanAddNew();
+                            if (TextUtils.isEmpty(message)) {
+                                viewRoot.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.size(), MA_BDONG.E, null, null, null, null, Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG);
+                                        tutiListViewE.add(dataViewIncludeTuTi);
+                                        rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+                                        viewRoot.invalidate();
+                                        Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 50);
+                                        indexTuTi = tutiListE.size();
+                                        maBdongTuTi = MA_BDONG.E;
+
+                                        scrollViewTuti.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Rect rectf = new Rect();
+                                                tutiListViewE.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                                tutiListViewE.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).rlMark, tutiListViewE.get(indexTuTi).rlMark);
+                                                scrollViewTuti.scrollTo(0, rectf.top);
+                                                scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                            }
+                                        });
+                                    }
+                                });
+
+
+                            } else {
+                                scrollViewTuti.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Rect rectf = new Rect();
+                                        tutiListViewE.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                        tutiListViewE.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).rlMark, tutiListViewE.get(indexTuTi).rlMark);
+                                        scrollViewTuti.scrollTo(0, rectf.top);
+                                        scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                    }
+                                });
+
+                                ((TthtHnBaseActivity) getActivity()).showSnackBar("Cần lưu thông tin Tu Ti Tháo thứ " + (indexTuTi + 1) + " trước khi thêm mới Tu Ti Tháo: \n" + message, null, null);
+                            }
                             return;
                         }
+                    } else {
+                        int countTU = 0;
+                        int countTI = 0;
+                        for (DataViewIncludeTuTi viewIncludeTuTi : tutiListViewE) {
+                            if (Common.IS_TU.findIS_TU(viewIncludeTuTi.tuti.getIS_TU()) == Common.IS_TU.TU) {
+                                countTU++;
+                            } else {
+                                countTI++;
+                            }
+                        }
+
+                        if (countTI >= 3 && countTU >= 3) {
+                            ((TthtHnBaseActivity) getActivity()).showSnackBar("Chỉ có thể tối đa có 3 TU và 3 TI.", null);
+                            return;
+                        }
+
+                        viewRoot.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, tutiListE.size(), MA_BDONG.E, null, null, null, null, Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG);
+                                    tutiListViewE.add(dataViewIncludeTuTi);
+                                    rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+                                    indexTuTi = tutiListE.size();
+                                    maBdongTuTi = MA_BDONG.E;
+                                    Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 50);
+                                    viewRoot.invalidate();
+
+                                    scrollViewTuti.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Rect rectf = new Rect();
+                                            tutiListViewE.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                            tutiListViewE.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).rlMark, tutiListViewE.get(indexTuTi).rlMark);
+                                            scrollViewTuti.scrollTo(0, rectf.top);
+                                            scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                                }
+                            }
+                        });
                     }
 
-                    scrollViewTuti.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                vMarkTuTiE.getParent().requestChildFocus(vMarkTuTiE, vMarkTuTiE);
-                                scrollViewTuti.scrollTo(0, vMarkTuTiE.getTop());
 
-                                DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiE, new TABLE_CHITIET_TUTI(), null, null, null);
-                                tutiListViewE.add(dataViewIncludeTuTi);
-                                rlIncludeTuTiE.addView(dataViewIncludeTuTi);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ((TthtHnBaseActivity) getActivity()).showSnackBar(e.getMessage(), null, null);
+                }
+
+            }
+
+        });
+
+        btnAddTuTiB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //check save
+                try {
+                    if (indexTuTi != -1) {
+                        //check is TU Ti
+
+                        if (maBdongTuTi == MA_BDONG.B) {
+                            String message = tutiListViewB.get(indexTuTi).checkCanAddNew();
+                            if (TextUtils.isEmpty(message)) {
+                                viewRoot.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+
+                                            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiB, tutiListB.size(), MA_BDONG.B, null, null, null, null, Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG);
+                                            tutiListViewB.add(dataViewIncludeTuTi);
+                                            rlIncludeTuTiB.addView(dataViewIncludeTuTi);
+
+                                            indexTuTi = tutiListB.size();
+                                            maBdongTuTi = MA_BDONG.B;
+                                            Common.runAnimationClickView(rlIncludeTuTiB, R.anim.tththn_twinking_view, 50);
+                                            viewRoot.invalidate();
+
+                                            scrollViewTuti.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Rect rectf = new Rect();
+                                                    tutiListViewB.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                                    tutiListViewB.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewB.get(indexTuTi).rlMark, tutiListViewB.get(indexTuTi).rlMark);
+                                                    scrollViewTuti.scrollTo(0, rectf.top);
+                                                    scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                                        }
+                                    }
+                                });
+                            } else {
+                                scrollViewTuti.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Rect rectf = new Rect();
+                                        tutiListViewB.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                        tutiListViewB.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewB.get(indexTuTi).rlMark, tutiListViewB.get(indexTuTi).rlMark);
+                                        scrollViewTuti.scrollTo(0, rectf.top);
+                                        scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                    }
+                                });
+
+                                ((TthtHnBaseActivity) getActivity()).showSnackBar("Cần lưu thông tin Tu Ti Treo thứ " + (indexTuTi + 1) + " trước khi thêm mới Tu Ti Treo: \n" + message, null, null);
+                            }
+                            return;
+                        } else {
+                            String message = tutiListViewE.get(indexTuTi).checkCanAddNew();
+                            if (TextUtils.isEmpty(message)) {
 
                                 viewRoot.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        indexTuTi = tutiListE.size();
-                                        maBdongTuTi = MA_BDONG.E;
-                                        viewRoot.invalidate();
+                                        try {
+                                            DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiB, tutiListB.size(), MA_BDONG.B, null, null, null, null, Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG);
+                                            tutiListViewB.add(dataViewIncludeTuTi);
+                                            rlIncludeTuTiB.addView(dataViewIncludeTuTi);
+                                            indexTuTi = tutiListB.size();
+                                            maBdongTuTi = MA_BDONG.B;
+                                            Common.runAnimationClickView(rlIncludeTuTiB, R.anim.tththn_twinking_view, 50);
+                                            viewRoot.invalidate();
 
-                                        Common.runAnimationClickView(rlIncludeTuTiE, R.anim.tththn_twinking_view, 250);
+                                            scrollViewTuti.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Rect rectf = new Rect();
+                                                    tutiListViewB.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                                    tutiListViewB.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewB.get(indexTuTi).rlMark, tutiListViewB.get(indexTuTi).rlMark);
+                                                    scrollViewTuti.scrollTo(0, rectf.top);
+                                                    scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                                        }
                                     }
                                 });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                            } else {
+                                scrollViewTuti.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Rect rectf = new Rect();
+                                        tutiListViewE.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                        tutiListViewE.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewE.get(indexTuTi).rlMark, tutiListViewE.get(indexTuTi).rlMark);
+                                        scrollViewTuti.scrollTo(0, rectf.top);
+                                        scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                    }
+                                });
+
+                                ((TthtHnBaseActivity) getActivity()).showSnackBar("Cần lưu thông tin Tu Ti Tháo thứ " + (indexTuTi + 1) + " trước khi thêm mới Tu Ti Tháo: \n" + message, null, null);
+                            }
+                            return;
+                        }
+                    } else {
+                        int countTU = 0;
+                        int countTI = 0;
+                        for (DataViewIncludeTuTi viewIncludeTuTi : tutiListViewB) {
+                            if (Common.IS_TU.findIS_TU(viewIncludeTuTi.tuti.getIS_TU()) == Common.IS_TU.TU) {
+                                countTU++;
+                            } else {
+                                countTI++;
                             }
                         }
-                    });
+
+                        if (countTI >= 3 && countTU >= 3) {
+                            ((TthtHnBaseActivity) getActivity()).showSnackBar("Chỉ có thể tối đa có 3 TU và 3 TI.", null);
+                            return;
+                        }
+
+
+                        viewRoot.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    DataViewIncludeTuTi dataViewIncludeTuTi = new DataViewIncludeTuTi(getActivity(), listenerTuTiB, tutiListB.size(), MA_BDONG.B, null, null, null, null, Common.IS_BBAN_HIENTRUONG.LAP_NGOAI_HIENTRUONG);
+                                    tutiListViewB.add(dataViewIncludeTuTi);
+                                    rlIncludeTuTiB.addView(dataViewIncludeTuTi);
+                                    indexTuTi = tutiListB.size();
+                                    maBdongTuTi = MA_BDONG.B;
+                                    Common.runAnimationClickView(rlIncludeTuTiB, R.anim.tththn_twinking_view, 50);
+                                    viewRoot.invalidate();
+
+                                    scrollViewTuti.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Rect rectf = new Rect();
+                                            tutiListViewB.get(indexTuTi).rlMark.getLocalVisibleRect(rectf);
+                                            tutiListViewB.get(indexTuTi).rlMark.getParent().requestChildFocus(tutiListViewB.get(indexTuTi).rlMark, tutiListViewB.get(indexTuTi).rlMark);
+                                            scrollViewTuti.scrollTo(0, rectf.top);
+                                            scrollViewTuti.smoothScrollTo(0, rectf.top);
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    ((TthtHnBaseActivity) getActivity()).showSnackBar(Common.MESSAGE.ex08.getContent(), e.getMessage(), null);
+                                }
+                            }
+                        });
+
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     ((TthtHnBaseActivity) getActivity()).showSnackBar(e.getMessage(), null, null);
@@ -1416,6 +1709,31 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
 
     private void saveDataTuti(int pos) throws Exception {
         try {
+            //check tu ti
+            int countTU = 0;
+            int countTI = 0;
+            for (DataViewIncludeTuTi viewIncludeTuTi : maBdongTuTi == MA_BDONG.B ? tutiListViewB : tutiListViewE) {
+                if (Common.IS_TU.findIS_TU(viewIncludeTuTi.tuti.getIS_TU()) == Common.IS_TU.TU) {
+                    countTU++;
+                } else {
+                    countTI++;
+                }
+            }
+
+            boolean isTu = Common.IS_TU.findIS_TU(maBdongTuTi == MA_BDONG.B ? tutiListViewB.get(pos).tuti.getIS_TU() : tutiListViewE.get(pos).tuti.getIS_TU()).code;
+            if (isTu) {
+                if (countTU > 3) {
+                    ((TthtHnBaseActivity) getContext()).showSnackBar("Không được quá 3 TU!", null, null);
+                    return;
+                }
+            } else {
+                if (countTI > 3) {
+                    ((TthtHnBaseActivity) getContext()).showSnackBar("Không được quá 3 TI!", null, null);
+                    return;
+                }
+            }
+
+
             //nếu chưa có biên bản thì tạo biên bản TU TI
             if (tableBbanTuti == null) {
                 tableBbanTuti = new TABLE_BBAN_TUTI();
@@ -1501,6 +1819,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 tutiListViewB.get(pos).tuti.setSO_BBAN_KDINH_TUTI(-1);
                 tutiListViewB.get(pos).tuti.setDIEN_AP(Integer.parseInt(tutiListViewB.get(pos).etDienApTuTi.getText().toString()));
                 tutiListViewB.get(pos).tuti.setTY_SO_VONG(Integer.parseInt(tutiListViewB.get(pos).etTysoVongTuTi.getText().toString()));
+                tutiListViewB.get(pos).tuti.setIS_BBAN_HIENTRUONG((tutiListViewB.get(pos).tutiLapNgoaiHienTruong.content));
                 tutiListViewB.get(pos).tuti.setTINH_TRANG_VAN_HANH(tutiListViewB.get(pos).etTinhTrangVanHanh.getText().toString());
                 tutiListViewB.get(pos).tuti.setID_CHITIET_CTO(tableChitietCtoB.getID_CHITIET_CTO());
                 tutiListViewB.get(pos).tuti.setID_TABLE_CHITIET_TUTI((int) mSqlDAO.updateORInsertRows(TABLE_CHITIET_TUTI.class, tutiListViewBOld, tutiListViewB.get(indexTuTi).tuti));
@@ -1541,6 +1860,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                 tutiListViewE.get(pos).tuti.setSO_BBAN_KDINH_TUTI(-1);
                 tutiListViewE.get(pos).tuti.setDIEN_AP(Integer.parseInt(tutiListViewE.get(pos).etDienApTuTi.getText().toString()));
                 tutiListViewE.get(pos).tuti.setTY_SO_VONG(Integer.parseInt(tutiListViewE.get(pos).etTysoVongTuTi.getText().toString()));
+                tutiListViewB.get(pos).tuti.setIS_BBAN_HIENTRUONG((tutiListViewE.get(pos).tutiLapNgoaiHienTruong.content));
                 tutiListViewE.get(pos).tuti.setTINH_TRANG_VAN_HANH(tutiListViewE.get(pos).etTinhTrangVanHanh.getText().toString());
                 tutiListViewE.get(pos).tuti.setID_CHITIET_CTO(tableChitietCtoE.getID_CHITIET_CTO());
                 tutiListViewE.get(pos).tuti.setID_TABLE_CHITIET_TUTI((int) mSqlDAO.updateORInsertRows(TABLE_CHITIET_TUTI.class, tutiListViewEOld, tutiListViewE.get(indexTuTi).tuti));
@@ -1823,6 +2143,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         if (bitmap == null)
             throw new Exception("Vui lòng chụp ảnh niêm phong của TI treo!");
 
+
         return true;
     }
 
@@ -1914,6 +2235,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         RadioGroup rgTuTi;
         RadioButton rbTu, rbTi;
 
+        TextView rlMark;
 
         int index;
         boolean flagChangeData;
@@ -1927,18 +2249,29 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         TABLE_ANH_HIENTRUONG anhNhiThu;
         TABLE_ANH_HIENTRUONG anhNiemPhong;
 
+        Common.IS_BBAN_HIENTRUONG tutiLapNgoaiHienTruong;
+//        Common.IS_BBAN_HIENTRUONG bbanTuTiLapNgoaiHienTruong;
+
         TABLE_CHITIET_TUTI tuti;
+        MA_BDONG maBdongTuTi;
+
         private Bitmap bitmapAnhNiemPhong;
         private Bitmap bitmapAnhNhiThu;
         private Bitmap bitmapAnhTuTi;
 
-        public DataViewIncludeTuTi(Context context, ListenerViewInCludeTuTi listener, TABLE_CHITIET_TUTI tableChitietTuti, TABLE_ANH_HIENTRUONG anhTuTi, TABLE_ANH_HIENTRUONG anhNhiThu, TABLE_ANH_HIENTRUONG anhNiemPhong) {
+        public DataViewIncludeTuTi(Context context, ListenerViewInCludeTuTi listener, int indexTuTi, MA_BDONG maBdongTuTi, TABLE_CHITIET_TUTI tableChitietTuti, TABLE_ANH_HIENTRUONG anhTuTi, TABLE_ANH_HIENTRUONG anhNhiThu, TABLE_ANH_HIENTRUONG anhNiemPhong,
+//                                   Common.IS_BBAN_HIENTRUONG bbanTuTiLapNgoaiHienTruong,
+                                   Common.IS_BBAN_HIENTRUONG tutiLapNgoaiHienTruong) {
             super(context);
 
             this.listener = listener;
             this.anhTuTi = anhTuTi;
             this.anhNhiThu = anhNhiThu;
             this.anhNiemPhong = anhNiemPhong;
+            this.index = indexTuTi;
+            this.maBdongTuTi = maBdongTuTi;
+            this.tutiLapNgoaiHienTruong = tutiLapNgoaiHienTruong;
+//            this.bbanTuTiLapNgoaiHienTruong = bbanTuTiLapNgoaiHienTruong;
 
             rowView = LayoutInflater.from(context).inflate(R.layout.ttht_include_tuti, null);
             etSoTuTi = (EditText) rowView.findViewById(R.id.et_sotuti_thao_add);
@@ -1967,16 +2300,46 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             rbTi = (RadioButton) rowView.findViewById(R.id.rb_ti);
 
             btnSaveDataTuTi = rowView.findViewById(R.id.btn_save_data_tuti);
+            rlMark = rowView.findViewById(R.id.rl_mark);
 
 
             tuti = tableChitietTuti;
 
-
             fillData(tableChitietTuti);
+
+            switch (tutiLapNgoaiHienTruong) {
+                case LAP_TU_CMIS:
+                    if (MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E)
+                        enableView(false);
+                    else
+                        enableView(true);
+                    break;
+                case LAP_NGOAI_HIENTRUONG:
+                    enableView(true);
+                    break;
+            }
+            ;
 
             clickButton();
 
             this.addView(rowView);
+        }
+
+        private void enableView(boolean enable) {
+            etSoTuTi.setEnabled(enable);
+            etSoBBKdinh.setEnabled(enable);
+            etNuocSX.setEnabled(enable);
+            etDienApTuTi.setEnabled(enable);
+            etTysobienTuTi.setEnabled(enable);
+            etTysoVongTuTi.setEnabled(enable);
+            etNgayKDinh.setEnabled(enable);
+            etTinhTrangVanHanh.setEnabled(enable);
+            btnAnhTuti.setEnabled(enable);
+            btnAnhNhiThu.setEnabled(enable);
+            btnAnhNiemPhong.setEnabled(enable);
+            btnSaveDataTuTi.setEnabled(enable);
+            rbTu.setEnabled(enable);
+            rbTi.setEnabled(enable);
         }
 
         private void clickButton() {
@@ -1984,7 +2347,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             btnAnhTuti.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.clickbtnAnhNiemPhong(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
+                    listener.clickbtnAnhTuti(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
 
 //                    if(bitmap == null)
 //                        return;
@@ -1997,7 +2360,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             btnAnhNhiThu.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.clickbtnAnhNiemPhong(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
+                    listener.clickbtnAnhNhiThu(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code, index);
 //                    if(bitmap == null)
 //                        return;
 //
@@ -2087,7 +2450,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                     if (rbTi.isPressed()) {
                         if (b) {
                             tuti.setIS_TU(Common.IS_TU.TI.content);
-                            tvTitle.setText("Thông tin TI " + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
+                            tvTitle.setText("Thông tin TI " + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + (index + 1));
 
                             rowView.post(new Runnable() {
                                 @Override
@@ -2108,7 +2471,7 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
                     if (rbTu.isPressed()) {
                         if (b) {
                             tuti.setIS_TU(Common.IS_TU.TU.content);
-                            tvTitle.setText("Thông tin TU " + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
+                            tvTitle.setText("Thông tin TU " + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + (index + 1));
 
                             rowView.post(new Runnable() {
                                 @Override
@@ -2151,51 +2514,69 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         }
 
         private void fillData(TABLE_CHITIET_TUTI tableChitietTuti) {
-            tvTitle.setText("Thông tin " + ((Common.IS_TU.findIS_TU(tableChitietTuti.getIS_TU()).code) ? "TU " : "TI ") + ((MA_BDONG.findMA_BDONGByCode(tableChitietTuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + index + 1);
-            rbTu.setChecked(Common.IS_TU.findIS_TU(tableChitietTuti.getIS_TU()).code);
-            rbTi.setChecked(!rbTu.isChecked());
+            if (tableChitietTuti != null) {
+                tvTitle.setText("Thông tin " + ((Common.IS_TU.findIS_TU(tableChitietTuti.getIS_TU()).code) ? "TU " : "TI ") + ((MA_BDONG.findMA_BDONGByCode(tableChitietTuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + (index + 1));
+                rbTu.setChecked(Common.IS_TU.findIS_TU(tableChitietTuti.getIS_TU()).code);
+                rbTi.setChecked(!rbTu.isChecked());
 
 
-            etSoTuTi.setText(tableChitietTuti.getSO_TU_TI());
-            etSoBBKdinh.setText(tableChitietTuti.getSO_BBAN_KDINH_TUTI() + "");
-            etNuocSX.setText(tableChitietTuti.getNUOC_SX());
-            etDienApTuTi.setText(tableChitietTuti.getDIEN_AP() + "");
-            etTysobienTuTi.setText(tableChitietTuti.getTYSO_BIEN());
-            etTysoVongTuTi.setText(tableChitietTuti.getTY_SO_VONG() + "");
-            etNgayKDinh.setText(tableChitietTuti.getCAP_CXAC() + "");
-            etTinhTrangVanHanh.setText(tableChitietTuti.getTINH_TRANG_VAN_HANH());
+                etSoTuTi.setText(tableChitietTuti.getSO_TU_TI());
+                etSoBBKdinh.setText(tableChitietTuti.getSO_BBAN_KDINH_TUTI() + "");
+                etNuocSX.setText(tableChitietTuti.getNUOC_SX());
+                etDienApTuTi.setText(tableChitietTuti.getDIEN_AP() + "");
+                etTysobienTuTi.setText(tableChitietTuti.getTYSO_BIEN());
+                etTysoVongTuTi.setText(tableChitietTuti.getTY_SO_VONG() + "");
+                etNgayKDinh.setText(tableChitietTuti.getCAP_CXAC() + "");
+                etTinhTrangVanHanh.setText(tableChitietTuti.getTINH_TRANG_VAN_HANH());
 
 
-            etSoTuTi.setHint(tableChitietTuti.getSO_TU_TI());
-            etSoBBKdinh.setHint(tableChitietTuti.getSO_BBAN_KDINH_TUTI() + "");
-            etNuocSX.setHint(tableChitietTuti.getNUOC_SX());
-            etDienApTuTi.setHint(tableChitietTuti.getDIEN_AP() + "");
-            etTysobienTuTi.setHint(tableChitietTuti.getTYSO_BIEN());
-            etTysoVongTuTi.setHint(tableChitietTuti.getTY_SO_VONG() + "");
-            etNgayKDinh.setHint(tableChitietTuti.getCAP_CXAC() + "");
-            etTinhTrangVanHanh.setHint(tableChitietTuti.getTINH_TRANG_VAN_HANH());
+                etSoTuTi.setHint(tableChitietTuti.getSO_TU_TI());
+                etSoBBKdinh.setHint(tableChitietTuti.getSO_BBAN_KDINH_TUTI() + "");
+                etNuocSX.setHint(tableChitietTuti.getNUOC_SX());
+                etDienApTuTi.setHint(tableChitietTuti.getDIEN_AP() + "");
+                etTysobienTuTi.setHint(tableChitietTuti.getTYSO_BIEN());
+                etTysoVongTuTi.setHint(tableChitietTuti.getTY_SO_VONG() + "");
+                etNgayKDinh.setHint(tableChitietTuti.getCAP_CXAC() + "");
+                etTinhTrangVanHanh.setHint(tableChitietTuti.getTINH_TRANG_VAN_HANH());
 
 
 //            String MA_DVIQLY = tuti.getMA_DVIQLY();
 //            String MA_TRAM = tuti.getMA_TRAM();
 //            String SO_CTO = (maBdongTuTi == MA_BDONG.B) ? tableChitietCtoB.getSO_CTO() : tableChitietCtoE.getSO_CTO();
 
-            String pathURICapturedAnh = null;
+                String pathURICapturedAnh = null;
 
-            boolean isTu = Common.IS_TU.findIS_TU(tuti.getIS_TU()).code;
+                boolean isTu = Common.IS_TU.findIS_TU(tuti.getIS_TU()).code;
 
 
-            bitmapAnhTuTi = getBitmap(anhTuTi, isTu);
-            ivAnhTuti.setImageBitmap(bitmapAnhTuTi);
+                bitmapAnhTuTi = getBitmap(anhTuTi, isTu);
+                ivAnhTuti.setImageBitmap(bitmapAnhTuTi);
 
-            bitmapAnhNhiThu = getBitmap(anhNhiThu, isTu);
-            ivAnhNhiThu.setImageBitmap(bitmapAnhNhiThu);
+                bitmapAnhNhiThu = getBitmap(anhNhiThu, isTu);
+                ivAnhNhiThu.setImageBitmap(bitmapAnhNhiThu);
 
-            bitmapAnhNiemPhong = getBitmap(anhNiemPhong, isTu);
-            ivAnhNiemPhong.setImageBitmap(bitmapAnhNiemPhong);
+                bitmapAnhNiemPhong = getBitmap(anhNiemPhong, isTu);
+                ivAnhNiemPhong.setImageBitmap(bitmapAnhNiemPhong);
+            } else {
+                //default
+                tuti = new TABLE_CHITIET_TUTI();
+                tuti.setIS_TU(Common.IS_TU.TU.content);
+                tuti.setMA_BDONG(maBdongTuTi.code);
+
+                tvTitle.setText("Thông tin " + ((Common.IS_TU.findIS_TU(tuti.getIS_TU()).code) ? "TU " : "TI ") + ((MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E) ? "Tháo " : "Treo ") + (index + 1));
+                rbTu.setChecked(Common.IS_TU.findIS_TU(tuti.getIS_TU()).code);
+                rbTi.setChecked(!rbTu.isChecked());
+            }
+
         }
 
         private Bitmap getBitmap(TABLE_ANH_HIENTRUONG anhHientruong, boolean isTu) {
+            if (anhHientruong == null)
+                return null;
+
+            if (TextUtils.isEmpty(anhHientruong.getTEN_ANH()))
+                return null;
+
             String TEN_ANH = anhHientruong.getTEN_ANH();
             String pathURICapturedAnh = Common.getRecordDirectoryFolder(isTu ? Common.FOLDER_NAME.FOLDER_ANH_TU.name() : Common.FOLDER_NAME.FOLDER_ANH_TI.name()) + "/" + TEN_ANH;
             //get bitmap tu URI
@@ -2230,23 +2611,36 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
         public String checkCanSave() {
             //check bitmap
             String messageSave = "";
-            messageSave = (bitmapAnhTuTi == null) ? messageSave : "Vui lòng chụp ảnh niêm phong!";
+            Bitmap bitmap = null;
+            bitmap = (ivAnhNiemPhong.getDrawable() == null) ? null : ((BitmapDrawable) ivAnhNiemPhong.getDrawable()).getBitmap();
+            messageSave = (bitmap != null) ? messageSave : "Vui lòng chụp ảnh niêm phong!";
+            messageSave = (bitmapAnhNiemPhong != null) ? messageSave : "Vui lòng lưu thông tin TU TI!";
+            bitmap = (ivAnhNhiThu.getDrawable() == null) ? null : ((BitmapDrawable) ivAnhNhiThu.getDrawable()).getBitmap();
+            messageSave = (bitmap != null) ? messageSave : "Vui lòng chụp ảnh nhị thứ!";
+            messageSave = (bitmapAnhNhiThu != null) ? messageSave : "Vui lòng lưu thông tin TU TI!";
+            bitmap = (ivAnhTuti.getDrawable() == null) ? null : ((BitmapDrawable) ivAnhTuti.getDrawable()).getBitmap();
+            messageSave = (bitmap != null) ? messageSave : "Vui lòng chụp ảnh tu ti!";
+            messageSave = (bitmapAnhTuTi != null) ? messageSave : "Vui lòng lưu thông tin TU TI!";
 
-            messageSave = (bitmapAnhTuTi == null) ? messageSave : "Vui lòng chụp ảnh nhị thứ!";
-
-            messageSave = (bitmapAnhTuTi == null) ? messageSave : "Vui lòng chụp ảnh niêm phong!";
-
-            boolean isHasChangeDataEditText = etSoTuTi.getText().toString().equalsIgnoreCase(etSoTuTi.getHint().toString())
-                    || etSoBBKdinh.getText().toString().equalsIgnoreCase(etSoBBKdinh.getHint().toString())
-                    || etNuocSX.getText().toString().equalsIgnoreCase(etNuocSX.getHint().toString())
-                    || etDienApTuTi.getText().toString().equalsIgnoreCase(etDienApTuTi.getHint().toString())
-                    || etTysobienTuTi.getText().toString().equalsIgnoreCase(etTysobienTuTi.getHint().toString())
-                    || etTysoVongTuTi.getText().toString().equalsIgnoreCase(etTysoVongTuTi.getHint().toString())
-                    || etNgayKDinh.getText().toString().equalsIgnoreCase(etNgayKDinh.getHint().toString())
-                    || etTinhTrangVanHanh.getText().toString().equalsIgnoreCase(etTinhTrangVanHanh.getHint().toString());
+//            boolean isHasChangeDataEditText = etSoTuTi.getText().toString().equalsIgnoreCase(etSoTuTi.getHint().toString())
+//                    || etSoBBKdinh.getText().toString().equalsIgnoreCase(etSoBBKdinh.getHint().toString())
+//                    || etNuocSX.getText().toString().equalsIgnoreCase(etNuocSX.getHint().toString())
+//                    || etDienApTuTi.getText().toString().equalsIgnoreCase(etDienApTuTi.getHint().toString())
+//                    || etTysobienTuTi.getText().toString().equalsIgnoreCase(etTysobienTuTi.getHint().toString())
+//                    || etTysoVongTuTi.getText().toString().equalsIgnoreCase(etTysoVongTuTi.getHint().toString())
+//                    || etNgayKDinh.getText().toString().equalsIgnoreCase(etNgayKDinh.getHint().toString())
+//                    || etTinhTrangVanHanh.getText().toString().equalsIgnoreCase(etTinhTrangVanHanh.getHint().toString());
 
 
-            messageSave = isHasChangeDataEditText ? "Cần lưu thông tin Tu hoặc Ti trước" : messageSave;
+//            messageSave = isHasChangeDataEditText ? "Cần lưu thông tin Tu hoặc Ti trước" : messageSave;
+
+            boolean isHasOkDataEditText = (TextUtils.isEmpty(etSoTuTi.getText().toString()))
+                    || (TextUtils.isEmpty(etNuocSX.getText().toString()))
+                    || (TextUtils.isEmpty(etDienApTuTi.getText().toString()))
+                    || (TextUtils.isEmpty(etTysobienTuTi.getText().toString()))
+                    || (TextUtils.isEmpty(etTysoVongTuTi.getText().toString()))
+                    || (TextUtils.isEmpty(etNgayKDinh.getText().toString()));
+            messageSave = isHasOkDataEditText ? "Không để trống các thông tin bắt buộc (*)" : messageSave;
 
             return messageSave;
         }
@@ -2269,6 +2663,39 @@ public class TthtHnBBanTutiFragment extends TthtHnBaseFragment {
             etTysoVongTuTi.setHint(stringEtTysoVongTuTi);
             etNgayKDinh.setHint(stringEtNgayKDinh);
             etTinhTrangVanHanh.setHint(stringEtTinhTrangVanHanh);
+        }
+
+        public String checkCanAddNew() {
+            //nếu từ lập từ CMIS và là tháo thì không cần kiểm tra
+            if (tutiLapNgoaiHienTruong == Common.IS_BBAN_HIENTRUONG.LAP_TU_CMIS && MA_BDONG.findMA_BDONGByCode(tuti.getMA_BDONG()) == MA_BDONG.E)
+                return "";
+
+            //check bitmap
+            String messageSave = "";
+            Bitmap bitmap = null;
+            bitmap = (ivAnhNiemPhong.getDrawable() == null) ? null : ((BitmapDrawable) ivAnhNiemPhong.getDrawable()).getBitmap();
+            messageSave = (bitmap != null) ? messageSave : "Vui lòng chụp ảnh niêm phong!";
+            messageSave = (bitmapAnhNiemPhong != null) ? messageSave : "Vui lòng lưu thông tin TU TI!";
+            bitmap = (ivAnhNhiThu.getDrawable() == null) ? null : ((BitmapDrawable) ivAnhNhiThu.getDrawable()).getBitmap();
+            messageSave = (bitmap != null) ? messageSave : "Vui lòng chụp ảnh nhị thứ!";
+            messageSave = (bitmapAnhNhiThu != null) ? messageSave : "Vui lòng lưu thông tin TU TI!";
+            bitmap = (ivAnhTuti.getDrawable() == null) ? null : ((BitmapDrawable) ivAnhTuti.getDrawable()).getBitmap();
+            messageSave = (bitmap != null) ? messageSave : "Vui lòng chụp ảnh tu ti!";
+            messageSave = (bitmapAnhTuTi != null) ? messageSave : "Vui lòng lưu thông tin TU TI!";
+
+
+            boolean isHasChangeDataEditText = (!etSoTuTi.getText().toString().equalsIgnoreCase(etSoTuTi.getHint().toString()))
+                    || (!etSoBBKdinh.getText().toString().equalsIgnoreCase(etSoBBKdinh.getHint().toString()))
+                    || (!etNuocSX.getText().toString().equalsIgnoreCase(etNuocSX.getHint().toString()))
+                    || (!etDienApTuTi.getText().toString().equalsIgnoreCase(etDienApTuTi.getHint().toString()))
+                    || (!etTysobienTuTi.getText().toString().equalsIgnoreCase(etTysobienTuTi.getHint().toString()))
+                    || (!etTysoVongTuTi.getText().toString().equalsIgnoreCase(etTysoVongTuTi.getHint().toString()))
+                    || (!etNgayKDinh.getText().toString().equalsIgnoreCase(etNgayKDinh.getHint().toString()))
+                    || (!etTinhTrangVanHanh.getText().toString().equalsIgnoreCase(etTinhTrangVanHanh.getHint().toString()));
+
+
+            messageSave = isHasChangeDataEditText ? "Cần lưu thông tin Tu hoặc Ti trước" : messageSave;
+            return messageSave;
         }
 
         interface ListenerViewInCludeTuTi {

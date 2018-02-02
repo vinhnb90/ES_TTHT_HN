@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +35,6 @@ import com.esolutions.esloginlib.lib.LoginFragment;
 
 import java.util.ArrayList;
 
-import es.vinhnb.ttht.adapter.BBanAdapter;
 import es.vinhnb.ttht.adapter.ChiTietCtoAdapter;
 import es.vinhnb.ttht.adapter.HistoryBBanUploadAdapter;
 import es.vinhnb.ttht.adapter.NaviMenuAdapter;
@@ -45,7 +45,6 @@ import es.vinhnb.ttht.database.table.TABLE_BBAN_CTO;
 import es.vinhnb.ttht.database.table.TABLE_BBAN_TUTI;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_CTO;
 import es.vinhnb.ttht.database.table.TABLE_CHITIET_TUTI;
-import es.vinhnb.ttht.database.table.TABLE_DVIQLY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY;
 import es.vinhnb.ttht.database.table.TABLE_HISTORY_UPLOAD;
 import es.vinhnb.ttht.database.table.TABLE_LOAI_CONG_TO;
@@ -57,7 +56,6 @@ import es.vinhnb.ttht.view.TthtHnMainFragment.IOnTthtHnMainFragment;
 import es.vinhnb.ttht.view.TthtHnTopUploadFragment.IOnTthtHnTopUploadFragment;
 import es.vinhnb.ttht.view.TthtHnUploadFragment.IOnTthtHnUploadFragment;
 import esolutions.com.esdatabaselib.baseSharedPref.SharePrefManager;
-import esolutions.com.esdatabaselib.baseSqlite.LazyList;
 import esolutions.com.esdatabaselib.baseSqlite.SqlHelper;
 
 import static com.es.tungnv.views.R.layout.activity_ttht_hn_main;
@@ -163,6 +161,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
         CHITIET_CTO_TREO("CHITIET_CTO_TREO", TypeFragment.TthtHnChiTietCtoFragment, "Chi tiết công tơ treo", R.drawable.ic_tththn_cto_treo, TypeViewMenu.EMPTY),
         CHITIET_CTO_THAO("CHITIET_CTO_THAO", TypeFragment.TthtHnChiTietCtoFragment, "Chi tiết công tơ tháo", R.drawable.ic_tththn_cto_thao, TypeViewMenu.EMPTY),
+        BBAN_TUTI("BBAN_TUTI", TypeFragment.TthtHnBBanTutiFragment, "Biên bản Tu Ti", R.drawable.ic_tththn_bien_ban, TypeViewMenu.EMPTY),
         CHITIET_BBAN_TUTI_TREO("CHITIET_BBAN_TUTI_TREO", TypeFragment.TthtHnBBanTutiFragment, "Biên bản TU Ti Treo", R.drawable.ic_tththn_cto_treo, TypeViewMenu.EMPTY),
         CHITIET_BBAN_TUTI_THAO("CHITIET_BBAN_TUTI_THAO", TypeFragment.TthtHnBBanTutiFragment, "Biên bản TU Ti Tháo", R.drawable.ic_tththn_cto_thao, TypeViewMenu.EMPTY),
 
@@ -700,7 +699,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
                         if (fragmentVisible instanceof TthtHnChiTietCtoFragment)
                             pos = ((TthtHnChiTietCtoFragment) fragmentVisible).getPos();
                         //replace main relative
-                        fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(pos);
+                        fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(pos, "");
                         mTransaction.replace(mRlMain.getId(), fragmentBBanTuTi);
                         mTransaction.commit();
                     }
@@ -881,8 +880,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
     public void setNextCto(int posOld) {
         try {
             int sizeFitle = ((MainSharePref) sharePrefManager.getSharePrefObject(MainSharePref.class)).sizeList;
-            if(posOld >= sizeFitle-1)
-            {
+            if (posOld >= sizeFitle - 1) {
                 super.showSnackBar("Đã hết công tơ kế tiếp!", null, null);
                 return;
             }
@@ -919,8 +917,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
     public void setPreCto(int posOld) {
         try {
 
-            if(posOld <= 0 )
-            {
+            if (posOld <= 0) {
                 super.showSnackBar("Đã hết công tơ phía trước!", null, null);
                 return;
             }
@@ -1038,7 +1035,7 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 
                 if (tagNew.typeFrag == TypeFragment.TthtHnBBanTutiFragment) {
                     //replace main relative
-                    fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(0);
+                    fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(0, "");
                     mTransaction.replace(mRlMain.getId(), fragmentBBanTuTi);
 //                    mTransaction.addToBackStack(tagNew.tagFrag);
                     mTransaction.commit();
@@ -1212,9 +1209,22 @@ public class TthtHnMainActivity extends TthtHnBaseActivity
 //            fragmentDownload = new TthtHnDownloadFragment().newInstance();
 //            isAddMain = true;
 //        }
+        setMenuNaviAndTitle(TagMenuNaviLeft.BBAN_TUTI);
 
-
-        fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(pos);
+        if (TextUtils.isEmpty(dataBBanAdapter.getIS_BBAN_HIENTRUONG())) {
+            setActionBarTittle("BIÊN BẢN TU TI HIỆN TRƯỜNG");
+        } else {
+            Common.IS_BBAN_HIENTRUONG isBbanHientruongTuTi = Common.IS_BBAN_HIENTRUONG.findIS_BBAN_HIENTRUONG(dataBBanAdapter.getIS_BBAN_HIENTRUONG());
+            switch (isBbanHientruongTuTi) {
+                case LAP_TU_CMIS:
+                    setActionBarTittle("BIÊN BẢN TU TI CMIS");
+                    break;
+                case LAP_NGOAI_HIENTRUONG:
+                    setActionBarTittle("BIÊN BẢN TU TI HIỆN TRƯỜNG");
+                    break;
+            }
+        }
+        fragmentBBanTuTi = new TthtHnBBanTutiFragment().newInstance(pos, dataBBanAdapter.getIS_BBAN_HIENTRUONG());
         Fragment emptyFragment = showTopMenuFragment(TagMenuNaviLeft.BBAN_CTO, TagMenuTop.EMPTY);
 
         ID_BBAN_TRTH = dataBBanAdapter.getID_BBAN_TRTH();
